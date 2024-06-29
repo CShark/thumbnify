@@ -29,6 +29,7 @@ namespace tebisCloud.Data.Processing {
     public abstract class Node : INotifyPropertyChanged {
         private Point _nodeLocation;
         private double _progress;
+        private ENodeStatus _nodeStatus = ENodeStatus.Pending;
 
         public event Action<Node> NodeCompleted;
 
@@ -38,7 +39,10 @@ namespace tebisCloud.Data.Processing {
         public abstract IReadOnlyDictionary<string, Result> Results { get; }
 
         [JsonIgnore]
-        public ENodeStatus NodeStatus { get; private set; } = ENodeStatus.Pending;
+        public ENodeStatus NodeStatus {
+            get => _nodeStatus;
+            private set => SetField(ref _nodeStatus, value);
+        }
 
         [JsonIgnore]
         public string Messages { get; private set; } = "";
@@ -75,12 +79,16 @@ namespace tebisCloud.Data.Processing {
                     if (Parameters.Values.All(x => x.HasValue)) {
                         Task.Run(() => {
                             NodeStatus = ENodeStatus.Running;
-                            NodeStatus = Execute(CancelToken) ? ENodeStatus.Completed : ENodeStatus.Error;
+                            try {
+                                NodeStatus = Execute(CancelToken) ? ENodeStatus.Completed : ENodeStatus.Error;
 
-                            foreach (var param in Parameters.Values) {
-                                param.Clear();
+                                foreach (var param in Parameters.Values) {
+                                    param.Clear();
+                                }
+                            } catch (Exception ex) {
+                                LogMessage("Node execution failed: " + ex);
+                                NodeStatus = ENodeStatus.Error;
                             }
-
                             Progress = 1000;
                             OnNodeCompleted();
                         }, CancelToken);

@@ -29,6 +29,8 @@ namespace tebisCloud.Data.Processing {
         }
 
         protected override bool Execute(CancellationToken cancelToken) {
+            throw new Exception("Test");
+
             try {
                 using (var writer = new LameMP3FileWriter(AudioFile.Value.FileName,
                            AudioStream.Value.WaveStream.WaveFormat, LAMEPreset.ABR_96)) {
@@ -37,6 +39,7 @@ namespace tebisCloud.Data.Processing {
 
                     int read;
                     while ((read = AudioStream.Value.WaveStream.Read(buffer)) > 0) {
+                        if (cancelToken.IsCancellationRequested) return false;
                         writer.Write(buffer);
                         ReportProgress(AudioStream.Value.WaveStream.Position, AudioStream.Value.WaveStream.Length);
                     }

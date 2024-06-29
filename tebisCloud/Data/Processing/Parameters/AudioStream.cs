@@ -14,7 +14,8 @@ namespace tebisCloud.Data.Processing.Parameters {
             var mem = new MemoryStream();
             WaveFileWriter.WriteWavFileToStream(mem, WaveStream);
             mem.Seek(0, SeekOrigin.Begin);
-            return new WaveFileReader(mem);
+            WaveStream.Seek(0, SeekOrigin.Begin);
+            return new AudioStream {WaveStream = new WaveFileReader(mem)};
         }
 
         public void Dispose() {

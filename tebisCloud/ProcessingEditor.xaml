@@ -250,8 +250,7 @@
                                     Visibility="{TemplateBinding HasHeader, Converter={StaticResource BoolToVis}}"
                                     Background="{TemplateBinding HeaderBrush}"
                                     CornerRadius="3 3 0 0"
-                                    Grid.ColumnSpan="3"
-                                    Padding="6 4 6 0">
+                                    Grid.ColumnSpan="3">
                                     <ContentPresenter ContentSource="Header" />
                                 </Border>
 
@@ -413,10 +412,61 @@
                     <nodify:Node Input="{Binding Inputs}"
                                  Output="{Binding Outputs}" Width="200">
                         <nodify:Node.Header>
-                            <StackPanel>
-                                <TextBlock Text="{Binding Title}" />
-                                <Border Background="{StaticResource ControlBackground}" Margin="-6,3,-6,0">
-                                <ProgressBar Foreground="LightGreen" BorderThickness="0" Height="5" Margin="0,3,0,0" Maximum="1" Value="{Binding SourceNode.Progress, Mode=OneWay}" Background="Transparent"/>
+                            <StackPanel Margin="0,4,0,0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="20" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Title}" Margin="6,0,0,0" />
+
+                                    <ContentPresenter Content="{Binding SourceNode.NodeStatus}" Grid.Column="1">
+                                        <ContentPresenter.ContentTemplate>
+                                            <DataTemplate DataType="{x:Type processing:ENodeStatus}">
+                                                <wpf:MaterialIcon x:Name="Icon" Visibility="Collapsed" Height="16">
+                                                    <wpf:MaterialIcon.Effect>
+                                                        <DropShadowEffect ShadowDepth="0" BlurRadius="10" Opacity=".7" Color="DimGray"></DropShadowEffect>
+                                                    </wpf:MaterialIcon.Effect>
+                                                </wpf:MaterialIcon>
+
+                                                <DataTemplate.Triggers>
+                                                    <DataTrigger Binding="{Binding}"
+                                                                 Value="{x:Static processing:ENodeStatus.Running}">
+                                                        <Setter TargetName="Icon" Property="Visibility"
+                                                                Value="Visible" />
+                                                        <Setter TargetName="Icon" Property="Kind"
+                                                                Value="ClockTimeFour" />
+                                                        <Setter TargetName="Icon" Property="Foreground"
+                                                                Value="DarkGray" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding}"
+                                                                 Value="{x:Static processing:ENodeStatus.Completed}">
+                                                        <Setter TargetName="Icon" Property="Visibility"
+                                                                Value="Visible" />
+                                                        <Setter TargetName="Icon" Property="Kind"
+                                                                Value="CheckCircle" />
+                                                        <Setter TargetName="Icon" Property="Foreground"
+                                                                Value="GreenYellow" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding}"
+                                                                 Value="{x:Static processing:ENodeStatus.Error}">
+                                                        <Setter TargetName="Icon" Property="Visibility"
+                                                                Value="Visible" />
+                                                        <Setter TargetName="Icon" Property="Kind"
+                                                                Value="CloseOctagon" />
+                                                        <Setter TargetName="Icon" Property="Foreground"
+                                                                Value="Orange" />
+                                                    </DataTrigger>
+                                                </DataTemplate.Triggers>
+                                            </DataTemplate>
+                                        </ContentPresenter.ContentTemplate>
+                                    </ContentPresenter>
+                                </Grid>
+                                <Border Background="{StaticResource ControlBackground}" Margin="0,3,0,0">
+                                    <ProgressBar Foreground="LightGreen" BorderThickness="0" Height="5"
+                                                 Margin="0,3,0,0" Maximum="1"
+                                                 Value="{Binding SourceNode.Progress, Mode=OneWay}"
+                                                 Background="Transparent" />
                                 </Border>
                             </StackPanel>
                         </nodify:Node.Header>
