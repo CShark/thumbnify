@@ -1,22 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Microsoft.Xaml.Behaviors.Core;
-using Nodify;
 using tebisCloud.Data;
-using tebisCloud.Data.Processing;
 using tebisCloud.Postprocessing;
 using Connection = tebisCloud.Postprocessing.Connection;
 using Connector = tebisCloud.Postprocessing.Connector;
@@ -80,9 +67,9 @@ namespace tebisCloud {
                         if (!IsCyclic(con)) {
                             Connections.Add(con);
                             _graph.ProcessConnects.Add(new() {
-                                Previous = a.Parent.Step.Id,
+                                Previous = a.Parent.SourceNode.Id,
                                 PreviousPort = a.Id,
-                                Next = b.Parent.Step.Id,
+                                Next = b.Parent.SourceNode.Id,
                                 NextPort = b.Id,
                             });
                             Tree[a.Parent].Add(b.Parent);
@@ -96,14 +83,14 @@ namespace tebisCloud {
                     var conn = Connections.FirstOrDefault(x => x.Target == point || x.Source == point);
 
                     if (conn != null) {
-                        conn.Source.IsConnected = false;
-                        conn.Target.IsConnected = false;
                         Connections.Remove(conn);
+                        conn.Source.IsConnected = Connections.Any(x => x.Source == conn.Source);
+                        conn.Target.IsConnected = Connections.Any(x => x.Target == conn.Target);
 
                         var dataConn = _graph.ProcessConnects.FirstOrDefault(x =>
-                            x.Previous == conn.Source.Parent.Step.Id &&
+                            x.Previous == conn.Source.Parent.SourceNode.Id &&
                             x.PreviousPort == conn.Source.Id &&
-                            x.Next == conn.Target.Parent.Step.Id &&
+                            x.Next == conn.Target.Parent.SourceNode.Id &&
                             x.NextPort == conn.Target.Id
                         );
 
@@ -187,7 +174,6 @@ namespace tebisCloud {
                 Tree[dict[con.Previous]].Add(dict[con.Next]);
             }
         }
-
         private void CreateNode_OnExecuted(object sender, ExecutedRoutedEventArgs e) {
             if (e.Parameter is Type t) {
                 if (t.IsAssignableTo(typeof(Node))) {
@@ -202,7 +188,6 @@ namespace tebisCloud {
                 }
             }
         }
-
         private void DeleteSelectedNodes() {
             var selection = new List<EditorNode>();
 
@@ -222,6 +207,10 @@ namespace tebisCloud {
             }
 
             Editor.SelectedItem = null;
+        }
+
+        private void Test_OnClick(object sender, RoutedEventArgs e) {
+            _graph.RunGraph();
         }
     }
 }

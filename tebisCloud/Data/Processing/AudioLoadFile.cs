@@ -12,7 +12,7 @@ using tebisCloud.Postprocessing;
 
 namespace tebisCloud.Data.Processing {
     internal class AudioLoadFile : Node {
-        public Parameter<FilePath> AudioFile { get; set; } = new("audio_file", "Dateiname", true, new());
+        public Parameter<FilePath> AudioFile { get; set; } = new("audio_file", "Dateiname", true, new(true, "Alle Dateien|*.mp4;*.mkv;*.mp3"));
 
         [JsonIgnore]
         public Result<AudioStream> AudioStream { get; } = new("audio_stream", "Audio");

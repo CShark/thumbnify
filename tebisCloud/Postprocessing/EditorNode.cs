@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using tebisCloud.Data.Processing;
 using Vortice.XAudio2;
@@ -22,35 +23,40 @@ namespace tebisCloud.Postprocessing {
     public class EditorNode : INotifyPropertyChanged {
         private List<Connector> _inputs = new();
         private List<Connector> _outputs = new();
+        private List<Parameter> _staticParameters = new();
+        private double _progress;
 
         public static Dictionary<ENodeType, Color> TypeColorMap { get; } = new() {
-            { ENodeType.None, Colors.DimGray },
-            { ENodeType.Audio, Colors.SteelBlue },
-            { ENodeType.Video, Colors.MediumOrchid },
-            { ENodeType.Youtube, Colors.Red }
+            {ENodeType.None, Colors.DimGray},
+            {ENodeType.Audio, Colors.SteelBlue},
+            {ENodeType.Video, Colors.MediumOrchid},
+            {ENodeType.Youtube, Colors.Red}
         };
 
-        public EditorNode(string title, ENodeType nodeType, Node step) {
+        public EditorNode(string title, ENodeType nodeType, Node sourceNode) {
             Title = title;
-            Step = step;
+            SourceNode = sourceNode;
             NodeType = nodeType;
 
-            _inputs = step.Parameters.Values.Select(x => new Connector(this, x)).ToList();
-            _outputs = step.Results.Values.Select(x => new Connector(this, x)).ToList();
+            _inputs = sourceNode.Parameters.Values.Where(x => x.Bindable).Select(x => new Connector(this, x)).ToList();
+            _outputs = sourceNode.Results.Values.Select(x => new Connector(this, x)).ToList();
+            _staticParameters = sourceNode.Parameters.Values.Where(x => !x.Bindable).ToList();
 
             NodeColor = TypeColorMap[NodeType];
         }
-        
+
         public string Title { get; }
 
         public ENodeType NodeType { get; }
 
-        public Node Step { get; }
+        public Node SourceNode { get; }
 
         public Color NodeColor { get; }
-
+        
         public IReadOnlyList<Connector> Inputs => _inputs;
         public IReadOnlyList<Connector> Outputs => _outputs;
+
+        public IReadOnlyList<Parameter> StaticParameters => _staticParameters;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 

@@ -11,7 +11,7 @@ namespace tebisCloud.Data {
 
         public List<ProcessConnect> ProcessConnects { get; set; } = new();
 
-        private HashSet<Node> _openNodes;
+        private HashSet<Node> _openNodes = new();
 
         private CancellationTokenSource _cancelToken;
 
@@ -42,11 +42,11 @@ namespace tebisCloud.Data {
                 _edgesBackward[node.Id] = new();
 
                 foreach (var param in node.Parameters) {
-                    _edgesBackward[node.Id][param.Key] = new();
+                    _edgesBackward[node.Id][param.Key] = null;
                 }
 
                 foreach (var result in node.Results) {
-                    _edgesForward[node.Id][result.Key] = null;
+                    _edgesForward[node.Id][result.Key] = new();
                 }
             }
 

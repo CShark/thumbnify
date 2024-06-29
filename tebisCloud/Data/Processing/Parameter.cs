@@ -21,6 +21,9 @@ namespace tebisCloud.Data.Processing {
         [JsonIgnore]
         public abstract bool HasValue { get; }
 
+        [JsonIgnore]
+        public abstract object? DefaultValueObj { get; }
+
         protected Parameter(string id, string name, bool bindable) {
             Id = id;
             Name = name;
@@ -55,6 +58,7 @@ namespace tebisCloud.Data.Processing {
         public T? DefaultValue { get; set; }
 
         public override bool HasValue => Value != null;
+        public override object? DefaultValueObj => DefaultValue;
 
         public Parameter(string id, string name, bool bindable, T? defaultValue = default) : base(id, name, bindable) {
             DefaultValue = defaultValue;

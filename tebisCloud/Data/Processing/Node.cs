@@ -9,10 +9,11 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Threading;
 using Newtonsoft.Json;
 using tebisCloud.Data.Thumbnail;
 using tebisCloud.Postprocessing;
-using Vortice.XAPO;
+using Application = System.Windows.Application;
 using Point = System.Windows.Point;
 
 namespace tebisCloud.Data.Processing {
@@ -27,6 +28,7 @@ namespace tebisCloud.Data.Processing {
     [JsonConverter(typeof(JsonKnownTypesConverter<Node>))]
     public abstract class Node : INotifyPropertyChanged {
         private Point _nodeLocation;
+        private double _progress;
 
         public event Action<Node> NodeCompleted;
 
@@ -43,6 +45,12 @@ namespace tebisCloud.Data.Processing {
 
         [JsonIgnore]
         public CancellationToken CancelToken { get; set; }
+
+        [JsonIgnore]
+        public double Progress {
+            get => _progress;
+            private set => SetField(ref _progress, value);
+        }
 
         public Point NodeLocation {
             get => _nodeLocation;
@@ -65,14 +73,17 @@ namespace tebisCloud.Data.Processing {
 
                 if (NodeStatus == ENodeStatus.Pending) {
                     if (Parameters.Values.All(x => x.HasValue)) {
-                        NodeStatus = ENodeStatus.Running;
-                        NodeStatus = Execute(CancelToken) ? ENodeStatus.Completed : ENodeStatus.Error;
+                        Task.Run(() => {
+                            NodeStatus = ENodeStatus.Running;
+                            NodeStatus = Execute(CancelToken) ? ENodeStatus.Completed : ENodeStatus.Error;
 
-                        foreach (var param in Parameters.Values) {
-                            param.Clear();
-                        }
+                            foreach (var param in Parameters.Values) {
+                                param.Clear();
+                            }
 
-                        OnNodeCompleted();
+                            Progress = 1000;
+                            OnNodeCompleted();
+                        }, CancelToken);
                     }
                 }
             }
@@ -89,6 +100,7 @@ namespace tebisCloud.Data.Processing {
 
             NodeStatus = ENodeStatus.Pending;
             Messages = "";
+            Progress = 0;
         }
 
         public void TriggerNode() {
@@ -101,6 +113,13 @@ namespace tebisCloud.Data.Processing {
             Messages += message + "\n\n";
         }
 
+        protected void ReportProgress(double progress) {
+            Progress = progress;
+        }
+
+        protected void ReportProgress(long step, long max) {
+            Progress = (double)step  / max;
+        }
 
         public abstract EditorNode GenerateNode();
 

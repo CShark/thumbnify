@@ -14,6 +14,7 @@
 		<PackageReference Include="JsonKnownTypes" Version="0.6.0" />
 		<PackageReference Include="Material.Icons.WPF" Version="2.1.9" />
 		<PackageReference Include="NAudio" Version="2.2.1" />
+		<PackageReference Include="NAudio.Lame" Version="2.1.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Nodify" Version="6.0.0" />
 		<PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />

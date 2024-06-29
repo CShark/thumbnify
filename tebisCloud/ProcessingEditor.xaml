@@ -10,6 +10,7 @@
         xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
         xmlns:converter="clr-namespace:tebisCloud.Converter"
         xmlns:parameters="clr-namespace:tebisCloud.Data.Processing.Parameters"
+        xmlns:controls="clr-namespace:tebisCloud.Controls"
         mc:Ignorable="d"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         WindowStartupLocation="CenterOwner"
@@ -53,6 +54,8 @@
             </Setter>
         </Style>
 
+        <converter:BoolInvert x:Key="BoolInvert" />
+
         <BooleanToVisibilityConverter x:Key="BoolToVis"></BooleanToVisibilityConverter>
 
         <converter:ParameterTypeToColor x:Key="ParamTypeToColor">
@@ -79,6 +82,14 @@
                 </ControlTemplate>
             </converter:ParameterConnector>
         </converter:ParameterTypeToConnector>
+
+        <converter:ParameterTypeToControls x:Key="ParamTypeToEditor">
+            <converter:ParameterControls Type="{x:Type parameters:FilePath}">
+                <DataTemplate DataType="{x:Type parameters:FilePath}">
+                    <controls:FilePathControl FilePath="{Binding}" />
+                </DataTemplate>
+            </converter:ParameterControls>
+        </converter:ParameterTypeToControls>
 
         <LinearGradientBrush x:Key="FadeOpacityMask"
                              StartPoint="0 0"
@@ -240,7 +251,7 @@
                                     Background="{TemplateBinding HeaderBrush}"
                                     CornerRadius="3 3 0 0"
                                     Grid.ColumnSpan="3"
-                                    Padding="6 4 6 4">
+                                    Padding="6 4 6 0">
                                     <ContentPresenter ContentSource="Header" />
                                 </Border>
 
@@ -399,21 +410,35 @@
             </nodify:NodifyEditor.Resources>
             <nodify:NodifyEditor.ItemTemplate>
                 <DataTemplate DataType="{x:Type postprocessing:EditorNode}">
-                    <nodify:Node Header="{Binding Title}" Input="{Binding Inputs}"
-                                 Output="{Binding Outputs}" MinWidth="150">
+                    <nodify:Node Input="{Binding Inputs}"
+                                 Output="{Binding Outputs}" Width="200">
+                        <nodify:Node.Header>
+                            <StackPanel>
+                                <TextBlock Text="{Binding Title}" />
+                                <Border Background="{StaticResource ControlBackground}" Margin="-6,3,-6,0">
+                                <ProgressBar Foreground="LightGreen" BorderThickness="0" Height="5" Margin="0,3,0,0" Maximum="1" Value="{Binding SourceNode.Progress, Mode=OneWay}" Background="Transparent"/>
+                                </Border>
+                            </StackPanel>
+                        </nodify:Node.Header>
                         <nodify:Node.HeaderBrush>
                             <SolidColorBrush Color="{Binding NodeColor}" />
                         </nodify:Node.HeaderBrush>
                         <nodify:Node.InputConnectorTemplate>
                             <DataTemplate DataType="{x:Type postprocessing:Connector}">
-                                <nodify:NodeInput Header="{Binding Name}" IsConnected="true"
-                                                  ConnectorTemplate="{Binding Type, Converter={StaticResource ParamTypeToConnector}}"
-                                                  Anchor="{Binding Anchor,Mode=OneWayToSource}">
-                                    <nodify:NodeInput.BorderBrush>
-                                        <SolidColorBrush
-                                            Color="{Binding Type, Converter={StaticResource ParamTypeToColor}}" />
-                                    </nodify:NodeInput.BorderBrush>
-                                </nodify:NodeInput>
+                                <StackPanel>
+                                    <nodify:NodeInput Header="{Binding Name}" IsConnected="true"
+                                                      ConnectorTemplate="{Binding Type, Converter={StaticResource ParamTypeToConnector}}"
+                                                      Anchor="{Binding Anchor,Mode=OneWayToSource}">
+                                        <nodify:NodeInput.BorderBrush>
+                                            <SolidColorBrush
+                                                Color="{Binding Type, Converter={StaticResource ParamTypeToColor}}" />
+                                        </nodify:NodeInput.BorderBrush>
+                                    </nodify:NodeInput>
+                                    <ContentPresenter Margin="10,0,10,10"
+                                                      IsEnabled="{Binding IsConnected, Converter={StaticResource BoolInvert}}"
+                                                      Content="{Binding Parameter.DefaultValueObj}"
+                                                      ContentTemplateSelector="{StaticResource ParamTypeToEditor}" />
+                                </StackPanel>
                             </DataTemplate>
                         </nodify:Node.InputConnectorTemplate>
                         <nodify:Node.OutputConnectorTemplate>
@@ -430,11 +455,12 @@
                             </DataTemplate>
                         </nodify:Node.OutputConnectorTemplate>
                     </nodify:Node>
+
                 </DataTemplate>
             </nodify:NodifyEditor.ItemTemplate>
             <nodify:NodifyEditor.ItemContainerStyle>
                 <Style TargetType="nodify:ItemContainer">
-                    <Setter Property="Location" Value="{Binding Step.NodeLocation}" />
+                    <Setter Property="Location" Value="{Binding SourceNode.NodeLocation}" />
                 </Style>
             </nodify:NodifyEditor.ItemContainerStyle>
             <nodify:NodifyEditor.ConnectionTemplate>
@@ -460,5 +486,7 @@
                 </DataTemplate>
             </nodify:NodifyEditor.PendingConnectionTemplate>
         </nodify:NodifyEditor>
+
+        <Button Margin="50" HorizontalAlignment="Left" VerticalAlignment="Top" Click="Test_OnClick">Test</Button>
     </Grid>
 </Window>
