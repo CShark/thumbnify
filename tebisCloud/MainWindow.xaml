@@ -1,0 +1,379 @@
+﻿<Window x:Class="tebisCloud.MainWindow"
+        Style="{StaticResource Dark}"
+        xml:lang="de-DE"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:tebisCloud"
+        xmlns:wpf="clr-namespace:FlyleafLib.Controls.WPF;assembly=FlyleafLib"
+        xmlns:mi="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+        xmlns:data="clr-namespace:tebisCloud.Data"
+        xmlns:wpfsvl="clr-namespace:WPFSoundVisualizationLib;assembly=WPFSoundVisualizationLib"
+        xmlns:tebisCloud="clr-namespace:tebisCloud"
+        xmlns:converter="clr-namespace:tebisCloud.Converter"
+        xmlns:controls="clr-namespace:tebisCloud.Controls"
+        mc:Ignorable="d"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        WindowState="Maximized"
+        Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <converter:WaveformLengthConverter x:Key="WaveformLengthConverter" />
+        <converter:PlaybackMarginConverter x:Key="PlaybackMarginConverter" />
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <converter:InverseVisibilityConverter x:Key="NBoolToVis" />
+
+        <Style TargetType="mi:MaterialIcon">
+            <Setter Property="Margin" Value="3"></Setter>
+        </Style>
+        <Style TargetType="MenuItem">
+            <Setter Property="CommandTarget"
+                    Value="{Binding Path=PlacementTarget,RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}">
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static local:MainWindow.EditMediaPart}" CanExecute="EditMediaPart_OnCanExecute" Executed="EditMediaPart_OnExecuted"></CommandBinding>
+        <CommandBinding Command="{x:Static local:MainWindow.DeleteMediaPart}" CanExecute="EditMediaPart_OnCanExecute" Executed="DeleteMediaPart_OnExecuted"></CommandBinding>
+    </Window.CommandBindings>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250" MinWidth="250"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                <mi:MaterialIcon Foreground="{StaticResource ControlForeground}" Kind="Multimedia"></mi:MaterialIcon>
+                <TextBlock Foreground="{StaticResource ControlForeground}"  FontSize="20">Medien</TextBlock>
+            </StackPanel>
+
+            <WrapPanel Margin="2" Grid.Row="2">
+                <Button Click="OpenSettings_OnClick" Style="{StaticResource SingleButton}">
+                    <mi:MaterialIcon Kind="Settings"></mi:MaterialIcon>
+                </Button>
+            </WrapPanel>
+
+            <ListBox BorderThickness="0" Grid.Row="1" ItemsSource="{Binding Media}"
+                     SelectionChanged="MediaList_OnSelectionChanged"
+                     IsSynchronizedWithCurrentItem="True" Background="Transparent"
+                     Foreground="{StaticResource ControlForeground}"
+                     SelectedItem="{Binding SelectedMedia}"
+                     HorizontalContentAlignment="Stretch">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type data:MediaSource}">
+                        <StackPanel>
+                            <TextBlock Text="{Binding Name}" />
+                            <TextBlock Text="{Binding Date, StringFormat={}{0:dddd, dd.MM.yyyy HH:mm}}"></TextBlock>
+                            <ItemsControl ItemsSource="{Binding Parts}" Margin="20,0,0,0">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type data:MediaPart}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="7"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+
+                                            <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                <Border.Background>
+                                                    <SolidColorBrush Color="{Binding Color}"></SolidColorBrush>
+                                                </Border.Background>
+                                            </Border>
+                                            <Border Grid.ColumnSpan="3" Opacity=".3">
+                                                <Border.Background>
+                                                    <SolidColorBrush Color="{Binding Color}"></SolidColorBrush>
+                                                </Border.Background>
+                                            </Border>
+
+                                            <StackPanel Grid.Column="1" Margin="5,0">
+                                                <TextBlock Text="{Binding Name}"></TextBlock>
+                                                <TextBlock Text="{Binding Metadata.Title}"></TextBlock>
+                                            </StackPanel>
+
+                                            <Grid.ContextMenu>
+                                                <ContextMenu>
+
+                                                </ContextMenu>
+                                            </Grid.ContextMenu>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+        <GridSplitter Width="3"></GridSplitter>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="150"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="200" MinWidth="200"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <wpf:FlyleafHost Player="{Binding Player}" AttachedDragMove="Both" KeyBindings="Both"
+                                 ToggleFullScreenOnDoubleClick="None" OpenOnDrop="None" MouseBindings="None">
+                </wpf:FlyleafHost>
+
+                <GridSplitter Width="2" Grid.Column="1" HorizontalAlignment="Left"></GridSplitter>
+
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                        <mi:MaterialIcon Foreground="{StaticResource ControlForeground}" Kind="TrayFull"></mi:MaterialIcon>
+                        <TextBlock Foreground="{StaticResource ControlForeground}"  FontSize="20">Warteschlange</TextBlock>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+            <Grid Grid.Row="1" IsSharedSizeScope="True" Margin="10,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="A"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="A"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal">
+                    <Button Style="{StaticResource FirstButton}" Click="SelStart_OnClick">
+                        <mi:MaterialIcon Kind="ArrowExpandRight" Margin="4"></mi:MaterialIcon>
+                    </Button>
+                    <Button Style="{StaticResource MiddleButton}" Click="SelAdd_OnClick">
+                        <mi:MaterialIcon Kind="BookmarkAddOutline" Margin="2"></mi:MaterialIcon>
+                    </Button>
+                    <Button Style="{StaticResource MiddleButton}" Click="SelClear_OnClick">
+                        <mi:MaterialIcon Kind="Cancel" Margin="2"></mi:MaterialIcon>
+                    </Button>
+                    <Button Style="{StaticResource LastButton}" Click="SelEnd_OnClick">
+                        <mi:MaterialIcon Kind="ArrowExpandLeft" Margin="4"></mi:MaterialIcon>
+                    </Button>
+
+                    <Grid>
+                        <Button Style="{StaticResource IconButton}"
+                                Click="PlayButton_OnClick"
+                                Foreground="{StaticResource ControlBackground}" x:Name="PlayButton">
+                            <Grid>
+                                <mi:MaterialIcon Kind="Play" Margin="4"
+                                                 Visibility="{Binding IsPlaying, Converter={StaticResource NBoolToVis}}">
+                                </mi:MaterialIcon>
+                                <mi:MaterialIcon Kind="Pause" Margin="4"
+                                                 Visibility="{Binding IsPlaying, Converter={StaticResource BoolToVis}}">
+                                </mi:MaterialIcon>
+                            </Grid>
+                        </Button>
+                    </Grid>
+
+                    <Button Style="{StaticResource SingleButton}" Click="StopButton_OnClick">
+                        <mi:MaterialIcon Kind="Stop" Margin="2"></mi:MaterialIcon>
+                    </Button>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" HorizontalAlignment="Center" Orientation="Horizontal">
+                    <Button Style="{StaticResource FirstButton}" FontFamily="Segoe MDL2 Assets" Click="ZoomOut_OnClick">&#xE71F;</Button>
+                    <Button Style="{StaticResource MiddleButton}" FontFamily="Segoe MDL2 Assets"
+                            Click="ZoomReset_OnClick">
+                        &#xE9A6;
+                    </Button>
+                    <Button Style="{StaticResource LastButton}" FontFamily="Segoe MDL2 Assets" Click="ZoomIn_OnClick">&#xE8A3;</Button>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Style="{StaticResource SingleButton}" FontFamily="Segoe MDL2 Assets"
+                            Command="{Binding Player.Commands.ToggleMute}">
+                        <Grid>
+                            <mi:MaterialIcon Kind="VolumeHigh" Margin="3"></mi:MaterialIcon>
+                            <mi:MaterialIcon Kind="VolumeOff" Margin="3"
+                                             Visibility="{Binding Player.Audio.Mute, Converter={StaticResource BoolToVis}}">
+                            </mi:MaterialIcon>
+                        </Grid>
+                    </Button>
+                    <Slider Width="100" VerticalAlignment="Center" Margin="5"
+                            Maximum="{Binding Config.Player.VolumeMax}" Value="{Binding Player.Audio.Volume}">
+                        <Slider.Template>
+                            <ControlTemplate>
+                                <Grid>
+                                    <Rectangle Height="2" Fill="{StaticResource ControlBorder}" Margin="12,0"></Rectangle>
+                                    <Track x:Name="PART_Track">
+                                        <Track.Thumb>
+                                            <Thumb>
+                                                <Thumb.Template>
+                                                    <ControlTemplate>
+                                                        <Border Width="20" Height="20"
+                                                                Background="{StaticResource ControlBackground}"
+                                                                BorderThickness="1"
+                                                                BorderBrush="{StaticResource ControlBorder}"
+                                                                CornerRadius="100">
+                                                            <Border Width="12" Height="12" CornerRadius="16"
+                                                                    Background="{StaticResource ControlForegroundDark}">
+                                                            </Border>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Thumb.Template>
+                                            </Thumb>
+                                        </Track.Thumb>
+                                    </Track>
+                                </Grid>
+                            </ControlTemplate>
+                        </Slider.Template>
+                    </Slider>
+                    <TextBlock Text="{Binding Player.Audio.Volume, StringFormat={}{0}%}" VerticalAlignment="Center"
+                               Foreground="{StaticResource ControlForeground}" Width="40">
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="2">
+                <Grid Margin="5,0" ClipToBounds="False">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="10"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <controls:PartAreaOverlay MediaDuration="{Binding Player.Duration}"
+                                              MediaParts="{Binding SelectedMedia.Parts}" PartClicked="PartAreaOverlay_OnPartClicked"/>
+
+                    <wpfsvl:WaveformTimeline x:Name="waveformOverview" Grid.Row="1">
+                        <wpfsvl:WaveformTimeline.Template>
+                            <ControlTemplate TargetType="{x:Type wpfsvl:WaveformTimeline}">
+                                <Border BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}">
+                                    <Grid>
+                                        <Canvas Name="PART_Waveform" ClipToBounds="True" />
+
+                                        <Canvas Name="PART_Timeline" Height="20" ClipToBounds="True"
+                                                Visibility="Collapsed" />
+                                        <Canvas Name="PART_Repeat" ClipToBounds="True" Visibility="Collapsed" />
+                                        <Canvas Name="PART_Progress" Grid.Row="0" ClipToBounds="True"
+                                                Visibility="Collapsed" />
+                                    </Grid>
+                                </Border>
+                            </ControlTemplate>
+                        </wpfsvl:WaveformTimeline.Template>
+                    </wpfsvl:WaveformTimeline>
+
+                    <controls:PartAreaOverlay MediaDuration="{Binding Player.Duration}"
+                                              MediaParts="{Binding SelectedMedia.Parts}"
+                                              SelectionEnd="{Binding SelectionEnd}"
+                                              SelectionStart="{Binding SelectionStart}"
+                                              SelectionLength="{Binding SelectionLength}"
+                                              SelectionVisible="{Binding SelectionVisible}"
+                                              Grid.Row="1"
+                                              Opacity=".5" />
+
+                    <Slider Maximum="{Binding Player.Duration}" Value="{Binding Player.CurTime}" Grid.Row="1"
+                            IsMoveToPointEnabled="True" SmallChange="{Binding Config.Player.SeekOffset}"
+                            LargeChange="{Binding Config.Player.SeekOffset2}">
+                        <Slider.Template>
+                            <ControlTemplate>
+                                <Grid>
+                                    <Border Background="#01000000"></Border>
+                                    <Track x:Name="PART_Track">
+                                        <Track.Thumb>
+                                            <Thumb>
+                                                <Thumb.Template>
+                                                    <ControlTemplate>
+                                                        <Grid Margin="-4,0" Background="#01000000" Cursor="SizeWE">
+                                                            <Border Width="1" Background="Turquoise"></Border>
+                                                        </Grid>
+                                                    </ControlTemplate>
+                                                </Thumb.Template>
+                                            </Thumb>
+                                        </Track.Thumb>
+                                    </Track>
+                                </Grid>
+                            </ControlTemplate>
+                        </Slider.Template>
+                    </Slider>
+
+                </Grid>
+            </Grid>
+
+            <Grid Grid.Row="3" HorizontalAlignment="Stretch" ClipToBounds="True">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Column="1" HorizontalAlignment="Left">
+                    <Grid.Width>
+                        <MultiBinding Converter="{StaticResource WaveformLengthConverter}">
+                            <Binding Path="Player.Duration"></Binding>
+                            <Binding Path="DetailWaveformZoom"></Binding>
+                        </MultiBinding>
+                    </Grid.Width>
+                    <Grid.Margin>
+                        <MultiBinding Converter="{StaticResource PlaybackMarginConverter}">
+                            <Binding Path="Player.CurTime"></Binding>
+                            <Binding Path="DetailWaveformZoom"></Binding>
+                        </MultiBinding>
+                    </Grid.Margin>
+
+                    <wpfsvl:WaveformTimeline x:Name="waveformDetail">
+                        <wpfsvl:WaveformTimeline.Template>
+                            <ControlTemplate TargetType="{x:Type wpfsvl:WaveformTimeline}">
+                                <Border BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="20" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <Canvas Name="PART_Waveform" Grid.Row="1" ClipToBounds="True" />
+                                        <Border Grid.Row="0" Panel.ZIndex="0"
+                                                BorderBrush="{TemplateBinding TimelineTickBrush}"
+                                                BorderThickness="0,0,0,1">
+                                            <Canvas Name="PART_Timeline" Height="20" ClipToBounds="True" />
+                                        </Border>
+                                        <Canvas Name="PART_Repeat" Grid.Row="1" ClipToBounds="True"
+                                                Visibility="Collapsed" />
+                                        <Canvas Name="PART_Progress" Grid.Row="0" Grid.RowSpan="2" ClipToBounds="True"
+                                                Visibility="Collapsed" />
+                                    </Grid>
+                                </Border>
+                            </ControlTemplate>
+                        </wpfsvl:WaveformTimeline.Template>
+                    </wpfsvl:WaveformTimeline>
+
+                    <controls:PartAreaOverlay MediaDuration="{Binding Player.Duration}"
+                                              MediaParts="{Binding SelectedMedia.Parts}"
+                                              SelectionEnd="{Binding SelectionEnd}"
+                                              SelectionStart="{Binding SelectionStart}"
+                                              SelectionLength="{Binding SelectionLength}"
+                                              SelectionVisible="{Binding SelectionVisible}"
+                                              Opacity=".3" Margin="0,20,0,0" />
+                </Grid>
+
+                <Grid Grid.ColumnSpan="2" HorizontalAlignment="Center">
+                    <Border Background="Turquoise" Width="1" HorizontalAlignment="Center"></Border>
+                    <Path Data="M 0 0 L 10 0 L 5 5 Z" Fill="Turquoise">
+                    </Path>
+                </Grid>
+
+                <Border HorizontalAlignment="Stretch" Background="#01000000" Grid.ColumnSpan="2" Cursor="SizeWE"
+                        MouseLeftButtonDown="DragWaveform_OnMouseLeftButtonDown"
+                        MouseLeftButtonUp="DragWaveform_OnMouseLeftButtonUp" MouseMove="DragWaveform_OnMouseMove"
+                        MouseLeave="DragWaveform_OnMouseLeave" x:Name="DragWaveform" />
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

@@ -1,0 +1,198 @@
+﻿<Window x:Class="tebisCloud.ThumbnailPresetEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:tebisCloud"
+        xmlns:controls="clr-namespace:tebisCloud.Controls"
+        xmlns:fluent="urn:fluent-ribbon"
+        xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+        xmlns:converter="clr-namespace:tebisCloud.Converter"
+        xmlns:colorPicker="clr-namespace:ColorPicker;assembly=ColorPicker"
+        WindowStartupLocation="CenterOwner"
+        WindowState="Maximized"
+        mc:Ignorable="d"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Style="{StaticResource Dark}"
+        Title="Thumbnail Bearbeiten" Height="450" Width="1270">
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.NewThumbnail}"
+                        Executed="NewThumbnail_OnExecuted" />
+        <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.AddImage}" Executed="AddImage_OnExecuted" />
+        <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.AddTextbox}" Executed="AddTextbox_OnExecuted" />
+
+        <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.OrderFirst}"
+                        CanExecute="ControlSelected_OnCanExecute" Executed="OrderFirst_OnExecuted" />
+        <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.OrderUp}"
+                        CanExecute="ControlSelected_OnCanExecute" Executed="OrderUp_OnExecuted" />
+        <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.OrderDown}"
+                        CanExecute="ControlSelected_OnCanExecute" Executed="OrderDown_OnExecuted" />
+        <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.OrderLast}"
+                        CanExecute="ControlSelected_OnCanExecute" Executed="OrderLast_OnExecuted" />
+
+        <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.MaximizeControl}"
+                        CanExecute="ControlSelected_OnCanExecute" Executed="MaximizeControl_OnExecuted" />
+        <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.FontSizeInc}"
+                        CanExecute="SupportsFormatting_OnCanExecute" Executed="FontSizeInc_OnExecuted" />
+        <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.FontSizeDec}"
+                        CanExecute="SupportsFormatting_OnCanExecute" Executed="FontSizeDec_OnExecuted" />
+        <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.DeleteControl}"
+                        CanExecute="ControlSelected_OnCanExecute" Executed="DeleteControl_OnExecuted">
+        </CommandBinding>
+
+        <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.LoadThumbnail}" Executed="LoadThumbnail_OnExecuted"></CommandBinding>
+
+        <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.SaveThumbnail}" Executed="SaveThumbnail_OnExecuted"></CommandBinding>
+    </Window.CommandBindings>
+    <Window.Resources>
+        <converter:PercentConverter x:Key="PercentConverter" />
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <StackPanel.Resources>
+                <Style TargetType="wpf:MaterialIcon">
+                    <Setter Property="Width" Value="16"></Setter>
+                    <Setter Property="Margin" Value="0"></Setter>
+                </Style>
+                <Style TargetType="Slider">
+                    <Setter Property="VerticalAlignment" Value="Center"></Setter>
+                </Style>
+            </StackPanel.Resources>
+            <ToolBar Header="">
+                <Button Command="{x:Static local:ThumbnailPresetEditor.NewThumbnail}">
+                    <wpf:MaterialIcon Kind="FilePlusOutline" />
+                </Button>
+                <Button Command="{x:Static local:ThumbnailPresetEditor.LoadThumbnail}">
+                    <wpf:MaterialIcon Kind="FolderOpenOutline" />
+                </Button>
+                <Button Command="{x:Static local:ThumbnailPresetEditor.SaveThumbnail}">
+                    <wpf:MaterialIcon Kind="ContentSaveOutline" />
+                </Button>
+                <Separator />
+                <Button Command="{x:Static local:ThumbnailPresetEditor.AddImage}">
+                    <wpf:MaterialIcon Kind="ImagePlusOutline" />
+                </Button>
+                <Button Command="{x:Static local:ThumbnailPresetEditor.AddTextbox}">
+                    <wpf:MaterialIcon Kind="TextBoxPlusOutline" />
+                </Button>
+                <Separator />
+                <Button Command="{x:Static local:ThumbnailPresetEditor.OrderFirst}"
+                        CommandParameter="{Binding SelectedControl}">
+                    <wpf:MaterialIcon Kind="ChevronDoubleUp" />
+                </Button>
+                <Button Command="{x:Static local:ThumbnailPresetEditor.OrderUp}"
+                        CommandParameter="{Binding SelectedControl}">
+                    <wpf:MaterialIcon Kind="ChevronUp" />
+                </Button>
+                <Button Command="{x:Static local:ThumbnailPresetEditor.OrderDown}"
+                        CommandParameter="{Binding SelectedControl}">
+                    <wpf:MaterialIcon Kind="ChevronDown" />
+                </Button>
+                <Button Command="{x:Static local:ThumbnailPresetEditor.OrderLast}"
+                        CommandParameter="{Binding SelectedControl}">
+                    <wpf:MaterialIcon Kind="ChevronDoubleDown" />
+                </Button>
+                <Separator />
+                <Button Command="{x:Static local:ThumbnailPresetEditor.DeleteControl}"
+                        CommandParameter="{Binding SelectedControl}">
+                    <wpf:MaterialIcon Kind="DeleteOutline"></wpf:MaterialIcon>
+                </Button>
+                <Separator />
+                <ToggleButton IsChecked="{Binding ThumbnailPreview}">
+                    <WrapPanel>
+                        <wpf:MaterialIcon Kind="ImageArea"></wpf:MaterialIcon>
+                        <TextBlock>Vorschau</TextBlock>
+                    </WrapPanel>
+                </ToggleButton>
+            </ToolBar>
+            <ToolBar>
+                <Grid IsEnabled="{Binding SelectedControl.FormatingSupport, FallbackValue=False}">
+                    <StackPanel Orientation="Horizontal" DataContext="{Binding SelectedControl}">
+                        <wpf:MaterialIcon Kind="FormatColorFill" Foreground="Black" />
+                        <colorPicker:PortableColorPicker Width="32" SelectedColor="{Binding Foreground, Mode=TwoWay}"></colorPicker:PortableColorPicker>
+                    </StackPanel>
+                </Grid>
+                <wpf:MaterialIcon Kind="FormatFont" Foreground="Black"></wpf:MaterialIcon>
+                <ComboBox Width="200" x:Name="FontFamilies"
+                          IsEnabled="{Binding SelectedControl.FormatingSupport,FallbackValue=False}"
+                          SelectedItem="{Binding SelectedControl.FontFace}">
+                    <ComboBox.ItemTemplateSelector>
+                        <converter:ComboBoxTemplateSelector>
+                            <converter:ComboBoxTemplateSelector.DropdownItemsTemplate>
+                                <DataTemplate DataType="{x:Type FontFamily}">
+                                    <TextBlock Text="{Binding Source}" FontFamily="{Binding}" FontSize="16"></TextBlock>
+                                </DataTemplate>
+                            </converter:ComboBoxTemplateSelector.DropdownItemsTemplate>
+                            <converter:ComboBoxTemplateSelector.SelectedItemTemplate>
+                                <DataTemplate DataType="{x:Type FontFamily}">
+                                    <TextBlock Text="{Binding Source}" />
+                                </DataTemplate>
+                            </converter:ComboBoxTemplateSelector.SelectedItemTemplate>
+                        </converter:ComboBoxTemplateSelector>
+                    </ComboBox.ItemTemplateSelector>
+                </ComboBox>
+                <wpf:MaterialIcon Kind="FontSize" Foreground="Black"></wpf:MaterialIcon>
+                <ComboBox Width="50" x:Name="FontSizes" Text="{Binding SelectedControl.FontSize}"
+                          IsEnabled="{Binding SelectedControl.FormatingSupport, FallbackValue=False}" IsEditable="True">
+                </ComboBox>
+                <Button Command="{x:Static local:ThumbnailPresetEditor.FontSizeInc}"
+                        CommandParameter="{Binding SelectedControl}">
+                    <wpf:MaterialIcon Kind="FormatFontSizeIncrease"></wpf:MaterialIcon>
+                </Button>
+                <Button Command="{x:Static local:ThumbnailPresetEditor.FontSizeDec}"
+                        CommandParameter="{Binding SelectedControl}">
+                    <wpf:MaterialIcon Kind="FormatFontSizeDecrease"></wpf:MaterialIcon>
+                </Button>
+
+                <Separator />
+                <wpf:MaterialIcon Kind="TextShadow" Foreground="Black"></wpf:MaterialIcon>
+                <Grid IsEnabled="{Binding SelectedControl.FormatingSupport, FallbackValue=False}">
+                    <StackPanel Orientation="Horizontal" DataContext="{Binding SelectedControl}" Margin="5,0">
+                        <wpf:MaterialIcon Kind="FormatColorFill" Foreground="Black" />
+                        <colorPicker:PortableColorPicker Width="32" SelectedColor="{Binding ShadowColor, Mode=TwoWay}"></colorPicker:PortableColorPicker>
+                    </StackPanel>
+                </Grid>
+                <wpf:MaterialIcon Kind="RadiusOutline" Foreground="Black" />
+                <TextBox IsEnabled="{Binding SelectedControl.FormatingSupport}" Width="50"
+                         Text="{Binding SelectedControl.ShadowBlur, UpdateSourceTrigger=PropertyChanged}" />
+                <wpf:MaterialIcon Kind="Blur" Foreground="Black" />
+                <TextBox IsEnabled="{Binding SelectedControl.FormatingSupport}" Width="50"
+                         Text="{Binding SelectedControl.ShadowRadius, UpdateSourceTrigger=PropertyChanged}" />
+                <wpf:MaterialIcon Kind="Rotate360" Foreground="Black" />
+                <Slider Width="70" Minimum="0" Maximum="360" IsSnapToTickEnabled="False"
+                        Value="{Binding SelectedControl.ShadowDirection, UpdateSourceTrigger=PropertyChanged}"
+                        IsEnabled="{Binding SelectedControl.FormatingSupport, FallbackValue=False}">
+                </Slider>
+                <wpf:MaterialIcon Kind="WaterOpacity" Foreground="Black" />
+                <Slider Width="70" Minimum="0" Maximum="1" IsSnapToTickEnabled="False"
+                        Value="{Binding SelectedControl.ShadowOpacity, UpdateSourceTrigger=PropertyChanged}"
+                        IsEnabled="{Binding SelectedControl.FormatingSupport, FallbackValue=False}">
+                </Slider>
+                <TextBlock Width="50" VerticalAlignment="Center" Foreground="Black" Margin="5,0"
+                           Text="{Binding SelectedControl.ShadowOpacity, Converter={StaticResource PercentConverter}, StringFormat={}{0:0}%}" />
+            </ToolBar>
+        </StackPanel>
+
+        <controls:ThumbnailPreview Grid.Row="1" Thumbnail="{Binding Thumbnail}"
+                                   SelectedControl="{Binding SelectedControl, Mode=TwoWay}" EditMode="True" />
+
+        <Border Grid.Row="1" Width="210" Height="118" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10"
+                Visibility="{Binding ThumbnailPreview, Converter={StaticResource BoolToVis}}">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="Black" Opacity="1" Direction="0"></DropShadowEffect>
+            </Border.Effect>
+            <controls:ThumbnailPreview Thumbnail="{Binding Thumbnail}" PreviewMetadata="{Binding PreviewMetadata}">
+                <controls:ThumbnailPreview.Clip>
+                    <RectangleGeometry Rect="0,0,210,118" RadiusX="8" RadiusY="8"></RectangleGeometry>
+                </controls:ThumbnailPreview.Clip>
+            </controls:ThumbnailPreview>
+        </Border>
+
+    </Grid>
+</Window>

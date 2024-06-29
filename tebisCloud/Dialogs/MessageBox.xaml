@@ -1,0 +1,34 @@
+﻿<Window x:Class="tebisCloud.Dialogs.MessageBox"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:tebisCloud.Dialogs"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize"
+        Style="{StaticResource Dark}"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        ShowInTaskbar="False"
+        Title="{Binding Title}">
+    <Window.Resources>
+        <Style TargetType="Button" BasedOn="{StaticResource StateButton}">
+            <Setter Property="Margin" Value="3"></Setter>
+        </Style>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding Submit}" Key="Space" />
+    </Window.InputBindings>
+    <StackPanel>
+        <TextBlock Margin="5" Text="{Binding Message}" />
+        <UniformGrid HorizontalAlignment="Right" Margin="5" Rows="1">
+            <Button Content="{Binding Button1Text}" Click="Button1_OnClick" IsDefault="True" />
+            <Button Content="{Binding Button2Text}" IsCancel="true"
+                    Visibility="{Binding Button2Visible, Converter={StaticResource BoolToVis}}" Click="Button2_OnClick" />
+            <Button Content="{Binding Button3Text}"
+                    Visibility="{Binding Button3Visible, Converter={StaticResource BoolToVis}}" Click="Button3_OnClick" />
+        </UniformGrid>
+    </StackPanel>
+</Window>

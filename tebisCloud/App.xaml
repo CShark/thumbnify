@@ -1,0 +1,844 @@
+﻿<Application x:Class="tebisCloud.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:tebisCloud"
+             xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+             StartupUri="ProcessingEditor.xaml">
+    <!--StartupUri="MainWindow.xaml">-->
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ExpressionDark.xaml"></ResourceDictionary>
+                <ResourceDictionary
+                    Source="pack://application:,,,/ColorPicker;component/Styles/DefaultColorPickerStyle.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/generic.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Themes/dark.amber.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Nodify;component/Themes/Dark.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <SolidColorBrush x:Key="ControlBackground" Color="#2A2A2A"></SolidColorBrush>
+            <SolidColorBrush x:Key="ControlBackgroundLight" Color="#3E3E3E"></SolidColorBrush>
+            <SolidColorBrush x:Key="ControlBorder" Color="DimGray"></SolidColorBrush>
+            <SolidColorBrush x:Key="ControlForeground" Color="#D5D5D5"></SolidColorBrush>
+            <SolidColorBrush x:Key="ControlForegroundDark" Color="#B1B1B1"></SolidColorBrush>
+
+            <SolidColorBrush x:Key="WindowBackground" Color="#313131" />
+
+            <Style TargetType="Window" x:Key="Dark">
+                <Setter Property="Background" Value="{StaticResource WindowBackground}"></Setter>
+                <Setter Property="Foreground" Value="{StaticResource ControlForeground}"></Setter>
+            </Style>
+
+            <Style TargetType="{x:Type ContextMenu}">
+                <Setter Property="SnapsToDevicePixels"
+                        Value="True" />
+                <Setter Property="OverridesDefaultStyle"
+                        Value="True" />
+                <Setter Property="Grid.IsSharedSizeScope"
+                        Value="true" />
+                <Setter Property="HasDropShadow"
+                        Value="True" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ContextMenu}">
+                            <Border x:Name="Border"
+                                    Background="{StaticResource WindowBackground}"
+                                    BorderThickness="1"
+                                    BorderBrush="{StaticResource ControlForeground}">
+                                <StackPanel IsItemsHost="True"
+                                            KeyboardNavigation.DirectionalNavigation="Cycle" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="HasDropShadow"
+                                         Value="true">
+                                    <Setter TargetName="Border"
+                                            Property="Padding"
+                                            Value="0,3,0,3" />
+                                    <Setter TargetName="Border"
+                                            Property="CornerRadius"
+                                            Value="4" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <ControlTemplate x:Key="{x:Static MenuItem.SubmenuItemTemplateKey}"
+                             TargetType="{x:Type MenuItem}">
+                <Border Name="Border">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"
+                                              SharedSizeGroup="Icon" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto"
+                                              SharedSizeGroup="Shortcut" />
+                            <ColumnDefinition Width="13" />
+                        </Grid.ColumnDefinitions>
+                        <ContentPresenter Name="Icon"
+                                          Margin="6,0,6,0"
+                                          Width="16"
+                                          Height="16"
+                                          VerticalAlignment="Center"
+                                          ContentSource="Icon" />
+                        <Border Name="Check"
+                                Width="13"
+                                Height="13"
+                                Visibility="Collapsed"
+                                Margin="6,0,6,0"
+                                Background="#0f3c5a"
+                                BorderThickness="1"
+                                BorderBrush="#5082a4">
+                            <Path Name="CheckMark"
+                                  Width="7"
+                                  Height="7"
+                                  Visibility="Hidden"
+                                  SnapsToDevicePixels="False"
+                                  Stroke="#5082a4"
+                                  StrokeThickness="2"
+                                  Data="M 0 0 L 7 7 M 0 7 L 7 0" />
+                        </Border>
+                        <ContentPresenter Name="HeaderHost"
+                                          Grid.Column="1"
+                                          ContentSource="Header"
+                                          RecognizesAccessKey="True" />
+                        <TextBlock x:Name="InputGestureText"
+                                   Grid.Column="2"
+                                   Text="{TemplateBinding InputGestureText}"
+                                   FontSize="10"
+                                   VerticalAlignment="Center"
+                                   Foreground="{StaticResource ControlForegroundDark}"
+                                   Margin="5,2,0,2"
+                                   DockPanel.Dock="Right" />
+                    </Grid>
+                </Border>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="Icon"
+                             Value="{x:Null}">
+                        <Setter TargetName="Icon"
+                                Property="Visibility"
+                                Value="Hidden" />
+                    </Trigger>
+                    <Trigger Property="IsChecked"
+                             Value="true">
+                        <Setter TargetName="CheckMark"
+                                Property="Visibility"
+                                Value="Visible" />
+                    </Trigger>
+                    <Trigger Property="IsCheckable"
+                             Value="true">
+                        <Setter TargetName="Check"
+                                Property="Visibility"
+                                Value="Visible" />
+                        <Setter TargetName="Icon"
+                                Property="Visibility"
+                                Value="Hidden" />
+                    </Trigger>
+                    <Trigger Property="IsHighlighted"
+                             Value="true">
+                        <Setter TargetName="Border"
+                                Property="Background"
+                                Value="#5082a4" />
+                    </Trigger>
+                    <Trigger Property="IsEnabled"
+                             Value="false">
+                        <Setter Property="Foreground"
+                                Value="#0f3c5a" />
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+
+            <ControlTemplate x:Key="{x:Static MenuItem.SubmenuHeaderTemplateKey}"
+                             TargetType="{x:Type MenuItem}">
+                <Border Name="Border">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"
+                                              SharedSizeGroup="Icon" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto"
+                                              SharedSizeGroup="Shortcut" />
+                            <ColumnDefinition Width="13" />
+                        </Grid.ColumnDefinitions>
+                        <ContentPresenter Name="Icon"
+                                          Margin="6,0,6,0"
+                                          VerticalAlignment="Center"
+                                          Width="16"
+                                          Height="16"
+                                          ContentSource="Icon" />
+                        <ContentPresenter Name="HeaderHost"
+                                          Grid.Column="1"
+                                          ContentSource="Header"
+                                          RecognizesAccessKey="True" />
+                        <TextBlock x:Name="InputGestureText"
+                                   Grid.Column="2"
+                                   Text="{TemplateBinding InputGestureText}"
+                                   Foreground="{StaticResource ControlForegroundDark}"
+                                   FontSize="10"
+                                   VerticalAlignment="Center"
+                                   Margin="5,2,2,2"
+                                   DockPanel.Dock="Right" />
+                        <Path Grid.Column="3"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              Data="M 0 0 L 0 7 L 4 3.5 Z"
+                              Fill="{StaticResource ControlForeground}" />
+                        <Popup Name="Popup"
+                               Placement="Right"
+                               HorizontalOffset="-4"
+                               IsOpen="{TemplateBinding IsSubmenuOpen}"
+                               AllowsTransparency="True"
+                               Focusable="False"
+                               PopupAnimation="Fade">
+                            <Border Name="SubmenuBorder"
+                                    SnapsToDevicePixels="True"
+                                    Background="{StaticResource WindowBackground}"
+                                    BorderBrush="{StaticResource ControlForeground}"
+                                    BorderThickness="1">
+                                <StackPanel IsItemsHost="True"
+                                            KeyboardNavigation.DirectionalNavigation="Cycle" />
+                            </Border>
+                        </Popup>
+                    </Grid>
+                </Border>
+
+                <ControlTemplate.Triggers>
+                    <Trigger Property="Icon"
+                             Value="{x:Null}">
+                        <Setter TargetName="Icon"
+                                Property="Visibility"
+                                Value="Collapsed" />
+                    </Trigger>
+                    <Trigger Property="IsHighlighted"
+                             Value="true">
+                        <Setter TargetName="Border"
+                                Property="Background"
+                                Value="#5082a4" />
+                    </Trigger>
+                    <Trigger SourceName="Popup"
+                             Property="Popup.AllowsTransparency"
+                             Value="True">
+                        <Setter TargetName="SubmenuBorder"
+                                Property="CornerRadius"
+                                Value="4" />
+                        <Setter TargetName="SubmenuBorder"
+                                Property="Padding"
+                                Value="0,3,0,3" />
+                    </Trigger>
+                    <Trigger Property="IsEnabled"
+                             Value="false">
+                        <Setter Property="Foreground"
+                                Value="#0f3c5a" />
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+
+            <Style TargetType="ContentControl" x:Key="StateButton">
+                <Setter Property="Height" Value="24"></Setter>
+                <Setter Property="MinWidth" Value="24"></Setter>
+                <Setter Property="Foreground" Value="{StaticResource ControlForeground}"></Setter>
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ContentControl">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="12"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="12"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Ellipse Width="24" Fill="{StaticResource ControlBackground}"
+                                         Stroke="{StaticResource ControlBorder}">
+                                </Ellipse>
+                                <Ellipse Grid.Column="2" Width="24" Margin="-12,0,0,0"
+                                         Fill="{StaticResource ControlBackground}"
+                                         Stroke="{StaticResource ControlBorder}">
+                                </Ellipse>
+                                <Border Grid.Column="1" Background="{StaticResource ControlBackground}"
+                                        BorderBrush="{StaticResource ControlBorder}" BorderThickness="0,1">
+                                </Border>
+
+                                <ContentPresenter Grid.Column="1" Content="{TemplateBinding Content}"
+                                                  HorizontalAlignment="Center" VerticalAlignment="Center">
+                                </ContentPresenter>
+
+                                <Grid Grid.ColumnSpan="3" Opacity="0" x:Name="UncheckedColor">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="12"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="12"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Ellipse Width="24" Fill="DarkRed" />
+                                    <Ellipse Grid.Column="2" Width="24" Fill="DarkRed" Margin="-12,0,0,0" />
+                                    <Border Grid.Column="1" Background="DarkRed" />
+                                </Grid>
+
+                                <Grid Grid.ColumnSpan="3" Opacity="0" x:Name="CheckedColor">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="12"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="12"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Ellipse Width="24" Fill="DarkGreen" />
+                                    <Ellipse Grid.Column="2" Width="24" Fill="DarkGreen" Margin="-12,0,0,0" />
+                                    <Border Grid.Column="1" Background="DarkGreen" />
+                                </Grid>
+
+                                <Grid Grid.ColumnSpan="3" Opacity="0" x:Name="Highlight">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="12"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="12"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Ellipse Width="24" Fill="Gray" />
+                                    <Ellipse Grid.Column="2" Width="24" Fill="Gray" Margin="-12,0,0,0" />
+                                    <Border Grid.Column="1" Background="Gray" />
+                                </Grid>
+
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Normal" />
+                                        <VisualState Name="MouseOver">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.3" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState Name="Pressed" />
+                                        <VisualState Name="Disabled" />
+                                    </VisualStateGroup>
+                                    <VisualStateGroup Name="CheckStates">
+                                        <VisualState Name="Unchecked">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.3" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="UncheckedColor"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState Name="Checked">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.3" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="CheckedColor"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="ContentControl" x:Key="ContentButton">
+                <Setter Property="Height" Value="24"></Setter>
+                <Setter Property="MinWidth" Value="24"></Setter>
+                <Setter Property="Foreground" Value="{StaticResource ControlForeground}"></Setter>
+                <Setter Property="Background" Value="Transparent"></Setter>
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ContentControl">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="12"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="12"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Ellipse Width="24" Fill="{StaticResource ControlBackground}"
+                                         Stroke="{StaticResource ControlBorder}">
+                                </Ellipse>
+                                <Ellipse Grid.Column="2" Width="24" Margin="-12,0,0,0"
+                                         Fill="{StaticResource ControlBackground}"
+                                         Stroke="{StaticResource ControlBorder}">
+                                </Ellipse>
+                                <Border Grid.Column="1" Background="{StaticResource ControlBackground}"
+                                        BorderBrush="{StaticResource ControlBorder}" BorderThickness="0,1">
+                                </Border>
+
+                                <Grid Grid.ColumnSpan="3" Opacity="0.2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="12"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="12"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Ellipse Width="24" Fill="{TemplateBinding Background}" />
+                                    <Ellipse Grid.Column="2" Width="24" Fill="{TemplateBinding Background}"
+                                             Margin="-12,0,0,0" />
+                                    <Border Grid.Column="1" Background="{TemplateBinding Background}" />
+                                </Grid>
+
+                                <Grid Grid.ColumnSpan="3" Opacity="0" x:Name="Highlight">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="12"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="12"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Ellipse Width="24" Fill="Gray" />
+                                    <Ellipse Grid.Column="2" Width="24" Fill="Gray" Margin="-12,0,0,0" />
+                                    <Border Grid.Column="1" Background="Gray" />
+                                </Grid>
+
+                                <ContentPresenter Grid.Column="1" Content="{TemplateBinding Content}"
+                                                  HorizontalAlignment="Center" VerticalAlignment="Center">
+                                </ContentPresenter>
+
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Normal" />
+                                        <VisualState Name="MouseOver">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.3" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState Name="Pressed" />
+                                        <VisualState Name="Disabled">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.3" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="SingleButton" TargetType="ContentControl">
+                <Setter Property="Width" Value="24"></Setter>
+                <Setter Property="Height" Value="24"></Setter>
+                <Setter Property="FontSize" Value="14"></Setter>
+                <Setter Property="Foreground" Value="{StaticResource ControlForeground}"></Setter>
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ContentControl">
+                            <Grid Background="{StaticResource ControlBackground}">
+                                <Grid.Clip>
+                                    <EllipseGeometry Center="12,12" RadiusX="12" RadiusY="12"></EllipseGeometry>
+                                </Grid.Clip>
+
+                                <Ellipse Width="24" Height="24" Stroke="{StaticResource ControlBorder}"></Ellipse>
+
+                                <Rectangle Fill="Gray" Opacity="0" x:Name="Highlight"></Rectangle>
+
+                                <ContentPresenter Content="{TemplateBinding Content}" VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center" />
+
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Normal" />
+                                        <VisualState Name="MouseOver">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.3" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState Name="Pressed" />
+                                        <VisualState Name="Disabled" />
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="MiddleButton" TargetType="ContentControl">
+                <Setter Property="Width" Value="30"></Setter>
+                <Setter Property="Height" Value="24"></Setter>
+                <Setter Property="FontSize" Value="14"></Setter>
+                <Setter Property="Foreground" Value="{StaticResource ControlForeground}"></Setter>
+                <Setter Property="Margin" Value="1,0"></Setter>
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ContentControl">
+                            <Grid Background="{StaticResource ControlBackground}">
+                                <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                        BorderBrush="{StaticResource ControlBorder}"
+                                        BorderThickness="1">
+                                </Border>
+
+                                <Rectangle Fill="Gray" Opacity="0" x:Name="Highlight"></Rectangle>
+
+                                <ContentPresenter Content="{TemplateBinding Content}" VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center" />
+
+
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Normal" />
+                                        <VisualState Name="MouseOver">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.3" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState Name="Pressed" />
+                                        <VisualState Name="Disabled" />
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="FirstButton" TargetType="ContentControl">
+                <Setter Property="Width" Value="30"></Setter>
+                <Setter Property="Height" Value="24"></Setter>
+                <Setter Property="FontSize" Value="14"></Setter>
+                <Setter Property="Foreground" Value="{StaticResource ControlForeground}"></Setter>
+                <Setter Property="Margin" Value="1,0"></Setter>
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ContentControl">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="12"></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <Ellipse Width="24" Height="24" Stroke="{StaticResource ControlBorder}"
+                                         Fill="{StaticResource ControlBackground}">
+                                </Ellipse>
+                                <Border Grid.Column="1" Background="{StaticResource ControlBackground}"
+                                        BorderBrush="{StaticResource ControlBorder}" BorderThickness="0,1,1,1">
+                                </Border>
+
+                                <Grid Opacity="0" x:Name="Highlight" Grid.ColumnSpan="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="12"></ColumnDefinition>
+                                        <ColumnDefinition></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Ellipse Width="24" Height="24"
+                                             Fill="Gray">
+                                    </Ellipse>
+                                    <Border Grid.Column="1" Background="Gray">
+                                    </Border>
+                                </Grid>
+
+                                <ContentPresenter Content="{TemplateBinding Content}" VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center" Grid.ColumnSpan="2" Margin="6,0,0,0" />
+
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Normal" />
+                                        <VisualState Name="MouseOver">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.3" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState Name="Pressed" />
+                                        <VisualState Name="Disabled" />
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="LastButton" TargetType="ContentControl">
+                <Setter Property="Width" Value="30"></Setter>
+                <Setter Property="Height" Value="24"></Setter>
+                <Setter Property="FontSize" Value="14"></Setter>
+                <Setter Property="Foreground" Value="{StaticResource ControlForeground}"></Setter>
+                <Setter Property="Margin" Value="1,0"></Setter>
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ContentControl">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition Width="12"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <Ellipse Grid.Column="1" Width="24" Margin="-12,0,0,0" Height="24"
+                                         Stroke="{StaticResource ControlBorder}"
+                                         Fill="{StaticResource ControlBackground}">
+                                </Ellipse>
+                                <Border Background="{StaticResource ControlBackground}"
+                                        BorderBrush="{StaticResource ControlBorder}" BorderThickness="1,1,0,1">
+                                </Border>
+
+                                <Grid Opacity="0" x:Name="Highlight" Grid.ColumnSpan="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition></ColumnDefinition>
+                                        <ColumnDefinition Width="12"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Ellipse Grid.Column="1" Margin="-12,0,0,0" Width="24" Height="24"
+                                             Fill="Gray">
+                                    </Ellipse>
+                                    <Border Background="Gray">
+                                    </Border>
+                                </Grid>
+
+                                <ContentPresenter Content="{TemplateBinding Content}" VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center" Grid.ColumnSpan="2" Margin="0,0,6,0" />
+
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Normal" />
+                                        <VisualState Name="MouseOver">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.3" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState Name="Pressed" />
+                                        <VisualState Name="Disabled" />
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="SquareButton" TargetType="ContentControl">
+                <Setter Property="Width" Value="18"></Setter>
+                <Setter Property="Height" Value="18"></Setter>
+                <Setter Property="FontSize" Value="10"></Setter>
+                <Setter Property="Margin" Value="2"></Setter>
+                <Setter Property="Foreground" Value="{StaticResource ControlForeground}"></Setter>
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ContentControl">
+                            <Grid>
+                                <Border Background="{StaticResource ControlBackground}" BorderThickness="1"
+                                        BorderBrush="{StaticResource ControlBorder}" CornerRadius="4">
+                                </Border>
+                                <Border CornerRadius="4" Background="{TemplateBinding Background}" Opacity="0"
+                                        x:Name="BaseColor">
+                                </Border>
+                                <Border CornerRadius="4" Opacity=".1" x:Name="Overlay">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Color="White" Offset="0"></GradientStop>
+                                            <GradientStop Color="Black" Offset="1"></GradientStop>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                </Border>
+
+                                <ContentPresenter Content="{TemplateBinding Content}" VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center" />
+
+                                <Rectangle Fill="Gray" Opacity="0" x:Name="Highlight"></Rectangle>
+
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Normal" />
+                                        <VisualState Name="MouseOver">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.3" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState Name="Pressed" />
+                                        <VisualState Name="Disabled" />
+                                    </VisualStateGroup>
+                                    <VisualStateGroup Name="CheckStates">
+                                        <VisualState Name="Checked">
+                                            <Storyboard>
+                                                <ColorAnimation To="#525252" Storyboard.TargetName="Overlay"
+                                                                Storyboard.TargetProperty="(Border.Background).(GradientBrush.GradientStops)[0].Color"
+                                                                Duration="0:0:0.1">
+                                                </ColorAnimation>
+                                                <ColorAnimation To="White" Storyboard.TargetName="Overlay"
+                                                                Storyboard.TargetProperty="(Border.Background).(GradientBrush.GradientStops)[1].Color"
+                                                                Duration="0:0:0.1">
+                                                </ColorAnimation>
+                                                <DoubleAnimation To="0.6" Storyboard.TargetName="BaseColor"
+                                                                 Storyboard.TargetProperty="Opacity" Duration="0:0:0.1">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState Name="Unchecked"></VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="IconButton" TargetType="ContentControl">
+                <Setter Property="Width" Value="40"></Setter>
+                <Setter Property="Height" Value="40"></Setter>
+                <Setter Property="Margin" Value="5"></Setter>
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ContentControl">
+                            <Grid Background="{TemplateBinding Background}">
+                                <Grid.Clip>
+                                    <EllipseGeometry Center="20,20" RadiusX="20" RadiusY="20"></EllipseGeometry>
+                                </Grid.Clip>
+
+                                <ContentPresenter Content="{TemplateBinding Content}" VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center" />
+
+                                <Ellipse Width="40" Height="40" Stroke="Black" Opacity="0.3"></Ellipse>
+                                <Rectangle Fill="DimGray" Opacity="0.4" x:Name="Dimmer"></Rectangle>
+                                <Ellipse Width="40" Height="40" Margin="0,-50,0,0" Opacity="1" x:Name="WhiteLight">
+                                    <Ellipse.Fill>
+                                        <RadialGradientBrush>
+                                            <GradientStop Offset="0" Color="White"></GradientStop>
+                                            <GradientStop Offset="1" Color="Transparent"></GradientStop>
+                                        </RadialGradientBrush>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <Ellipse Width="40" Height="40" Margin="0,0,0,-50" Opacity="0.3" x:Name="BlackLight">
+                                    <Ellipse.Fill>
+                                        <RadialGradientBrush>
+                                            <GradientStop Offset="0" Color="Black"></GradientStop>
+                                            <GradientStop Offset="1" Color="#00000000"></GradientStop>
+                                        </RadialGradientBrush>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <Rectangle x:Name="Overlay">
+                                    <Rectangle.Fill>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Offset="0" Color="#32FFFFFF"></GradientStop>
+                                            <GradientStop Offset="1" Color="#1A000000"></GradientStop>
+                                        </LinearGradientBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                                <Rectangle x:Name="Highlight" Fill="White" Opacity="0"></Rectangle>
+
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Normal" />
+                                        <VisualState Name="MouseOver">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.1" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState Name="Pressed" />
+                                        <VisualState Name="Disabled" />
+                                    </VisualStateGroup>
+                                    <VisualStateGroup Name="CheckStates">
+                                        <VisualState Name="Unchecked" />
+                                        <VisualState Name="Checked">
+                                            <Storyboard>
+                                                <ColorAnimation To="Black" Storyboard.TargetName="WhiteLight"
+                                                                Duration="0:0:0.1"
+                                                                Storyboard.TargetProperty="(Ellipse.Fill).(GradientBrush.GradientStops)[0].Color" />
+                                                <ColorAnimation To="White" Storyboard.TargetName="BlackLight"
+                                                                Duration="0:0:0.1"
+                                                                Storyboard.TargetProperty="(Ellipse.Fill).(GradientBrush.GradientStops)[0].Color" />
+                                                <ColorAnimation To="#00000000" Storyboard.TargetName="WhiteLight"
+                                                                Duration="0:0:0.1"
+                                                                Storyboard.TargetProperty="(Ellipse.Fill).(GradientBrush.GradientStops)[1].Color" />
+                                                <ColorAnimation To="Transparent" Storyboard.TargetName="BlackLight"
+                                                                Duration="0:0:0.1"
+                                                                Storyboard.TargetProperty="(Ellipse.Fill).(GradientBrush.GradientStops)[1].Color" />
+                                                <ColorAnimation To="#1A000000" Storyboard.TargetName="Overlay"
+                                                                Duration="0:0:0.1"
+                                                                Storyboard.TargetProperty="(Rectangle.Fill).(GradientBrush.GradientStops)[0].Color" />
+                                                <ColorAnimation To="#32FFFFFF" Storyboard.TargetName="Overlay"
+                                                                Duration="0:0:0.1"
+                                                                Storyboard.TargetProperty="(Rectangle.Fill).(GradientBrush.GradientStops)[1].Color" />
+                                                <DoubleAnimation To="0" Storyboard.TargetName="Dimmer"
+                                                                 Duration="0:0:0.1"
+                                                                 Storyboard.TargetProperty="Opacity" />
+                                                <DoubleAnimation To="0.3" Storyboard.TargetName="WhiteLight"
+                                                                 Duration="0:0:0.1"
+                                                                 Storyboard.TargetProperty="Opacity" />
+                                                <DoubleAnimation To="1" Storyboard.TargetName="BlackLight"
+                                                                 Duration="0:0:0.1"
+                                                                 Storyboard.TargetProperty="Opacity" />
+                                            </Storyboard>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="SmallIconButton" TargetType="ContentControl">
+                <Setter Property="Width" Value="12"></Setter>
+                <Setter Property="Height" Value="12"></Setter>
+                <Setter Property="FontSize" Value="6"></Setter>
+                <Setter Property="Foreground" Value="{StaticResource ControlForeground}"></Setter>
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ContentControl">
+                            <Grid Background="{StaticResource ControlBackground}">
+                                <Grid.Clip>
+                                    <EllipseGeometry Center="6,6" RadiusX="6" RadiusY="6"></EllipseGeometry>
+                                </Grid.Clip>
+
+                                <ContentPresenter Content="{TemplateBinding Content}" VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center" />
+
+                                <Ellipse Width="12" Height="12" Stroke="{StaticResource ControlBorder}"
+                                         StrokeThickness="0.5">
+                                </Ellipse>
+
+                                <Rectangle Fill="Gray" Opacity="0" x:Name="Highlight"></Rectangle>
+
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Normal" />
+                                        <VisualState Name="MouseOver">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.3" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState Name="Pressed" />
+                                        <VisualState Name="Disabled" />
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

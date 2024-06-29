@@ -1,0 +1,237 @@
+﻿<UserControl x:Class="tebisCloud.Controls.ThumbnailPreview"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:tebisCloud.Controls"
+             xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+             xmlns:thumbnail="clr-namespace:tebisCloud.Data.Thumbnail"
+             xmlns:tebisCloud="clr-namespace:tebisCloud"
+             xmlns:converter="clr-namespace:tebisCloud.Converter"
+             mc:Ignorable="d"
+             MouseLeftButtonUp="Ctrl_OnMouseLeftButtonUp" MouseMove="Ctrl_OnMouseMove"
+             MouseLeftButtonDown="ThumbnailPreview_OnMouseLeftButtonDown"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <converter:TextMetadataSubstitute x:Key="TextPreview" />
+
+        <Style TargetType="MenuItem">
+            <Setter Property="CommandTarget"
+                    Value="{Binding Path=PlacementTarget,RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}">
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:ThumbnailPreview}}">
+        <Viewbox Stretch="Uniform">
+            <ItemsControl ItemsSource="{Binding Thumbnail.Controls}" Width="1920" Height="1080" Background="White"
+                          x:Name="ControlContainer">
+                <ItemsControl.Resources>
+                    <Style TargetType="Thumb">
+                        <Setter Property="Margin" Value="-5"></Setter>
+                        <Setter Property="Width" Value="10"></Setter>
+                        <Setter Property="Height" Value="10"></Setter>
+                        <Setter Property="Background" Value="Black"></Setter>
+                        <Setter Property="BorderThickness" Value="0"></Setter>
+                        <EventSetter Event="DragStarted" Handler="ThumbDragStart_OnHandler" />
+                        <EventSetter Event="DragDelta" Handler="ThumbDragMove_OnHandler" />
+                        <EventSetter Event="DragCompleted" Handler="ThumbDragEnd_OnHandler"></EventSetter>
+                    </Style>
+                    <DataTemplate DataType="{x:Type thumbnail:ImagePart}">
+                        <Grid MouseLeftButtonDown="Ctrl_OnMouseLeftButtonDown">
+                            <Image Source="{Binding ImageSource}" Width="{Binding Width}" Height="{Binding Height}"
+                                   Stretch="Fill">
+                            </Image>
+                            <Grid
+                                Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:ThumbnailPreview}, Path=EditMode, Converter={StaticResource BoolToVis}}">
+                                <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White"
+                                        Opacity=".3"
+                                        Visibility="{Binding IsSelected, Converter={StaticResource BoolToVis}}">
+                                </Border>
+                                <Grid Visibility="{Binding IsSelected, Converter={StaticResource BoolToVis}}">
+                                    <Thumb HorizontalAlignment="Left" VerticalAlignment="Top"></Thumb>
+                                    <Thumb HorizontalAlignment="Center" VerticalAlignment="Top"></Thumb>
+                                    <Thumb HorizontalAlignment="Right" VerticalAlignment="Top"></Thumb>
+
+                                    <Thumb HorizontalAlignment="Center" VerticalAlignment="Top"></Thumb>
+                                    <Thumb HorizontalAlignment="Center" VerticalAlignment="Bottom"></Thumb>
+                                    <Thumb HorizontalAlignment="Right" VerticalAlignment="Center"></Thumb>
+                                    <Thumb HorizontalAlignment="Left" VerticalAlignment="Center"></Thumb>
+
+                                    <Thumb HorizontalAlignment="Left" VerticalAlignment="Bottom"></Thumb>
+                                    <Thumb HorizontalAlignment="Center" VerticalAlignment="Bottom"></Thumb>
+                                    <Thumb HorizontalAlignment="Right" VerticalAlignment="Bottom"></Thumb>
+                                </Grid>
+                            </Grid>
+
+                            <Grid.ContextMenu>
+                                <ContextMenu
+                                    Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:ThumbnailPreview}, Path=EditMode, Converter={StaticResource BoolToVis}}">
+                                    <MenuItem Header="Maximieren"
+                                              Command="{x:Static tebisCloud:ThumbnailPresetEditor.MaximizeControl}"
+                                              CommandParameter="{Binding}">
+                                        <MenuItem.Icon>
+                                            <wpf:MaterialIcon Kind="StretchToPageOutline"></wpf:MaterialIcon>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem Header="Vordergrund"
+                                              Command="{x:Static tebisCloud:ThumbnailPresetEditor.OrderFirst}"
+                                              CommandParameter="{Binding}">
+                                        <MenuItem.Icon>
+                                            <wpf:MaterialIcon Kind="ChevronDoubleUp"></wpf:MaterialIcon>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="Nach Oben"
+                                              Command="{x:Static tebisCloud:ThumbnailPresetEditor.OrderUp}"
+                                              CommandParameter="{Binding}">
+                                        <MenuItem.Icon>
+                                            <wpf:MaterialIcon Kind="ChevronUp"></wpf:MaterialIcon>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="Nach Unten"
+                                              Command="{x:Static tebisCloud:ThumbnailPresetEditor.OrderDown}"
+                                              CommandParameter="{Binding}">
+                                        <MenuItem.Icon>
+                                            <wpf:MaterialIcon Kind="ChevronDown"></wpf:MaterialIcon>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="Hintergrund"
+                                              Command="{x:Static tebisCloud:ThumbnailPresetEditor.OrderLast}"
+                                              CommandParameter="{Binding}">
+                                        <MenuItem.Icon>
+                                            <wpf:MaterialIcon Kind="ChevronDoubleDown"></wpf:MaterialIcon>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem Header="Löschen"
+                                              Command="{x:Static tebisCloud:ThumbnailPresetEditor.DeleteControl}"
+                                              CommandParameter="{Binding}">
+                                        <MenuItem.Icon>
+                                            <wpf:MaterialIcon Kind="DeleteOutline"></wpf:MaterialIcon>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </Grid.ContextMenu>
+                        </Grid>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type thumbnail:TextBoxPart}">
+                        <Grid Background="#01000000" MouseLeftButtonDown="Ctrl_OnMouseLeftButtonDown">
+                            <TextBlock FontSize="{Binding FontSize}"
+                                       Width="{Binding Width}" Height="{Binding Height}"
+                                       FontFamily="{Binding FontFace}">
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource TextPreview}">
+                                        <Binding Path="Placeholder"></Binding>
+                                        <Binding
+                                            RelativeSource="{RelativeSource FindAncestor, AncestorType=local:ThumbnailPreview}"
+                                            Path="PreviewMetadata.Prediger">
+                                        </Binding>
+                                        <Binding
+                                            RelativeSource="{RelativeSource FindAncestor, AncestorType=local:ThumbnailPreview}"
+                                            Path="PreviewMetadata.Thema">
+                                        </Binding>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                                <TextBlock.Foreground>
+                                    <SolidColorBrush Color="{Binding Foreground}" />
+                                </TextBlock.Foreground>
+                                <TextBlock.Effect>
+                                    <DropShadowEffect Opacity="{Binding ShadowOpacity}"
+                                                      ShadowDepth="{Binding ShadowBlur}"
+                                                      BlurRadius="{Binding ShadowRadius}" Color="{Binding ShadowColor}"
+                                                      Direction="{Binding ShadowDirection}" />
+                                </TextBlock.Effect>
+                            </TextBlock>
+
+                            <Grid
+                                Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:ThumbnailPreview}, Path=EditMode, Converter={StaticResource BoolToVis}}">
+                                <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White"
+                                        Opacity=".3"
+                                        Visibility="{Binding IsSelected, Converter={StaticResource BoolToVis}}">
+                                </Border>
+                                <Grid Visibility="{Binding IsSelected, Converter={StaticResource BoolToVis}}">
+                                    <Thumb HorizontalAlignment="Left" VerticalAlignment="Top"></Thumb>
+                                    <Thumb HorizontalAlignment="Center" VerticalAlignment="Top"></Thumb>
+                                    <Thumb HorizontalAlignment="Right" VerticalAlignment="Top"></Thumb>
+
+                                    <Thumb HorizontalAlignment="Center" VerticalAlignment="Top"></Thumb>
+                                    <Thumb HorizontalAlignment="Center" VerticalAlignment="Bottom"></Thumb>
+                                    <Thumb HorizontalAlignment="Right" VerticalAlignment="Center"></Thumb>
+                                    <Thumb HorizontalAlignment="Left" VerticalAlignment="Center"></Thumb>
+
+                                    <Thumb HorizontalAlignment="Left" VerticalAlignment="Bottom"></Thumb>
+                                    <Thumb HorizontalAlignment="Center" VerticalAlignment="Bottom"></Thumb>
+                                    <Thumb HorizontalAlignment="Right" VerticalAlignment="Bottom"></Thumb>
+                                </Grid>
+                            </Grid>
+
+                            <TextBox VerticalAlignment="Stretch" HorizontalAlignment="Stretch" AcceptsReturn="True"
+                                     Text="{Binding Placeholder}"
+                                     Visibility="{Binding TextEditMode, Converter={StaticResource BoolToVis}}">
+                            </TextBox>
+
+                            <Grid.ContextMenu>
+                                <ContextMenu
+                                    Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:ThumbnailPreview}, Path=EditMode, Converter={StaticResource BoolToVis}}">
+                                    <MenuItem Header="Vordergrund"
+                                              Command="{x:Static tebisCloud:ThumbnailPresetEditor.OrderFirst}"
+                                              CommandParameter="{Binding}">
+                                        <MenuItem.Icon>
+                                            <wpf:MaterialIcon Kind="ChevronDoubleUp"></wpf:MaterialIcon>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="Nach Oben"
+                                              Command="{x:Static tebisCloud:ThumbnailPresetEditor.OrderUp}"
+                                              CommandParameter="{Binding}">
+                                        <MenuItem.Icon>
+                                            <wpf:MaterialIcon Kind="ChevronUp"></wpf:MaterialIcon>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="Nach Unten"
+                                              Command="{x:Static tebisCloud:ThumbnailPresetEditor.OrderDown}"
+                                              CommandParameter="{Binding}">
+                                        <MenuItem.Icon>
+                                            <wpf:MaterialIcon Kind="ChevronDown"></wpf:MaterialIcon>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="Hintergrund"
+                                              Command="{x:Static tebisCloud:ThumbnailPresetEditor.OrderLast}"
+                                              CommandParameter="{Binding}">
+                                        <MenuItem.Icon>
+                                            <wpf:MaterialIcon Kind="ChevronDoubleDown"></wpf:MaterialIcon>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem IsCheckable="True" IsChecked="{Binding TextEditMode}"
+                                              Header="Text bearbeiten">
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem Header="Löschen"
+                                              Command="{x:Static tebisCloud:ThumbnailPresetEditor.DeleteControl}"
+                                              CommandParameter="{Binding}">
+                                        <MenuItem.Icon>
+                                            <wpf:MaterialIcon Kind="DeleteOutline"></wpf:MaterialIcon>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </Grid.ContextMenu>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.Resources>
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="Canvas.Left" Value="{Binding Left}"></Setter>
+                        <Setter Property="Canvas.Top" Value="{Binding Top}"></Setter>
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </Viewbox>
+    </Grid>
+</UserControl>
