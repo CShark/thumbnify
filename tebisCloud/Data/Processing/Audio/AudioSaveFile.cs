@@ -10,22 +10,26 @@ using NAudio.Wave;
 using tebisCloud.Data.Processing.Parameters;
 using tebisCloud.Postprocessing;
 
-namespace tebisCloud.Data.Processing {
+namespace tebisCloud.Data.Processing.Audio {
     internal class AudioSaveFile : Node {
-        public override IReadOnlyDictionary<string, Parameter> Parameters { get; }
-        public override IReadOnlyDictionary<string, Result> Results { get; }
+        public override IReadOnlyDictionary<string, Parameter> Parameters { get; protected set; }
+        public override IReadOnlyDictionary<string, Result> Results { get; protected set; }
         public Parameter<AudioStream> AudioStream { get; set; } = new("audio", "Audio", true);
-        public Parameter<FilePath> AudioFile { get; set; } = new("audio_file", "Dateiname", true, new(false,"MP3-Audio|*.mp3"));
+
+        public Parameter<FilePath> AudioFile { get; set; } = new("audio_file", "Dateiname", true,
+            new(FilePath.EPathMode.SaveFile, "MP3-Audio|*.mp3"));
 
         public AudioSaveFile() {
+            Initialize();
+        }
+
+        protected override void InitializeParamsResults() {
             Parameters = new Dictionary<string, Parameter>() {
                 { AudioStream.Id, AudioStream },
                 { AudioFile.Id, AudioFile }
             };
 
             Results = new Dictionary<string, Result>();
-
-            InitializeParameters();
         }
 
         protected override bool Execute(CancellationToken cancelToken) {
@@ -34,7 +38,6 @@ namespace tebisCloud.Data.Processing {
             try {
                 using (var writer = new LameMP3FileWriter(AudioFile.Value.FileName,
                            AudioStream.Value.WaveStream.WaveFormat, LAMEPreset.ABR_96)) {
-
                     var buffer = new byte[16 * 1024];
 
                     int read;
@@ -44,7 +47,7 @@ namespace tebisCloud.Data.Processing {
                         ReportProgress(AudioStream.Value.WaveStream.Position, AudioStream.Value.WaveStream.Length);
                     }
                 }
-                
+
                 return true;
             } catch (Exception ex) {
                 LogMessage("Failed to save audio: " + ex);

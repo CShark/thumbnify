@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Microsoft.Xaml.Behaviors.Core;
+using Newtonsoft.Json;
 using tebisCloud.Data;
 using tebisCloud.Postprocessing;
 using Connection = tebisCloud.Postprocessing.Connection;
@@ -123,26 +124,30 @@ namespace tebisCloud {
 
         private bool IsCyclic(Connection? pending = null) {
             foreach (var node in Nodes.Where(x => !Connections.Any(y => y.Target.Parent == x))) {
-                var visitMap = new List<EditorNode>();
-                visitMap.Add(node);
+                var visitMap = new Dictionary<EditorNode, int>();
+                visitMap.Add(node, 0);
 
-                Queue<EditorNode> openNodes = new(Tree[node]);
+                Queue<(EditorNode, int)> openNodes = new(Tree[node].Select(x => (x, 0)));
 
                 while (openNodes.Any()) {
                     var child = openNodes.Dequeue();
 
-                    if (visitMap.Contains(child)) {
+                    // TODO: Work needed
+                    if (visitMap.ContainsKey(child.Item1) && visitMap[child.Item1] > child.Item2) {
                         return true;
                     } else {
-                        visitMap.Add(child);
-                        foreach (var link in Tree[child]) {
-                            openNodes.Enqueue(link);
+                        if (!visitMap.ContainsKey(child.Item1)) {
+                            visitMap.Add(child.Item1, child.Item2 + 1);
+                            foreach (var link in Tree[child.Item1]) {
+                                openNodes.Enqueue((link, child.Item2 + 1));
+                            }
                         }
                     }
                 }
 
                 if (pending != null) {
-                    if (visitMap.Contains(pending.Source.Parent) && visitMap.Contains(pending.Target.Parent)) {
+                    if ((visitMap.ContainsKey(pending.Source.Parent) && visitMap.ContainsKey(pending.Target.Parent) &&
+                        visitMap[pending.Source.Parent] > visitMap[pending.Target.Parent]) || pending.Source.Parent == pending.Target.Parent) {
                         return true;
                     }
                 }
@@ -174,6 +179,7 @@ namespace tebisCloud {
                 Tree[dict[con.Previous]].Add(dict[con.Next]);
             }
         }
+
         private void CreateNode_OnExecuted(object sender, ExecutedRoutedEventArgs e) {
             if (e.Parameter is Type t) {
                 if (t.IsAssignableTo(typeof(Node))) {
@@ -188,6 +194,7 @@ namespace tebisCloud {
                 }
             }
         }
+
         private void DeleteSelectedNodes() {
             var selection = new List<EditorNode>();
 
@@ -203,6 +210,7 @@ namespace tebisCloud {
 
                 foreach (var con in conns) {
                     Connections.Remove(con);
+                    Tree[con.Source.Parent].Remove(con.Target.Parent);
                 }
             }
 

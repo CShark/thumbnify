@@ -11,9 +11,14 @@ namespace tebisCloud.Data.Processing {
 
         public string Id { get; set; }
 
+        [JsonIgnore]
         public string Name { get; set; }
 
+        [JsonIgnore]
         public bool Bindable { get; set; }
+
+        [JsonIgnore]
+        public bool ShowName { get; set; }
 
         [JsonIgnore]
         public abstract Type Type { get; }
@@ -24,10 +29,11 @@ namespace tebisCloud.Data.Processing {
         [JsonIgnore]
         public abstract object? DefaultValueObj { get; }
 
-        protected Parameter(string id, string name, bool bindable) {
+        protected Parameter(string id, string name, bool bindable, bool showName) {
             Id = id;
             Name = name;
             Bindable = bindable;
+            ShowName = showName;
         }
 
         public abstract void ApplyDefaultValue();
@@ -58,9 +64,11 @@ namespace tebisCloud.Data.Processing {
         public T? DefaultValue { get; set; }
 
         public override bool HasValue => Value != null;
+
         public override object? DefaultValueObj => DefaultValue;
 
-        public Parameter(string id, string name, bool bindable, T? defaultValue = default) : base(id, name, bindable) {
+        public Parameter(string id, string name, bool bindable, T? defaultValue = default, bool showName = true) : base(
+            id, name, bindable, showName) {
             DefaultValue = defaultValue;
         }
 
@@ -80,6 +88,7 @@ namespace tebisCloud.Data.Processing {
             if (_value is IDisposable d) {
                 d.Dispose();
             }
+
             _value = default;
         }
     }

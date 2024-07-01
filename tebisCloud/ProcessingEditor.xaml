@@ -11,6 +11,9 @@
         xmlns:converter="clr-namespace:tebisCloud.Converter"
         xmlns:parameters="clr-namespace:tebisCloud.Data.Processing.Parameters"
         xmlns:controls="clr-namespace:tebisCloud.Controls"
+        xmlns:audio="clr-namespace:tebisCloud.Data.Processing.Audio"
+        xmlns:operations="clr-namespace:tebisCloud.Data.Processing.Operations"
+        xmlns:input="clr-namespace:tebisCloud.Data.Processing.Input"
         mc:Ignorable="d"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         WindowStartupLocation="CenterOwner"
@@ -54,13 +57,21 @@
             </Setter>
         </Style>
 
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="{StaticResource ControlBackground}" />
+            <Setter Property="Foreground" Value="{StaticResource ControlForeground}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ControlForegroundDark}" />
+        </Style>
+
         <converter:BoolInvert x:Key="BoolInvert" />
 
-        <BooleanToVisibilityConverter x:Key="BoolToVis"></BooleanToVisibilityConverter>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <converter:BoolInvVisibility x:Key="BoolToInvVis" />
 
         <converter:ParameterTypeToColor x:Key="ParamTypeToColor">
             <converter:ParameterColor Type="{x:Type parameters:FilePath}" Color="LightPink" />
             <converter:ParameterColor Type="{x:Type parameters:AudioStream}" Color="LightPink" />
+            <converter:ParameterColor Type="{x:Type parameters:StringParam}" Color="CornflowerBlue" />
         </converter:ParameterTypeToColor>
 
         <converter:ParameterTypeToConnector x:Key="ParamTypeToConnector">
@@ -81,12 +92,29 @@
                     </Rectangle>
                 </ControlTemplate>
             </converter:ParameterConnector>
+            <converter:ParameterConnector Type="{x:Type parameters:StringParam}">
+                <ControlTemplate TargetType="Control">
+                    <Rectangle Fill="{TemplateBinding Background}" Width="10" Height="10">
+                        <Rectangle.LayoutTransform>
+                            <TransformGroup>
+                                <ScaleTransform ScaleX=".8" ScaleY=".8"></ScaleTransform>
+                                <RotateTransform Angle="45"></RotateTransform>
+                            </TransformGroup>
+                        </Rectangle.LayoutTransform>
+                    </Rectangle>
+                </ControlTemplate>
+            </converter:ParameterConnector>
         </converter:ParameterTypeToConnector>
 
         <converter:ParameterTypeToControls x:Key="ParamTypeToEditor">
             <converter:ParameterControls Type="{x:Type parameters:FilePath}">
                 <DataTemplate DataType="{x:Type parameters:FilePath}">
                     <controls:FilePathControl FilePath="{Binding}" />
+                </DataTemplate>
+            </converter:ParameterControls>
+            <converter:ParameterControls Type="{x:Type parameters:StringParam}">
+                <DataTemplate DataType="{x:Type parameters:StringParam}">
+                    <TextBox Text="{Binding Value}" />
                 </DataTemplate>
             </converter:ParameterControls>
         </converter:ParameterTypeToControls>
@@ -249,8 +277,7 @@
                                 <Border
                                     Visibility="{TemplateBinding HasHeader, Converter={StaticResource BoolToVis}}"
                                     Background="{TemplateBinding HeaderBrush}"
-                                    CornerRadius="3 3 0 0"
-                                    Grid.ColumnSpan="3">
+                                    CornerRadius="3 3 0 0">
                                     <ContentPresenter ContentSource="Header" />
                                 </Border>
 
@@ -299,6 +326,29 @@
     </Window.Resources>
     <Window.ContextMenu>
         <ContextMenu>
+            <MenuItem Header="_Input" InputGestureText="I">
+                <MenuItem.Icon>
+                    <wpf:MaterialIcon Kind="SourceCommitStart" />
+                </MenuItem.Icon>
+
+                <MenuItem Header="Medienausschnitt">
+                    <MenuItem.Icon>
+                        <wpf:MaterialIcon Kind="Multimedia" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="Dateipfad">
+                    <MenuItem.Icon>
+                        <wpf:MaterialIcon Kind="Folder" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Text" Command="{x:Static local:ProcessingEditor.CreateNode}"
+                          CommandParameter="{x:Type input:StringInput}">
+                    <MenuItem.Icon>
+                        <wpf:MaterialIcon Kind="FormTextbox" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
             <MenuItem Header="_Video" InputGestureText="V">
                 <MenuItem.Icon>
                     <wpf:MaterialIcon Kind="MovieOpen" />
@@ -320,13 +370,13 @@
                     <wpf:MaterialIcon Kind="Music" />
                 </MenuItem.Icon>
                 <MenuItem Header="Laden" Command="{x:Static local:ProcessingEditor.CreateNode}"
-                          CommandParameter="{x:Type processing:AudioLoadFile}">
+                          CommandParameter="{x:Type audio:AudioLoadFile}">
                     <MenuItem.Icon>
                         <wpf:MaterialIcon Kind="FolderOpen" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="Speichern" Command="{x:Static local:ProcessingEditor.CreateNode}"
-                          CommandParameter="{x:Type processing:AudioSaveFile}">
+                          CommandParameter="{x:Type audio:AudioSaveFile}">
                     <MenuItem.Icon>
                         <wpf:MaterialIcon Kind="ContentSave" />
                     </MenuItem.Icon>
@@ -351,6 +401,17 @@
                 <MenuItem Header="Upload WebDAV" Command="{x:Static local:ProcessingEditor.CreateNode}">
                     <MenuItem.Icon>
                         <wpf:MaterialIcon Kind="CloudUpload" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="_Operationen" InputGestureText="O">
+                <MenuItem.Icon>
+                    <wpf:MaterialIcon Kind="Cog" />
+                </MenuItem.Icon>
+                <MenuItem Header="Pfad kombinieren" Command="{x:Static local:ProcessingEditor.CreateNode}"
+                          CommandParameter="{x:Type operations:PathCombine}">
+                    <MenuItem.Icon>
+                        <wpf:MaterialIcon Kind="FileTree"></wpf:MaterialIcon>
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
@@ -409,23 +470,47 @@
             </nodify:NodifyEditor.Resources>
             <nodify:NodifyEditor.ItemTemplate>
                 <DataTemplate DataType="{x:Type postprocessing:EditorNode}">
-                    <nodify:Node Input="{Binding Inputs}"
+                    <nodify:Node Input="{Binding Inputs}" HorizontalContentAlignment="Stretch"
                                  Output="{Binding Outputs}" Width="200">
                         <nodify:Node.Header>
-                            <StackPanel Margin="0,4,0,0">
+                            <StackPanel Margin="0,1,0,0">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="20" />
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="20" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding Title}" Margin="6,0,0,0" />
 
-                                    <ContentPresenter Content="{Binding SourceNode.NodeStatus}" Grid.Column="1">
+                                    <CheckBox IsChecked="{Binding SourceNode.IsExpanded}" VerticalAlignment="Center">
+                                        <CheckBox.Template>
+                                            <ControlTemplate TargetType="CheckBox">
+                                                <Border Background="#01000000">
+                                                    <wpf:MaterialIcon Kind="ChevronDown" x:Name="Arrow"
+                                                                      Foreground="{StaticResource ControlForeground}" />
+                                                </Border>
+
+                                                <ControlTemplate.Triggers>
+                                                    <DataTrigger Binding="{Binding SourceNode.IsExpanded}"
+                                                                 Value="False">
+                                                        <Setter TargetName="Arrow" Property="Kind" Value="ChevronRight" />
+                                                    </DataTrigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </CheckBox.Template>
+                                    </CheckBox>
+
+                                    <TextBlock Text="{Binding Title}" Margin="6,0,0,0" Grid.Column="1"
+                                               VerticalAlignment="Center" />
+
+                                    <ContentPresenter Content="{Binding SourceNode.NodeStatus}" Grid.Column="2">
                                         <ContentPresenter.ContentTemplate>
                                             <DataTemplate DataType="{x:Type processing:ENodeStatus}">
-                                                <wpf:MaterialIcon x:Name="Icon" Visibility="Collapsed" Height="16">
+                                                <wpf:MaterialIcon x:Name="Icon" Visibility="Collapsed" Height="16"
+                                                                  Cursor="Hand">
                                                     <wpf:MaterialIcon.Effect>
-                                                        <DropShadowEffect ShadowDepth="0" BlurRadius="10" Opacity=".7" Color="DimGray"></DropShadowEffect>
+                                                        <DropShadowEffect ShadowDepth="0" BlurRadius="10" Opacity=".7"
+                                                                          Color="DimGray">
+                                                        </DropShadowEffect>
                                                     </wpf:MaterialIcon.Effect>
                                                 </wpf:MaterialIcon>
 
@@ -462,7 +547,7 @@
                                         </ContentPresenter.ContentTemplate>
                                     </ContentPresenter>
                                 </Grid>
-                                <Border Background="{StaticResource ControlBackground}" Margin="0,3,0,0">
+                                <Border Background="{StaticResource ControlBackground}" Margin="0,1,0,0">
                                     <ProgressBar Foreground="LightGreen" BorderThickness="0" Height="5"
                                                  Margin="0,3,0,0" Maximum="1"
                                                  Value="{Binding SourceNode.Progress, Mode=OneWay}"
@@ -484,10 +569,15 @@
                                                 Color="{Binding Type, Converter={StaticResource ParamTypeToColor}}" />
                                         </nodify:NodeInput.BorderBrush>
                                     </nodify:NodeInput>
-                                    <ContentPresenter Margin="10,0,10,10"
-                                                      IsEnabled="{Binding IsConnected, Converter={StaticResource BoolInvert}}"
-                                                      Content="{Binding Parameter.DefaultValueObj}"
-                                                      ContentTemplateSelector="{StaticResource ParamTypeToEditor}" />
+                                    <Grid IsEnabled="{Binding IsConnected, Converter={StaticResource BoolInvert}}"
+                                          Visibility="{Binding Parent.SourceNode.IsExpanded, Converter={StaticResource BoolToVis}}">
+                                        <Grid
+                                            Visibility="{Binding IsConnected, Converter={StaticResource BoolToInvVis}}">
+                                            <ContentPresenter Margin="10,0,10,10"
+                                                              Content="{Binding Parameter.DefaultValueObj}"
+                                                              ContentTemplateSelector="{StaticResource ParamTypeToEditor}" />
+                                        </Grid>
+                                    </Grid>
                                 </StackPanel>
                             </DataTemplate>
                         </nodify:Node.InputConnectorTemplate>
@@ -504,6 +594,21 @@
                                 </nodify:NodeOutput>
                             </DataTemplate>
                         </nodify:Node.OutputConnectorTemplate>
+
+                        <ItemsControl ItemsSource="{Binding StaticParameters}"
+                                      Visibility="{Binding SourceNode.IsExpanded, Converter={StaticResource BoolToVis}}"
+                                      Margin="0,3">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type processing:Parameter}">
+                                    <StackPanel Margin="0,3">
+                                        <TextBlock Text="{Binding Name}" HorizontalAlignment="Left"
+                                                   Visibility="{Binding ShowName, Converter={StaticResource BoolToVis}}" />
+                                        <ContentPresenter Content="{Binding DefaultValueObj}"
+                                                          ContentTemplateSelector="{StaticResource ParamTypeToEditor}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </nodify:Node>
 
                 </DataTemplate>
@@ -537,6 +642,6 @@
             </nodify:NodifyEditor.PendingConnectionTemplate>
         </nodify:NodifyEditor>
 
-        <Button Margin="50" HorizontalAlignment="Left" VerticalAlignment="Top" Click="Test_OnClick">Test</Button>
+        <Button Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" Click="Test_OnClick">Test</Button>
     </Grid>
 </Window>

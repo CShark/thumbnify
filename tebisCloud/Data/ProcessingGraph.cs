@@ -18,11 +18,7 @@ namespace tebisCloud.Data {
         private Dictionary<string, Node> _nodes;
         private Dictionary<string, Dictionary<string, List<(string Node, string Port)>>> _edgesForward;
         private Dictionary<string, Dictionary<string, (string Node, string Result)?>> _edgesBackward;
-
-        public ProcessingGraph() {
-            //Nodes.Add(new PartSource());
-        }
-
+        
         public void RunGraph() {
             if (IsGraphRunning()) return;
 

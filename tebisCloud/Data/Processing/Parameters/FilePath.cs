@@ -9,6 +9,13 @@ using Newtonsoft.Json;
 
 namespace tebisCloud.Data.Processing.Parameters {
     public class FilePath : ICloneable, INotifyPropertyChanged {
+
+        public enum EPathMode {
+            SaveFile,
+            OpenFile,
+            Directory
+        }
+
         private string _fileName;
 
         public string FileName {
@@ -17,7 +24,8 @@ namespace tebisCloud.Data.Processing.Parameters {
         }
 
         [JsonIgnore]
-        public bool FileMustExist { get; }
+        public EPathMode Mode { get; }
+
         [JsonIgnore]
         public string Filter { get; }
 
@@ -30,8 +38,8 @@ namespace tebisCloud.Data.Processing.Parameters {
         private FilePath() {
         }
 
-        public FilePath(bool fileMustExist, string filter) {
-            FileMustExist = fileMustExist;
+        public FilePath(EPathMode mode, string filter) {
+            Mode = mode;
             Filter = filter;
         }
 

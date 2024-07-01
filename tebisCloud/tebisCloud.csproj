@@ -49,4 +49,8 @@
 		</None>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Data\Processing\Video\" />
+	</ItemGroup>
+
 </Project>

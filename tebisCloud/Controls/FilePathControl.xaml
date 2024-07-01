@@ -13,8 +13,7 @@
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <TextBox Text="{Binding FilePath.FileName}" IsReadOnly="True" Background="{StaticResource ControlBackground}"
-                 Foreground="{StaticResource ControlForeground}" BorderBrush="{StaticResource ControlForegroundDark}">
+        <TextBox Text="{Binding FilePath.FileName}" IsReadOnly="True">
         </TextBox>
         <Button Grid.Column="1" Width="24" Margin="4,0" Style="{StaticResource SquareButton}"
                 Click="SelectPath_OnClick">

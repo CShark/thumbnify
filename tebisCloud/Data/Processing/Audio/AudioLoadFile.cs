@@ -10,19 +10,24 @@ using Newtonsoft.Json;
 using tebisCloud.Data.Processing.Parameters;
 using tebisCloud.Postprocessing;
 
-namespace tebisCloud.Data.Processing {
+namespace tebisCloud.Data.Processing.Audio {
     internal class AudioLoadFile : Node {
-        public Parameter<FilePath> AudioFile { get; set; } = new("audio_file", "Dateiname", true, new(true, "Alle Dateien|*.mp4;*.mkv;*.mp3"));
+        public Parameter<FilePath> AudioFile { get; set; } = new("audio_file", "Dateiname", true,
+            new(FilePath.EPathMode.OpenFile, "Alle Dateien|*.mp4;*.mkv;*.mp3"));
 
         [JsonIgnore]
         public Result<AudioStream> AudioStream { get; } = new("audio_stream", "Audio");
 
-        public override IReadOnlyDictionary<string, Parameter> Parameters { get; }
+        public override IReadOnlyDictionary<string, Parameter> Parameters { get; protected set; }
 
-        public override IReadOnlyDictionary<string, Result> Results { get; }
+        public override IReadOnlyDictionary<string, Result> Results { get; protected set; }
 
 
         public AudioLoadFile() {
+            Initialize();
+        }
+
+        protected override void InitializeParamsResults() {
             Parameters = new Dictionary<string, Parameter>() {
                 { AudioFile.Id, AudioFile }
             };
@@ -30,8 +35,6 @@ namespace tebisCloud.Data.Processing {
             Results = new Dictionary<string, Result>() {
                 { AudioStream.Id, AudioStream }
             };
-
-            InitializeParameters();
         }
 
         protected override bool Execute(CancellationToken cancelToken) {

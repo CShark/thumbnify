@@ -12,12 +12,11 @@ using tebisCloud.Data.Processing;
 using Vortice.XAudio2;
 
 namespace tebisCloud.Postprocessing {
-    [Flags]
     public enum ENodeType {
         None = 0,
         Audio = 1,
         Video = 2,
-        Youtube = 4
+        Parameter = 3,
     }
 
     public class EditorNode : INotifyPropertyChanged {
@@ -27,10 +26,10 @@ namespace tebisCloud.Postprocessing {
         private double _progress;
 
         public static Dictionary<ENodeType, Color> TypeColorMap { get; } = new() {
-            {ENodeType.None, Colors.DimGray},
-            {ENodeType.Audio, Colors.SteelBlue},
-            {ENodeType.Video, Colors.MediumOrchid},
-            {ENodeType.Youtube, Colors.Red}
+            { ENodeType.None, Colors.DimGray },
+            { ENodeType.Audio, Colors.DarkOrange },
+            { ENodeType.Video, Colors.MediumOrchid },
+            { ENodeType.Parameter, Colors.CornflowerBlue }
         };
 
         public EditorNode(string title, ENodeType nodeType, Node sourceNode) {
@@ -52,7 +51,7 @@ namespace tebisCloud.Postprocessing {
         public Node SourceNode { get; }
 
         public Color NodeColor { get; }
-        
+
         public IReadOnlyList<Connector> Inputs => _inputs;
         public IReadOnlyList<Connector> Outputs => _outputs;
 

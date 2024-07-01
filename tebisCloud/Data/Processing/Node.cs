@@ -2,10 +2,12 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -30,18 +32,27 @@ namespace tebisCloud.Data.Processing {
         private Point _nodeLocation;
         private double _progress;
         private ENodeStatus _nodeStatus = ENodeStatus.Pending;
+        private bool _isExpanded = true;
 
         public event Action<Node> NodeCompleted;
 
-        public string Id { get; }
+        public string Id { get; set; }
 
-        public abstract IReadOnlyDictionary<string, Parameter> Parameters { get; }
-        public abstract IReadOnlyDictionary<string, Result> Results { get; }
+        [JsonIgnore]
+        public abstract IReadOnlyDictionary<string, Parameter> Parameters { get; protected set; }
+
+        [JsonIgnore]
+        public abstract IReadOnlyDictionary<string, Result> Results { get; protected set; }
 
         [JsonIgnore]
         public ENodeStatus NodeStatus {
             get => _nodeStatus;
             private set => SetField(ref _nodeStatus, value);
+        }
+
+        public bool IsExpanded {
+            set => SetField(ref _isExpanded, value);
+            get => _isExpanded;
         }
 
         [JsonIgnore]
@@ -62,10 +73,23 @@ namespace tebisCloud.Data.Processing {
         }
 
         protected Node() {
+            Parameters = new Dictionary<string, Parameter>();
+            Results = new Dictionary<string, Result>();
             Id = Guid.NewGuid().ToString();
         }
 
-        protected void InitializeParameters() {
+        protected void Initialize() {
+            OnDeserialized(new StreamingContext());
+        }
+
+        protected abstract void InitializeParamsResults();
+
+        [OnDeserialized]
+        internal void OnDeserialized(StreamingContext context) {
+            foreach (var param in Parameters.Values) {
+                param.ValueChanged -= ParamOnValueChanged;
+            }
+            InitializeParamsResults();
             foreach (var param in Parameters.Values) {
                 param.ValueChanged += ParamOnValueChanged;
             }

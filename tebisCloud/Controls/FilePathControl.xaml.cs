@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using Microsoft.Win32;
 using Ookii.Dialogs.Wpf;
 using tebisCloud.Data.Processing.Parameters;
+using Vortice.Direct2D1;
 
 namespace tebisCloud.Controls {
     /// <summary>
@@ -35,19 +36,28 @@ namespace tebisCloud.Controls {
         }
 
         private void SelectPath_OnClick(object sender, RoutedEventArgs e) {
-            VistaFileDialog dlg = new VistaSaveFileDialog();
-            
-            if (FilePath.FileMustExist) {
-                dlg = new VistaOpenFileDialog();
-            }
+            if (FilePath.Mode == FilePath.EPathMode.Directory) {
+                var dlg = new VistaFolderBrowserDialog();
+                dlg.SelectedPath = FilePath.FileName;
 
-            dlg.AddExtension = true;
-            dlg.Title = "Dateipfad auswählen";
-            dlg.Filter = FilePath.Filter;
-            dlg.FileName = FilePath.FileName;
+                if (dlg.ShowDialog(Window.GetWindow(this)) == true) {
+                    FilePath.FileName = dlg.SelectedPath;
+                }
+            } else {
+                VistaFileDialog dlg = new VistaOpenFileDialog();
 
-            if (dlg.ShowDialog(Window.GetWindow(this)) == true) {
-                FilePath.FileName = dlg.FileName;
+                if (FilePath.Mode == FilePath.EPathMode.SaveFile) {
+                    dlg = new VistaSaveFileDialog();
+                }
+
+                dlg.AddExtension = true;
+                dlg.Title = "Dateipfad auswählen";
+                dlg.Filter = FilePath.Filter;
+                dlg.FileName = FilePath.FileName;
+
+                if (dlg.ShowDialog(Window.GetWindow(this)) == true) {
+                    FilePath.FileName = dlg.FileName;
+                }
             }
         }
     }
