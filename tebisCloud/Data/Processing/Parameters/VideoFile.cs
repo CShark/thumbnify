@@ -5,14 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace tebisCloud.Data.Processing.Parameters {
-    internal class StringParam : ParamType {
-        public string Value { get; set; } = "";
+    public class VideoFile : ParamType {
+        public string VideoFileName { get; set; } = "";
 
         public override ParamType Clone() {
-            return new StringParam { Value = Value };
+            // TODO: Copy file
+            return new VideoFile { VideoFileName = VideoFileName };
         }
 
         public override void Dispose() {
+            // TODO: Delete file
         }
     }
 }

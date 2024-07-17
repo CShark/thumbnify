@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 using NAudio.Wave;
 
 namespace tebisCloud.Data.Processing.Parameters {
-    internal class AudioStream : ICloneable, IDisposable {
+    public class AudioStream : ParamType {
         public WaveStream WaveStream { get; set; }
 
-        public object Clone() {
+        public override ParamType Clone() {
             var mem = new MemoryStream();
             WaveFileWriter.WriteWavFileToStream(mem, WaveStream);
             mem.Seek(0, SeekOrigin.Begin);
@@ -18,7 +18,7 @@ namespace tebisCloud.Data.Processing.Parameters {
             return new AudioStream {WaveStream = new WaveFileReader(mem)};
         }
 
-        public void Dispose() {
+        public override void Dispose() {
             WaveStream.Dispose();
         }
     }

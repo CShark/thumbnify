@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace tebisCloud.Data.Processing.Parameters {
-    internal class StringParam : ParamType {
-        public string Value { get; set; } = "";
+    class ThumbnailParam : ParamType {
+        public ThumbnailData Thumbnail { get; set; }
 
         public override ParamType Clone() {
-            return new StringParam { Value = Value };
+            return new ThumbnailParam {
+                Thumbnail = Thumbnail
+            };
         }
 
         public override void Dispose() {

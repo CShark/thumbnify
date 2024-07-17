@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -54,6 +55,8 @@ namespace tebisCloud.Data {
             set => SetField(ref _color, value);
         }
 
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+
         [JsonIgnore]
         public MediaSource Parent { get; set; }
 
@@ -68,6 +71,16 @@ namespace tebisCloud.Data {
             field = value;
             OnPropertyChanged(propertyName);
             return true;
+        }
+
+        public string GetTempDir() {
+            var path = Path.Combine(App.TemporaryDirectory, Id);
+
+            if (!Directory.Exists(path)) {
+                Directory.CreateDirectory(path);
+            }
+
+            return path;
         }
     }
 }

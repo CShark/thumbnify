@@ -14,9 +14,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Fluent;
 using Newtonsoft.Json;
+using tebisCloud.Controls;
 using tebisCloud.Data;
 using tebisCloud.Data.Thumbnail;
 using tebisCloud.Dialogs;
+using Vortice.Direct2D1;
 using Path = System.IO.Path;
 
 namespace tebisCloud {
@@ -67,7 +69,8 @@ namespace tebisCloud {
         }
 
         public static readonly DependencyProperty PreviewMetadataProperty = DependencyProperty.Register(
-            nameof(PreviewMetadata), typeof(PartMetadata), typeof(ThumbnailPresetEditor), new PropertyMetadata(default(PartMetadata)));
+            nameof(PreviewMetadata), typeof(PartMetadata), typeof(ThumbnailPresetEditor),
+            new PropertyMetadata(default(PartMetadata)));
 
         public PartMetadata PreviewMetadata {
             get { return (PartMetadata)GetValue(PreviewMetadataProperty); }
@@ -204,32 +207,45 @@ namespace tebisCloud {
         }
 
         private void SaveThumbnail_OnExecuted(object sender, ExecutedRoutedEventArgs e) {
-            var dlg = new ThumbnailSave();
-            dlg.Owner = this;
+            var result = LoadSaveDialog.ShowSaveDialog(this, App.Settings.Thumbnails, x => {
+                App.Settings.Thumbnails.Remove(x);
+            });
 
-            if (dlg.ShowDialog() == true) {
+            if (result != null) {
                 var json = JsonConvert.SerializeObject(Thumbnail);
-
                 var copy = JsonConvert.DeserializeObject<ThumbnailData>(json);
-                var orig = App.Settings.Thumbnails.FirstOrDefault(x => x.PresetName.ToLower() == dlg.PresetName.ToLower());
+
+
+                var preview = new ThumbnailPreview();
+                preview.Thumbnail = copy;
+                preview.Measure(new Size(1920, 1080));
+                preview.Arrange(new Rect(0, 0, 1920, 1080));
+                preview.UpdateLayout();
+
+                var render = new RenderTargetBitmap(1920, 1080, 96, 96, PixelFormats.Pbgra32);
+                render.Render(preview);
+                copy.Preview = render;
+                copy.Created = DateTime.Now;
+                copy.PresetName = result;
+
+                var orig = App.Settings.Thumbnails.FirstOrDefault(x => x.PresetName.ToLower() == result.ToLower());
 
                 if (orig != null) {
                     App.Settings.Thumbnails.Remove(orig);
                 }
 
-                copy.PresetName = dlg.PresetName;
-                copy.Created = DateTime.Now;
                 App.Settings.Thumbnails.Add(copy);
                 App.SaveSettings();
             }
         }
 
         private void LoadThumbnail_OnExecuted(object sender, ExecutedRoutedEventArgs e) {
-            var dlg = new ThumbnailLoad();
-            dlg.Owner = this;
+            var result = LoadSaveDialog.ShowOpenDialog(this, App.Settings.Thumbnails, x => {
+                App.Settings.Thumbnails.Remove(x);
+            });
 
-            if (dlg.ShowDialog() == true) {
-                var json = JsonConvert.SerializeObject(dlg.SelectedThumbnail);
+            if (result != null) {
+                var json = JsonConvert.SerializeObject(result);
                 var copy = JsonConvert.DeserializeObject<ThumbnailData>(json);
 
                 Thumbnail = copy;

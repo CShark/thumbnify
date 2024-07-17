@@ -11,26 +11,20 @@ using tebisCloud.Data.Processing.Parameters;
 using tebisCloud.Postprocessing;
 
 namespace tebisCloud.Data.Processing.Audio {
-    internal class AudioSaveFile : Node {
-        public override IReadOnlyDictionary<string, Parameter> Parameters { get; protected set; }
-        public override IReadOnlyDictionary<string, Result> Results { get; protected set; }
-        public Parameter<AudioStream> AudioStream { get; set; } = new("audio", "Audio", true);
+    internal sealed class AudioSaveFile : Node {
+        public Parameter<AudioStream> AudioStream { get; } = new("audio", true);
 
-        public Parameter<FilePath> AudioFile { get; set; } = new("audio_file", "Dateiname", true,
+        public Parameter<FilePath> AudioFile { get; } = new("path", true,
             new(FilePath.EPathMode.SaveFile, "MP3-Audio|*.mp3"));
 
         public AudioSaveFile() {
-            Initialize();
+            RegisterParameter(AudioStream);
+            RegisterParameter(AudioFile);
         }
 
-        protected override void InitializeParamsResults() {
-            Parameters = new Dictionary<string, Parameter>() {
-                { AudioStream.Id, AudioStream },
-                { AudioFile.Id, AudioFile }
-            };
-
-            Results = new Dictionary<string, Result>();
-        }
+        protected override ENodeType NodeType => ENodeType.Audio;
+        protected override string NodeId => Id;
+        public static string Id => "audio_save";
 
         protected override bool Execute(CancellationToken cancelToken) {
             throw new Exception("Test");
@@ -53,10 +47,6 @@ namespace tebisCloud.Data.Processing.Audio {
                 LogMessage("Failed to save audio: " + ex);
                 return false;
             }
-        }
-
-        public override EditorNode GenerateNode() {
-            return new EditorNode("Audio Speichern", ENodeType.Audio, this);
         }
     }
 }

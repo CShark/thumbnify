@@ -13,7 +13,7 @@
         ShowInTaskbar="False"
         Title="{Binding Title}">
     <Window.Resources>
-        <Style TargetType="Button" BasedOn="{StaticResource StateButton}">
+        <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
             <Setter Property="Margin" Value="3"></Setter>
         </Style>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />

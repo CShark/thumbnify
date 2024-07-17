@@ -1,35 +1,30 @@
 ﻿using System.IO;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using tebisCloud.Data.Processing.Parameters;
 using tebisCloud.Postprocessing;
 
 namespace tebisCloud.Data.Processing.Operations {
-    internal class PathCombine : Node {
-        public override IReadOnlyDictionary<string, Parameter> Parameters { get; protected set; }
-        public override IReadOnlyDictionary<string, Result> Results { get; protected set; }
+    internal sealed class PathCombine : Node {
+        public Parameter<FilePath> SourcePath { get; } =
+            new("path", true, new FilePath(FilePath.EPathMode.Directory, ""));
 
-        public Parameter<FilePath> SourcePath { get; set; } =
-            new("path", "Pfad", true, new FilePath(FilePath.EPathMode.Directory, ""));
-
-        public Parameter<StringParam> Combine { get; set; } = new("suffix", "Sub-Pfad", true, new StringParam());
+        public Parameter<StringParam> Combine { get; } = new("value", true, new StringParam());
 
         [JsonIgnore]
-        public Result<FilePath> ResultPath { get; set; } = new Result<FilePath>("path", "Pfad");
+        public Result<FilePath> ResultPath { get; } = new("path");
 
         public PathCombine() {
-            Initialize();
+            RegisterParameter(SourcePath);
+            RegisterParameter(Combine);
+
+            RegisterResult(ResultPath);
         }
 
-        protected override void InitializeParamsResults() {
-            Parameters = new Dictionary<string, Parameter> {
-                { SourcePath.Id, SourcePath },
-                { Combine.Id, Combine }
-            };
+        protected override ENodeType NodeType => ENodeType.Parameter;
+        protected override string NodeId => Id;
 
-            Results = new Dictionary<string, Result> {
-                { ResultPath.Id, ResultPath }
-            };
-        }
+        public static string Id = "op_pathcombine";
 
         protected override bool Execute(CancellationToken cancelToken) {
             ResultPath.Value = new FilePath(FilePath.EPathMode.Directory, "") {
@@ -37,10 +32,6 @@ namespace tebisCloud.Data.Processing.Operations {
             };
 
             return true;
-        }
-
-        public override EditorNode GenerateNode() {
-            return new EditorNode("Pfad kombinieren", ENodeType.Parameter, this);
         }
     }
 }

@@ -182,17 +182,32 @@
         <controls:ThumbnailPreview Grid.Row="1" Thumbnail="{Binding Thumbnail}"
                                    SelectedControl="{Binding SelectedControl, Mode=TwoWay}" EditMode="True" />
 
-        <Border Grid.Row="1" Width="210" Height="118" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10"
-                Visibility="{Binding ThumbnailPreview, Converter={StaticResource BoolToVis}}">
-            <Border.Effect>
-                <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="Black" Opacity="1" Direction="0"></DropShadowEffect>
-            </Border.Effect>
-            <controls:ThumbnailPreview Thumbnail="{Binding Thumbnail}" PreviewMetadata="{Binding PreviewMetadata}">
-                <controls:ThumbnailPreview.Clip>
-                    <RectangleGeometry Rect="0,0,210,118" RadiusX="8" RadiusY="8"></RectangleGeometry>
-                </controls:ThumbnailPreview.Clip>
-            </controls:ThumbnailPreview>
-        </Border>
+        <StackPanel Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            <Border  Width="210" Height="118"  Margin="10" HorizontalAlignment="Right"
+                     Visibility="{Binding ThumbnailPreview, Converter={StaticResource BoolToVis}}">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="Black" Opacity="1" Direction="0"></DropShadowEffect>
+                </Border.Effect>
+                <controls:ThumbnailPreview Thumbnail="{Binding Thumbnail}" PreviewMetadata="{Binding PreviewMetadata}">
+                    <controls:ThumbnailPreview.Clip>
+                        <RectangleGeometry Rect="0,0,210,118" RadiusX="8" RadiusY="8"></RectangleGeometry>
+                    </controls:ThumbnailPreview.Clip>
+                </controls:ThumbnailPreview>
+            </Border>
+
+            <Border  Width="362" Height="203"  Margin="10"
+                     Visibility="{Binding ThumbnailPreview, Converter={StaticResource BoolToVis}}">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="Black" Opacity="1" Direction="0"></DropShadowEffect>
+                </Border.Effect>
+                <controls:ThumbnailPreview Thumbnail="{Binding Thumbnail}" PreviewMetadata="{Binding PreviewMetadata}">
+                    <controls:ThumbnailPreview.Clip>
+                        <RectangleGeometry Rect="0,0,362,203" RadiusX="8" RadiusY="8"></RectangleGeometry>
+                    </controls:ThumbnailPreview.Clip>
+                </controls:ThumbnailPreview>
+            </Border>
+        </StackPanel>
+        
 
     </Grid>
 </Window>

@@ -1,0 +1,482 @@
+﻿<UserControl x:Class="tebisCloud.Controls.GraphEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:tebisCloud.Controls"
+             xmlns:nodify="https://miroiu.github.io/nodify"
+             xmlns:postprocessing="clr-namespace:tebisCloud.Postprocessing"
+             xmlns:processing="clr-namespace:tebisCloud.Data.Processing"
+             xmlns:lex="http://wpflocalizeextension.codeplex.com"
+             xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+             xmlns:converter="clr-namespace:tebisCloud.Converter"
+             xmlns:parameters="clr-namespace:tebisCloud.Data.Processing.Parameters"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <GeometryDrawing x:Key="SmallGridGeometry"
+                         Geometry="M0,0 L0,1 0.03,1 0.03,0.03 1,0.03 1,0 Z"
+                         Brush="{StaticResource NodifyEditor.SelectionRectangleBackgroundBrush}" />
+
+        <GeometryDrawing x:Key="LargeGridGeometry"
+                         Geometry="M0,0 L0,1 0.015,1 0.015,0.015 1,0.015 1,0 Z"
+                         Brush="{StaticResource NodifyEditor.SelectionRectangleBackgroundBrush}" />
+
+        <DrawingBrush x:Key="SmallGridLinesDrawingBrush"
+                      TileMode="Tile"
+                      ViewportUnits="Absolute"
+                      Viewport="0 0 20 20"
+                      Transform="{Binding ViewportTransform, ElementName=Editor}"
+                      Drawing="{StaticResource SmallGridGeometry}" />
+
+        <DrawingBrush x:Key="LargeGridLinesDrawingBrush"
+                      TileMode="Tile"
+                      ViewportUnits="Absolute"
+                      Opacity="0.5"
+                      Viewport="0 0 100 100"
+                      Transform="{Binding ViewportTransform, ElementName=Editor}"
+                      Drawing="{StaticResource LargeGridGeometry}" />
+
+        <converter:BoolInvert x:Key="BoolInvert" />
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <converter:BoolInvVisibility x:Key="BoolToInvVis" />
+        <converter:NodeNameConverter x:Key="NodeNameConverter" />
+        
+        <LinearGradientBrush x:Key="FadeOpacityMask"
+                     StartPoint="0 0"
+                     EndPoint="1 0">
+            <GradientStop Color="#22FFFFFF"
+                  Offset="0" />
+            <GradientStop Color="#88FFFFFF"
+                  Offset="0.3" />
+            <GradientStop Color="#88FFFFFF"
+                  Offset="0.7" />
+            <GradientStop Color="#22FFFFFF"
+                  Offset="1" />
+        </LinearGradientBrush>
+
+        <Style TargetType="nodify:NodeInput">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type nodify:NodeInput}">
+                        <Grid Background="{TemplateBinding Background}">
+                            <Border Visibility="Collapsed"
+                            x:Name="Highlight"
+                            OpacityMask="{StaticResource FadeOpacityMask}"
+                            Background="{TemplateBinding BorderBrush}" />
+
+                            <StackPanel Orientation="{TemplateBinding Orientation}"
+                                Margin="{TemplateBinding Padding}">
+
+                                <Control x:Name="PART_Connector"
+                                 Focusable="False"
+                                 Margin="-10 0 5 0"
+                                 VerticalAlignment="Center"
+                                 Background="Transparent"
+                                 BorderBrush="{TemplateBinding BorderBrush}"
+                                 Template="{TemplateBinding ConnectorTemplate}" />
+
+                                <ContentPresenter Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" />
+                            </StackPanel>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Orientation"
+                             Value="Vertical">
+                                <Setter TargetName="PART_Connector"
+                                Property="Margin"
+                                Value="0 -10 0 5" />
+                            </Trigger>
+
+                            <Trigger Property="IsConnected"
+                             Value="True">
+                                <Setter TargetName="PART_Connector"
+                                Property="Background"
+                                Value="{Binding BorderBrush, RelativeSource={RelativeSource TemplatedParent}}" />
+                            </Trigger>
+                            <Trigger Property="nodify:PendingConnection.IsOverElement"
+                             Value="True">
+                                <Setter TargetName="PART_Connector"
+                                Property="Background"
+                                Value="{Binding BorderBrush, RelativeSource={RelativeSource TemplatedParent}}" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver"
+                             Value="True">
+                                <Setter TargetName="Highlight"
+                                Property="Visibility"
+                                Value="Visible" />
+                            </Trigger>
+                            <Trigger Property="nodify:PendingConnection.IsOverElement"
+                             Value="True">
+                                <Setter TargetName="Highlight"
+                                Property="Visibility"
+                                Value="Visible" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="nodify:NodeOutput">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type nodify:NodeOutput}">
+                        <Grid Background="{TemplateBinding Background}">
+                            <Border Visibility="Collapsed"
+                            x:Name="Highlight"
+                            OpacityMask="{StaticResource FadeOpacityMask}"
+                            Background="{TemplateBinding BorderBrush}" />
+
+                            <StackPanel Orientation="{TemplateBinding Orientation}"
+                                HorizontalAlignment="Right"
+                                Margin="{TemplateBinding Padding}">
+
+                                <ContentPresenter Content="{TemplateBinding Header}"  ContentTemplateSelector="{TemplateBinding HeaderTemplate}" />
+
+                                <Control x:Name="PART_Connector"
+                                 Focusable="False"
+                                 Margin="5 0 -10 0"
+                                 VerticalAlignment="Center"
+                                 Background="Transparent"
+                                 BorderBrush="{TemplateBinding BorderBrush}"
+                                 Template="{TemplateBinding ConnectorTemplate}" />
+                            </StackPanel>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Orientation"
+                             Value="Vertical">
+                                <Setter TargetName="PART_Connector"
+                                Property="Margin"
+                                Value="0 5 0 -10" />
+                            </Trigger>
+
+                            <Trigger Property="IsConnected"
+                             Value="True">
+                                <Setter TargetName="PART_Connector"
+                                Property="Background"
+                                Value="{Binding BorderBrush, RelativeSource={RelativeSource TemplatedParent}}" />
+                            </Trigger>
+                            <Trigger Property="nodify:PendingConnection.IsOverElement"
+                             Value="True">
+                                <Setter TargetName="PART_Connector"
+                                Property="Background"
+                                Value="{Binding BorderBrush, RelativeSource={RelativeSource TemplatedParent}}" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver"
+                             Value="True">
+                                <Setter TargetName="Highlight"
+                                Property="Visibility"
+                                Value="Visible" />
+                            </Trigger>
+                            <Trigger Property="nodify:PendingConnection.IsOverElement"
+                             Value="True">
+                                <Setter TargetName="Highlight"
+                                Property="Visibility"
+                                Value="Visible" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="nodify:Node">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type nodify:Node}">
+                        <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Padding="{TemplateBinding Padding}"
+                        CornerRadius="3">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <!--Header-->
+                                <Border
+                            Visibility="{TemplateBinding HasHeader, Converter={StaticResource BoolToVis}}"
+                            Background="{TemplateBinding HeaderBrush}"
+                            CornerRadius="3 3 0 0">
+                                    <ContentPresenter ContentSource="Header" />
+                                </Border>
+
+                                <!--Body-->
+                                <StackPanel Grid.Row="1">
+                                    <!--Data OUT-->
+                                    <ItemsControl ItemsSource="{TemplateBinding Output}"
+                                          ItemTemplate="{TemplateBinding OutputConnectorTemplate}"
+                                          VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                                          HorizontalContentAlignment="Right"
+                                          Grid.Row="2"
+                                          Focusable="False" />
+
+                                    <!--Content-->
+                                    <Border Grid.Row="1"
+                                    Padding="16 0 16 0"
+                                    Background="{TemplateBinding ContentBrush}">
+                                        <ContentPresenter
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
+                                    </Border>
+
+                                    <!--Data IN-->
+                                    <ItemsControl ItemsSource="{TemplateBinding Input}"
+                                          Margin="0,0,0,5"
+                                          VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                                          ItemTemplate="{TemplateBinding InputConnectorTemplate}"
+                                          Focusable="False" />
+                                </StackPanel>
+
+                                <!--Footer-->
+                                <Border
+                            Visibility="{TemplateBinding HasFooter, Converter={StaticResource BoolToVis}}"
+                            Background="{TemplateBinding FooterBrush}"
+                            CornerRadius="0 0 3 3"
+                            Grid.Row="2"
+                            Grid.ColumnSpan="3"
+                            Padding="6 4 6 4">
+                                    <ContentPresenter ContentSource="Footer" />
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:GraphEditor}}">
+        <Grid Background="{StaticResource NodifyEditor.BackgroundBrush}"
+              lex:ResxLocalizationProvider.DefaultDictionary="Nodes">
+            <Grid Background="{StaticResource LargeGridLinesDrawingBrush}"></Grid>
+            <nodify:NodifyEditor x:Name="Editor" Connections="{Binding Connections}"
+                                 Background="{StaticResource SmallGridLinesDrawingBrush}"
+                                 DisconnectConnectorCommand="{Binding DisconnectCommand}"
+                                 PendingConnection="{Binding PendingConnection}" ItemsSource="{Binding Nodes}">
+                <nodify:NodifyEditor.Resources>
+                    <Style TargetType="nodify:ItemContainer">
+                        <Setter Property="BorderBrush" Value="DimGray" />
+
+                        <Style.Triggers>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected"
+                                               Value="True" />
+                                    <Condition Property="IsPreviewingSelection"
+                                               Value="{x:Null}" />
+                                </MultiTrigger.Conditions>
+                                <MultiTrigger.Setters>
+                                    <Setter Property="BorderBrush"
+                                            Value="{Binding SelectedBrush, RelativeSource={RelativeSource Self}}" />
+                                    <Setter Property="Margin"
+                                            Value="{Binding SelectedMargin, RelativeSource={RelativeSource Self}}" />
+                                    <Setter Property="BorderThickness"
+                                            Value="{Binding SelectedBorderThickness, RelativeSource={RelativeSource Self}}" />
+                                </MultiTrigger.Setters>
+                            </MultiTrigger>
+                            <Trigger Property="IsPreviewingSelection"
+                                     Value="True">
+                                <Setter Property="BorderBrush"
+                                        Value="{Binding SelectedBrush, RelativeSource={RelativeSource Self}}" />
+                                <Setter Property="Margin"
+                                        Value="{Binding SelectedMargin, RelativeSource={RelativeSource Self}}" />
+                                <Setter Property="BorderThickness"
+                                        Value="{Binding SelectedBorderThickness, RelativeSource={RelativeSource Self}}" />
+                            </Trigger>
+                            <Trigger Property="nodify:PendingConnection.IsOverElement"
+                                     Value="True">
+                                <Setter Property="BorderBrush"
+                                        Value="{Binding HighlightBrush, RelativeSource={RelativeSource Self}}" />
+                                <Setter Property="Margin"
+                                        Value="{Binding SelectedMargin, RelativeSource={RelativeSource Self}}" />
+                                <Setter Property="BorderThickness"
+                                        Value="{Binding SelectedBorderThickness, RelativeSource={RelativeSource Self}}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </nodify:NodifyEditor.Resources>
+                <nodify:NodifyEditor.ItemTemplate>
+                    <DataTemplate DataType="{x:Type postprocessing:EditorNode}">
+                        <nodify:Node Input="{Binding Inputs}" HorizontalContentAlignment="Stretch"
+                                     Output="{Binding Outputs}" Width="200">
+                            <nodify:Node.Header>
+                                <StackPanel Margin="0,1,0,0">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="20" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="20" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <CheckBox IsChecked="{Binding SourceNode.IsExpanded}"
+                                                  VerticalAlignment="Center">
+                                            <CheckBox.Template>
+                                                <ControlTemplate TargetType="CheckBox">
+                                                    <Border Background="#01000000">
+                                                        <wpf:MaterialIcon Kind="ChevronDown" x:Name="Arrow"
+                                                                          Foreground="{StaticResource ControlForeground}" />
+                                                    </Border>
+
+                                                    <ControlTemplate.Triggers>
+                                                        <DataTrigger Binding="{Binding SourceNode.IsExpanded}"
+                                                                     Value="False">
+                                                            <Setter TargetName="Arrow" Property="Kind"
+                                                                    Value="ChevronRight" />
+                                                        </DataTrigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </CheckBox.Template>
+                                        </CheckBox>
+
+                                        <TextBlock Text="{lex:Loc {Binding TitleId}}" Margin="6,0,0,0" Grid.Column="1"
+                                                   VerticalAlignment="Center" />
+
+                                        <ContentPresenter Content="{Binding SourceNode.NodeStatus}" Grid.Column="2">
+                                            <ContentPresenter.ContentTemplate>
+                                                <DataTemplate DataType="{x:Type processing:ENodeStatus}">
+                                                    <wpf:MaterialIcon x:Name="Icon" Visibility="Collapsed" Height="16"
+                                                                      Cursor="Hand">
+                                                        <wpf:MaterialIcon.Effect>
+                                                            <DropShadowEffect ShadowDepth="0" BlurRadius="10"
+                                                                              Opacity=".7"
+                                                                              Color="DimGray">
+                                                            </DropShadowEffect>
+                                                        </wpf:MaterialIcon.Effect>
+                                                    </wpf:MaterialIcon>
+
+                                                    <DataTemplate.Triggers>
+                                                        <DataTrigger Binding="{Binding}"
+                                                                     Value="{x:Static processing:ENodeStatus.Running}">
+                                                            <Setter TargetName="Icon" Property="Visibility"
+                                                                    Value="Visible" />
+                                                            <Setter TargetName="Icon" Property="Kind"
+                                                                    Value="ClockTimeFour" />
+                                                            <Setter TargetName="Icon" Property="Foreground"
+                                                                    Value="DarkGray" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding}"
+                                                                     Value="{x:Static processing:ENodeStatus.Completed}">
+                                                            <Setter TargetName="Icon" Property="Visibility"
+                                                                    Value="Visible" />
+                                                            <Setter TargetName="Icon" Property="Kind"
+                                                                    Value="CheckCircle" />
+                                                            <Setter TargetName="Icon" Property="Foreground"
+                                                                    Value="GreenYellow" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding}"
+                                                                     Value="{x:Static processing:ENodeStatus.Error}">
+                                                            <Setter TargetName="Icon" Property="Visibility"
+                                                                    Value="Visible" />
+                                                            <Setter TargetName="Icon" Property="Kind"
+                                                                    Value="CloseOctagon" />
+                                                            <Setter TargetName="Icon" Property="Foreground"
+                                                                    Value="Orange" />
+                                                        </DataTrigger>
+                                                    </DataTemplate.Triggers>
+                                                </DataTemplate>
+                                            </ContentPresenter.ContentTemplate>
+                                        </ContentPresenter>
+                                    </Grid>
+                                    <Border Background="{StaticResource ControlBackground}" Margin="0,1,0,0">
+                                        <ProgressBar Foreground="LightGreen" BorderThickness="0" Height="5"
+                                                     Margin="0,3,0,0" Maximum="1"
+                                                     Value="{Binding SourceNode.Progress, Mode=OneWay}"
+                                                     Background="Transparent" />
+                                    </Border>
+                                </StackPanel>
+                            </nodify:Node.Header>
+                            <nodify:Node.HeaderBrush>
+                                <SolidColorBrush Color="{Binding NodeColor}" />
+                            </nodify:Node.HeaderBrush>
+                            <nodify:Node.InputConnectorTemplate>
+                                <DataTemplate DataType="{x:Type postprocessing:Connector}">
+                                    <StackPanel>
+                                        <nodify:NodeInput
+                                            Header="{Binding Parameter, Converter={StaticResource NodeNameConverter}}"
+                                            IsConnected="true"
+                                            Margin="0,5,0,0"
+                                            ConnectorTemplate="{Binding Type, Converter={StaticResource ParamTypeToConnector}}"
+                                            Anchor="{Binding Anchor,Mode=OneWayToSource}">
+                                            <nodify:NodeInput.BorderBrush>
+                                                <SolidColorBrush
+                                                    Color="{Binding Type, Converter={StaticResource ParamTypeToColor}}" />
+                                            </nodify:NodeInput.BorderBrush>
+                                        </nodify:NodeInput>
+                                        <Grid IsEnabled="{Binding IsConnected, Converter={StaticResource BoolInvert}}"
+                                              Visibility="{Binding Parent.SourceNode.IsExpanded, Converter={StaticResource BoolToVis}}">
+                                            <Grid
+                                                Visibility="{Binding IsConnected, Converter={StaticResource BoolToInvVis}}">
+                                                <ContentPresenter Margin="10,0,10,0"
+                                                                  Content="{Binding Parameter.DefaultValueObj}" />
+                                            </Grid>
+                                        </Grid>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </nodify:Node.InputConnectorTemplate>
+                            <nodify:Node.OutputConnectorTemplate>
+                                <DataTemplate DataType="{x:Type postprocessing:Connector}">
+                                    <nodify:NodeOutput IsConnected="true" Margin="0,5,0,0"
+                                                       Header="{Binding Result, Converter={StaticResource NodeNameConverter}}"
+                                                       ConnectorTemplate="{Binding Type, Converter={StaticResource ParamTypeToConnector}}"
+                                                       Anchor="{Binding Anchor,Mode=OneWayToSource}">
+                                        <nodify:NodeOutput.BorderBrush>
+                                            <SolidColorBrush
+                                                Color="{Binding Type, Converter={StaticResource ParamTypeToColor}}" />
+                                        </nodify:NodeOutput.BorderBrush>
+                                    </nodify:NodeOutput>
+                                </DataTemplate>
+                            </nodify:Node.OutputConnectorTemplate>
+
+                            <ItemsControl ItemsSource="{Binding StaticParameters}"
+                                          Visibility="{Binding SourceNode.IsExpanded, Converter={StaticResource BoolToVis}}"
+                                          Margin="0,3">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type processing:Parameter}">
+                                        <StackPanel Margin="0,3">
+                                            <TextBlock
+                                                Text="{lex:Loc {Binding Converter={StaticResource NodeNameConverter}}}"
+                                                HorizontalAlignment="Left"
+                                                Visibility="{Binding ShowName, Converter={StaticResource BoolToVis}}" />
+                                            <ContentPresenter Content="{Binding DefaultValueObj}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </nodify:Node>
+
+                    </DataTemplate>
+                </nodify:NodifyEditor.ItemTemplate>
+                <nodify:NodifyEditor.ItemContainerStyle>
+                    <Style TargetType="nodify:ItemContainer">
+                        <Setter Property="Location" Value="{Binding SourceNode.NodeLocation}" />
+                    </Style>
+                </nodify:NodifyEditor.ItemContainerStyle>
+                <nodify:NodifyEditor.ConnectionTemplate>
+                    <DataTemplate DataType="{x:Type postprocessing:Connection}">
+                        <nodify:Connection Source="{Binding Source.Anchor}" Target="{Binding Target.Anchor}"
+                                           SourceOffset="5,0" TargetOffset="5,0"
+                                           StrokeThickness="1" Spacing="0">
+                            <nodify:Connection.Stroke>
+                                <SolidColorBrush Color="{Binding Type, Converter={StaticResource ParamTypeToColor}}" />
+                            </nodify:Connection.Stroke>
+                            <nodify:Connection.Fill>
+                                <SolidColorBrush Color="{Binding Type, Converter={StaticResource ParamTypeToColor}}" />
+                            </nodify:Connection.Fill>
+                        </nodify:Connection>
+                    </DataTemplate>
+                </nodify:NodifyEditor.ConnectionTemplate>
+                <nodify:NodifyEditor.PendingConnectionTemplate>
+                    <DataTemplate DataType="{x:Type postprocessing:PendingConnection}">
+                        <nodify:PendingConnection StartedCommand="{Binding StartCommand}"
+                                                  CompletedCommand="{Binding FinishCommand}" AllowOnlyConnectors="true"
+                                                  StrokeThickness="1">
+                        </nodify:PendingConnection>
+                    </DataTemplate>
+                </nodify:NodifyEditor.PendingConnectionTemplate>
+            </nodify:NodifyEditor>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -5,11 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace tebisCloud.Data.Processing.Parameters {
-    internal class StringParam : ParamType {
-        public string Value { get; set; } = "";
+    class DateParam : ParamType {
+        public DateTime Value { get; set; } = DateTime.Today;
+
+        public bool Today { get; set; }
 
         public override ParamType Clone() {
-            return new StringParam { Value = Value };
+            return new DateParam {
+                Value = Value,
+                Today = Today
+            };
         }
 
         public override void Dispose() {

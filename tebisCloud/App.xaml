@@ -3,11 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:tebisCloud"
              xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
-             StartupUri="ProcessingEditor.xaml">
-    <!--StartupUri="MainWindow.xaml">-->
+             StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ParameterEditors.xaml" />
                 <ResourceDictionary Source="ExpressionDark.xaml"></ResourceDictionary>
                 <ResourceDictionary
                     Source="pack://application:,,,/ColorPicker;component/Styles/DefaultColorPickerStyle.xaml" />
@@ -463,6 +463,127 @@
                 </Setter>
             </Style>
 
+            <Style x:Key="FirstButtonVertical" TargetType="ContentControl">
+                <Setter Property="Width" Value="24"></Setter>
+                <Setter Property="Height" Value="24"></Setter>
+                <Setter Property="FontSize" Value="14"></Setter>
+                <Setter Property="Foreground" Value="{StaticResource ControlForeground}"></Setter>
+                <Setter Property="Margin" Value="1,0"></Setter>
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ContentControl">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="12"></RowDefinition>
+                                    <RowDefinition></RowDefinition>
+                                </Grid.RowDefinitions>
+
+                                <Ellipse Width="24" Height="24" Stroke="{StaticResource ControlBorder}"
+                                         Fill="{StaticResource ControlBackground}">
+                                </Ellipse>
+                                <Border Grid.Row="1" Background="{StaticResource ControlBackground}"
+                                        BorderBrush="{StaticResource ControlBorder}" BorderThickness="1,0,1,1">
+                                </Border>
+
+                                <Grid Opacity="0" x:Name="Highlight" Grid.ColumnSpan="2">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="12"></RowDefinition>
+                                        <RowDefinition></RowDefinition>
+                                    </Grid.RowDefinitions>
+
+                                    <Ellipse Width="24" Height="24"
+                                             Fill="Gray">
+                                    </Ellipse>
+                                    <Border Grid.Row="1" Background="Gray">
+                                    </Border>
+                                </Grid>
+
+                                <ContentPresenter Content="{TemplateBinding Content}" VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center" Grid.RowSpan="2" Margin="0,3,0,0" />
+
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Normal" />
+                                        <VisualState Name="MouseOver">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.3" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState Name="Pressed" />
+                                        <VisualState Name="Disabled" />
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="LastButtonVertical" TargetType="ContentControl">
+                <Setter Property="Width" Value="24"></Setter>
+                <Setter Property="Height" Value="24"></Setter>
+                <Setter Property="FontSize" Value="14"></Setter>
+                <Setter Property="Foreground" Value="{StaticResource ControlForeground}"></Setter>
+                <Setter Property="Margin" Value="1,0"></Setter>
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ContentControl">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition></RowDefinition>
+                                    <RowDefinition Height="12"></RowDefinition>
+                                </Grid.RowDefinitions>
+
+                                <Ellipse Grid.Row="1" Width="24" Margin="0,-12,0,0" Height="24"
+                                         Stroke="{StaticResource ControlBorder}"
+                                         Fill="{StaticResource ControlBackground}">
+                                </Ellipse>
+                                <Border Background="{StaticResource ControlBackground}"
+                                        BorderBrush="{StaticResource ControlBorder}" BorderThickness="1,1,1,0">
+                                </Border>
+
+                                <Grid Opacity="0" x:Name="Highlight" Grid.RowSpan="2">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition></RowDefinition>
+                                        <RowDefinition Height="12"></RowDefinition>
+                                    </Grid.RowDefinitions>
+
+                                    <Ellipse Grid.Row="1" Margin="0,-12,0,0" Width="24" Height="24"
+                                             Fill="Gray">
+                                    </Ellipse>
+                                    <Border Background="Gray">
+                                    </Border>
+                                </Grid>
+
+                                <ContentPresenter Content="{TemplateBinding Content}" VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center" Grid.RowSpan="2" Margin="0,0,0,3" />
+
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Normal" />
+                                        <VisualState Name="MouseOver">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.3" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState Name="Pressed" />
+                                        <VisualState Name="Disabled" />
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
             <Style x:Key="MiddleButton" TargetType="ContentControl">
                 <Setter Property="Width" Value="30"></Setter>
                 <Setter Property="Height" Value="24"></Setter>
@@ -628,21 +749,20 @@
             </Style>
 
             <Style x:Key="SquareButton" TargetType="ContentControl">
-                <Setter Property="Width" Value="18"></Setter>
-                <Setter Property="Height" Value="18"></Setter>
+                <Setter Property="Width" Value="24"></Setter>
+                <Setter Property="Height" Value="24"></Setter>
                 <Setter Property="FontSize" Value="10"></Setter>
                 <Setter Property="Margin" Value="2"></Setter>
-                <Setter Property="Foreground" Value="{StaticResource ControlForeground}"></Setter>
+                <Setter Property="Foreground" Value="{StaticResource ControlForeground}" />
+                <Setter Property="Background" Value="{StaticResource ControlBackground}" />
+                <Setter Property="BorderBrush" Value="{StaticResource ControlBorder}" />
 
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ContentControl">
                             <Grid>
-                                <Border Background="{StaticResource ControlBackground}" BorderThickness="1"
-                                        BorderBrush="{StaticResource ControlBorder}" CornerRadius="4">
-                                </Border>
-                                <Border CornerRadius="4" Background="{TemplateBinding Background}" Opacity="0"
-                                        x:Name="BaseColor">
+                                <Border Background="{TemplateBinding Background}" BorderThickness="1"
+                                        BorderBrush="{TemplateBinding BorderBrush}" CornerRadius="4">
                                 </Border>
                                 <Border CornerRadius="4" Opacity=".1" x:Name="Overlay">
                                     <Border.Background>
@@ -654,7 +774,7 @@
                                 </Border>
 
                                 <ContentPresenter Content="{TemplateBinding Content}" VerticalAlignment="Center"
-                                                  HorizontalAlignment="Center" />
+                                                  HorizontalAlignment="Center" Margin="2" />
 
                                 <Rectangle Fill="Gray" Opacity="0" x:Name="Highlight"></Rectangle>
 
@@ -671,24 +791,6 @@
                                         </VisualState>
                                         <VisualState Name="Pressed" />
                                         <VisualState Name="Disabled" />
-                                    </VisualStateGroup>
-                                    <VisualStateGroup Name="CheckStates">
-                                        <VisualState Name="Checked">
-                                            <Storyboard>
-                                                <ColorAnimation To="#525252" Storyboard.TargetName="Overlay"
-                                                                Storyboard.TargetProperty="(Border.Background).(GradientBrush.GradientStops)[0].Color"
-                                                                Duration="0:0:0.1">
-                                                </ColorAnimation>
-                                                <ColorAnimation To="White" Storyboard.TargetName="Overlay"
-                                                                Storyboard.TargetProperty="(Border.Background).(GradientBrush.GradientStops)[1].Color"
-                                                                Duration="0:0:0.1">
-                                                </ColorAnimation>
-                                                <DoubleAnimation To="0.6" Storyboard.TargetName="BaseColor"
-                                                                 Storyboard.TargetProperty="Opacity" Duration="0:0:0.1">
-                                                </DoubleAnimation>
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState Name="Unchecked"></VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                             </Grid>

@@ -34,15 +34,26 @@ namespace tebisCloud.Data.Processing {
         private ENodeStatus _nodeStatus = ENodeStatus.Pending;
         private bool _isExpanded = true;
 
+        private Dictionary<string, Parameter> _parameters = new();
+        private Dictionary<string, Result> _results = new();
+
         public event Action<Node> NodeCompleted;
 
-        public string Id { get; set; }
+        public event Action PortsChanged;
+
+        public string Uid { get; set; }
 
         [JsonIgnore]
-        public abstract IReadOnlyDictionary<string, Parameter> Parameters { get; protected set; }
+        public IReadOnlyDictionary<string, Parameter> Parameters => _parameters;
 
         [JsonIgnore]
-        public abstract IReadOnlyDictionary<string, Result> Results { get; protected set; }
+        public IReadOnlyDictionary<string, Result> Results => _results;
+
+        [JsonIgnore]
+        protected abstract ENodeType NodeType { get; }
+
+        [JsonIgnore]
+        protected abstract string NodeId { get; }
 
         [JsonIgnore]
         public ENodeStatus NodeStatus {
@@ -73,26 +84,24 @@ namespace tebisCloud.Data.Processing {
         }
 
         protected Node() {
-            Parameters = new Dictionary<string, Parameter>();
-            Results = new Dictionary<string, Result>();
-            Id = Guid.NewGuid().ToString();
+            Uid = Guid.NewGuid().ToString();
         }
 
-        protected void Initialize() {
-            OnDeserialized(new StreamingContext());
+        protected void RegisterParameter(Parameter param) {
+            _parameters.Add(param.Id, param);
+            param.ValueChanged += ParamOnValueChanged;
         }
 
-        protected abstract void InitializeParamsResults();
+        protected void RegisterResult(Result result) {
+            _results.Add(result.Id, result);
+        }
 
-        [OnDeserialized]
-        internal void OnDeserialized(StreamingContext context) {
-            foreach (var param in Parameters.Values) {
-                param.ValueChanged -= ParamOnValueChanged;
-            }
-            InitializeParamsResults();
-            foreach (var param in Parameters.Values) {
-                param.ValueChanged += ParamOnValueChanged;
-            }
+        protected void ClearResults() {
+            _results.Clear();
+        }
+
+        protected void ClearParameters() {
+            _parameters.Clear();
         }
 
         private void ParamOnValueChanged() {
@@ -113,6 +122,7 @@ namespace tebisCloud.Data.Processing {
                                 LogMessage("Node execution failed: " + ex);
                                 NodeStatus = ENodeStatus.Error;
                             }
+
                             Progress = 1000;
                             OnNodeCompleted();
                         }, CancelToken);
@@ -150,10 +160,12 @@ namespace tebisCloud.Data.Processing {
         }
 
         protected void ReportProgress(long step, long max) {
-            Progress = (double)step  / max;
+            Progress = (double)step / max;
         }
 
-        public abstract EditorNode GenerateNode();
+        public EditorNode GenerateNode() {
+            return new EditorNode(NodeId, NodeType, this);
+        }
 
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -171,6 +183,10 @@ namespace tebisCloud.Data.Processing {
 
         protected virtual void OnNodeCompleted() {
             NodeCompleted?.Invoke(this);
+        }
+
+        protected virtual void OnPortsChanged() {
+            PortsChanged?.Invoke();
         }
     }
 }

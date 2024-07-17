@@ -311,8 +311,8 @@ namespace tebisCloud {
             SelectionVisible = false;
 
             if (SelectedMedia != null) {
-                var json = JsonConvert.SerializeObject(App.Settings.GetDefaultThumbnail());
-                var thumb = JsonConvert.DeserializeObject<ThumbnailData>(json);
+                //var json = JsonConvert.SerializeObject(App.Settings.GetDefaultThumbnail());
+                //var thumb = JsonConvert.DeserializeObject<ThumbnailData>(json);
 
                 var part = new MediaPart {
                     Start = SelectionStart,
@@ -320,7 +320,7 @@ namespace tebisCloud {
                     Duration = SelectionLength,
                     Color = PartColors[SelectedMedia.Parts.Count % PartColors.Count],
                     Name = $"#{SelectedMedia.Parts.Count}",
-                    Thumbnail = thumb,
+                   // Thumbnail = thumb,
                     Metadata = new PartMetadata {
                         Date = SelectedMedia.Date
                     },
@@ -376,6 +376,18 @@ namespace tebisCloud {
                     UploadQueue.Remove(part);
                 }
             }
+        }
+
+        private void EditThumbnails_OnClick(object sender, RoutedEventArgs e) {
+            var dlg = new ThumbnailPresetEditor();
+            dlg.Owner = this;
+            dlg.ShowDialog();
+        }
+
+        private void EditPostprocessing_OnClick(object sender, RoutedEventArgs e) {
+            var dlg = new ProcessingEditor();
+            dlg.Owner = this;
+            dlg.ShowDialog();
         }
     }
 }

@@ -11,31 +11,22 @@ using tebisCloud.Data.Processing.Parameters;
 using tebisCloud.Postprocessing;
 
 namespace tebisCloud.Data.Processing.Audio {
-    internal class AudioLoadFile : Node {
-        public Parameter<FilePath> AudioFile { get; set; } = new("audio_file", "Dateiname", true,
+    internal sealed class AudioLoadFile : Node {
+        public Parameter<FilePath> AudioFile { get; } = new("path", true,
             new(FilePath.EPathMode.OpenFile, "Alle Dateien|*.mp4;*.mkv;*.mp3"));
 
         [JsonIgnore]
-        public Result<AudioStream> AudioStream { get; } = new("audio_stream", "Audio");
-
-        public override IReadOnlyDictionary<string, Parameter> Parameters { get; protected set; }
-
-        public override IReadOnlyDictionary<string, Result> Results { get; protected set; }
+        public Result<AudioStream> AudioStream { get; } = new("audio");
 
 
         public AudioLoadFile() {
-            Initialize();
+            RegisterParameter(AudioFile);
+            RegisterResult(AudioStream);
         }
 
-        protected override void InitializeParamsResults() {
-            Parameters = new Dictionary<string, Parameter>() {
-                { AudioFile.Id, AudioFile }
-            };
-
-            Results = new Dictionary<string, Result>() {
-                { AudioStream.Id, AudioStream }
-            };
-        }
+        protected override ENodeType NodeType => ENodeType.Audio;
+        protected override string NodeId => Id;
+        public static string Id => "audio_load";
 
         protected override bool Execute(CancellationToken cancelToken) {
             try {
@@ -54,11 +45,7 @@ namespace tebisCloud.Data.Processing.Audio {
                 return false;
             }
         }
-
-        public override EditorNode GenerateNode() {
-            return new("Audio Laden", ENodeType.Audio, this);
-        }
-
+        
 
         //public async Task<EStepStatus> ExecuteInternal(CancellationToken cancelToken) {
         //    //if (!File.Exists(AudioFile)) {

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace tebisCloud.Data.Processing.Parameters {
-    public class FilePath : ICloneable, INotifyPropertyChanged {
+    public class FilePath : ParamType, INotifyPropertyChanged {
 
         public enum EPathMode {
             SaveFile,
@@ -29,10 +29,14 @@ namespace tebisCloud.Data.Processing.Parameters {
         [JsonIgnore]
         public string Filter { get; }
 
-        public object Clone() {
+        public override ParamType Clone() {
             return new FilePath {
                 FileName = FileName
             };
+        }
+
+        public override void Dispose() {
+            
         }
 
         private FilePath() {

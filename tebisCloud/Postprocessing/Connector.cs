@@ -13,7 +13,6 @@ namespace tebisCloud.Postprocessing {
     public class Connector : INotifyPropertyChanged {
         private Point _anchor;
         private bool _isConnected;
-        public string Name { get; }
 
         public Type Type { get; }
 
@@ -33,12 +32,13 @@ namespace tebisCloud.Postprocessing {
         }
 
         public EditorNode Parent { get; }
+
+        public List<Connection> Connections { get; } = new();
         
         public Connector(EditorNode parent, Parameter param) {
             Type = param.Type;
             Parent = parent;
             Id = param.Id;
-            Name = param.Name;
             Parameter = param;
         }
 
@@ -46,7 +46,6 @@ namespace tebisCloud.Postprocessing {
             Type = result.Type;
             Parent = parent;
             Id = result.Id;
-            Name = result.Name;
             Result = result;
         }
 

@@ -4,15 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using tebisCloud.Data.Processing.Parameters;
+using WPFLocalizeExtension.Engine;
 
 namespace tebisCloud.Data.Processing {
     public abstract class Parameter {
         public event Action ValueChanged;
 
         public string Id { get; set; }
-
-        [JsonIgnore]
-        public string Name { get; set; }
 
         [JsonIgnore]
         public bool Bindable { get; set; }
@@ -27,18 +26,17 @@ namespace tebisCloud.Data.Processing {
         public abstract bool HasValue { get; }
 
         [JsonIgnore]
-        public abstract object? DefaultValueObj { get; }
+        public abstract ParamType? DefaultValueObj { get; }
 
-        protected Parameter(string id, string name, bool bindable, bool showName) {
+        protected Parameter(string id, bool bindable, bool showName) {
             Id = id;
-            Name = name;
             Bindable = bindable;
             ShowName = showName;
         }
 
         public abstract void ApplyDefaultValue();
 
-        public abstract void ApplyValue(object? value);
+        public abstract void ApplyValue(ParamType? value);
 
         public abstract void Clear();
 
@@ -47,7 +45,7 @@ namespace tebisCloud.Data.Processing {
         }
     }
 
-    public sealed class Parameter<T> : Parameter where T : ICloneable {
+    public sealed class Parameter<T> : Parameter where T : ParamType {
         private T? _value = default;
 
         public override Type Type => typeof(T);
@@ -65,10 +63,10 @@ namespace tebisCloud.Data.Processing {
 
         public override bool HasValue => Value != null;
 
-        public override object? DefaultValueObj => DefaultValue;
+        public override ParamType? DefaultValueObj => DefaultValue;
 
-        public Parameter(string id, string name, bool bindable, T? defaultValue = default, bool showName = true) : base(
-            id, name, bindable, showName) {
+        public Parameter(string id, bool bindable, T? defaultValue = default, bool showName = true) : base(
+            id, bindable, showName) {
             DefaultValue = defaultValue;
         }
 
@@ -76,7 +74,7 @@ namespace tebisCloud.Data.Processing {
             Value = DefaultValue;
         }
 
-        public override void ApplyValue(object? value) {
+        public override void ApplyValue(ParamType? value) {
             if (value is T t) {
                 Value = t;
             } else {
@@ -85,10 +83,7 @@ namespace tebisCloud.Data.Processing {
         }
 
         public override void Clear() {
-            if (_value is IDisposable d) {
-                d.Dispose();
-            }
-
+            _value?.Dispose();
             _value = default;
         }
     }

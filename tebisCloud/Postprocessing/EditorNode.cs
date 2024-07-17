@@ -32,8 +32,8 @@ namespace tebisCloud.Postprocessing {
             { ENodeType.Parameter, Colors.CornflowerBlue }
         };
 
-        public EditorNode(string title, ENodeType nodeType, Node sourceNode) {
-            Title = title;
+        public EditorNode(string titleId, ENodeType nodeType, Node sourceNode) {
+            TitleId = titleId;
             SourceNode = sourceNode;
             NodeType = nodeType;
 
@@ -43,8 +43,7 @@ namespace tebisCloud.Postprocessing {
 
             NodeColor = TypeColorMap[NodeType];
         }
-
-        public string Title { get; }
+        public string TitleId { get; }
 
         public ENodeType NodeType { get; }
 

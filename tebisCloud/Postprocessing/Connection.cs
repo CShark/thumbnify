@@ -16,9 +16,6 @@ namespace tebisCloud.Postprocessing {
             Source = source;
             Target = target;
             Type = type;
-
-            Source.IsConnected = true;
-            Target.IsConnected = true;
         }
     }
 }

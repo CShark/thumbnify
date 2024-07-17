@@ -1,10 +1,14 @@
 ﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Microsoft.Xaml.Behaviors.Core;
 using Newtonsoft.Json;
 using tebisCloud.Data;
+using tebisCloud.Data.ParamStore;
+using tebisCloud.Data.Processing;
+using tebisCloud.Dialogs;
 using tebisCloud.Postprocessing;
 using Connection = tebisCloud.Postprocessing.Connection;
 using Connector = tebisCloud.Postprocessing.Connector;
@@ -17,87 +21,47 @@ namespace tebisCloud {
     /// Interaktionslogik für ProcessingEditor.xaml
     /// </summary>
     public partial class ProcessingEditor : Window {
-        public static readonly DependencyProperty NodesProperty = DependencyProperty.Register(
-            nameof(Nodes), typeof(ObservableCollection<EditorNode>), typeof(ProcessingEditor),
-            new PropertyMetadata(default(ObservableCollection<EditorNode>)));
+        public static readonly DependencyProperty ParametersProperty = DependencyProperty.Register(
+            nameof(Parameters), typeof(ObservableCollection<ParamDefinition>), typeof(ProcessingEditor),
+            new PropertyMetadata(default(ObservableCollection<ParamDefinition>)));
 
-        public ObservableCollection<EditorNode> Nodes {
-            get { return (ObservableCollection<EditorNode>)GetValue(NodesProperty); }
-            set { SetValue(NodesProperty, value); }
+        public ObservableCollection<ParamDefinition> Parameters {
+            get { return (ObservableCollection<ParamDefinition>)GetValue(ParametersProperty); }
+            set { SetValue(ParametersProperty, value); }
         }
 
-        public static readonly DependencyProperty ConnectionsProperty = DependencyProperty.Register(
-            nameof(Connections), typeof(ObservableCollection<Connection>), typeof(ProcessingEditor),
-            new PropertyMetadata(default(ObservableCollection<Connection>)));
+        public static readonly DependencyProperty SelectedParamProperty = DependencyProperty.Register(
+            nameof(SelectedParam), typeof(ParamDefinition), typeof(ProcessingEditor),
+            new PropertyMetadata(default(ParamDefinition)));
 
-        public ObservableCollection<Connection> Connections {
-            get { return (ObservableCollection<Connection>)GetValue(ConnectionsProperty); }
-            set { SetValue(ConnectionsProperty, value); }
+        public ParamDefinition SelectedParam {
+            get { return (ParamDefinition)GetValue(SelectedParamProperty); }
+            set { SetValue(SelectedParamProperty, value); }
         }
 
-        public static readonly DependencyProperty PendingConnectionProperty = DependencyProperty.Register(
-            nameof(PendingConnection), typeof(PendingConnection), typeof(ProcessingEditor),
-            new PropertyMetadata(default(PendingConnection)));
+        public static readonly DependencyProperty GraphProperty = DependencyProperty.Register(
+            nameof(Graph), typeof(ProcessingGraph), typeof(ProcessingEditor), new PropertyMetadata(default(ProcessingGraph)));
 
-        public PendingConnection PendingConnection {
-            get { return (PendingConnection)GetValue(PendingConnectionProperty); }
-            set { SetValue(PendingConnectionProperty, value); }
+        public ProcessingGraph Graph {
+            get { return (ProcessingGraph)GetValue(GraphProperty); }
+            set { SetValue(GraphProperty, value); }
         }
 
-        private ProcessingGraph _graph;
-
-        public ICommand DisconnectCommand { get; }
-
-        public static RoutedUICommand CreateNode { get; } = new();
         public ICommand AddNode { get; }
+        public ICommand CreateParameter { get; }
 
-        public ICommand DeleteNode { get; }
+        public static RoutedUICommand DeleteParameter { get; } = new();
 
         public ProcessingEditor() {
-            Nodes = new();
-            Connections = new();
-            PendingConnection = new PendingConnection((a, b) => {
-                if (a.Parameter != null) {
-                    (a, b) = (b, a);
-                }
+            Parameters = new();
 
-                if (a.Type == b.Type) {
-                    if (a.Parameter == null && b.Result == null &&
-                        !Connections.Any(x => (x.Target == b && x.Source == a) || x.Target == b)) {
-                        var con = new Connection(a, b, a.Type);
-                        if (!IsCyclic(con)) {
-                            Connections.Add(con);
-                            _graph.ProcessConnects.Add(new() {
-                                Previous = a.Parent.SourceNode.Id,
-                                PreviousPort = a.Id,
-                                Next = b.Parent.SourceNode.Id,
-                                NextPort = b.Id,
-                            });
-                            Tree[a.Parent].Add(b.Parent);
-                        }
-                    }
-                }
-            });
+            CreateParameter = new ActionCommand(() => {
+                var def = ParamDefCreate.ShowDialog(this);
 
-            DisconnectCommand = new ActionCommand(x => {
-                if (x is Connector point) {
-                    var conn = Connections.FirstOrDefault(x => x.Target == point || x.Source == point);
-
-                    if (conn != null) {
-                        Connections.Remove(conn);
-                        conn.Source.IsConnected = Connections.Any(x => x.Source == conn.Source);
-                        conn.Target.IsConnected = Connections.Any(x => x.Target == conn.Target);
-
-                        var dataConn = _graph.ProcessConnects.FirstOrDefault(x =>
-                            x.Previous == conn.Source.Parent.SourceNode.Id &&
-                            x.PreviousPort == conn.Source.Id &&
-                            x.Next == conn.Target.Parent.SourceNode.Id &&
-                            x.NextPort == conn.Target.Id
-                        );
-
-                        _graph.ProcessConnects.Remove(dataConn);
-                        Tree[conn.Source.Parent].Remove(conn.Target.Parent);
-                    }
+                if (def != null) {
+                    Graph.Parameters.Add(def);
+                    Parameters.Add(def);
+                    Editor.RebuildGraph();
                 }
             });
 
@@ -106,119 +70,23 @@ namespace tebisCloud {
                 ContextMenu.IsOpen = true;
             });
 
-            DeleteNode = new ActionCommand(() => {
-                if (((MultiSelector)Editor).SelectedItems.Count > 0) {
-                    if (MessageBox.ShowDialog(this, "Sollen die ausgewählten Aktionen gelöscht werden?",
-                            "Aktionen löschen", MessageBoxButton.YesNo) == true) {
-                        DeleteSelectedNodes();
-                    }
-                }
-            });
+            Graph = new();
 
             InitializeComponent();
-
-            SetProcessData(new());
         }
 
         private Dictionary<EditorNode, HashSet<EditorNode>> Tree { get; } = new();
 
-        private bool IsCyclic(Connection? pending = null) {
-            foreach (var node in Nodes.Where(x => !Connections.Any(y => y.Target.Parent == x))) {
-                var visitMap = new Dictionary<EditorNode, int>();
-                visitMap.Add(node, 0);
-
-                Queue<(EditorNode, int)> openNodes = new(Tree[node].Select(x => (x, 0)));
-
-                while (openNodes.Any()) {
-                    var child = openNodes.Dequeue();
-
-                    // TODO: Work needed
-                    if (visitMap.ContainsKey(child.Item1) && visitMap[child.Item1] > child.Item2) {
-                        return true;
-                    } else {
-                        if (!visitMap.ContainsKey(child.Item1)) {
-                            visitMap.Add(child.Item1, child.Item2 + 1);
-                            foreach (var link in Tree[child.Item1]) {
-                                openNodes.Enqueue((link, child.Item2 + 1));
-                            }
-                        }
-                    }
-                }
-
-                if (pending != null) {
-                    if ((visitMap.ContainsKey(pending.Source.Parent) && visitMap.ContainsKey(pending.Target.Parent) &&
-                        visitMap[pending.Source.Parent] > visitMap[pending.Target.Parent]) || pending.Source.Parent == pending.Target.Parent) {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        public void SetProcessData(ProcessingGraph graph) {
-            _graph = graph;
-
-            Nodes.Clear();
-            Connections.Clear();
-
-
-            var dict = new Dictionary<string, EditorNode>();
-            foreach (var step in graph.Nodes) {
-                var node = step.GenerateNode();
-                Nodes.Add(node);
-                dict[step.Id] = node;
-                Tree[node] = new();
-            }
-
-            foreach (var con in graph.ProcessConnects) {
-                var start = dict[con.Previous].Outputs.FirstOrDefault(x => x.Id == con.PreviousPort);
-                var finish = dict[con.Next].Outputs.FirstOrDefault(x => x.Id == con.NextPort);
-                Connections.Add(new Connection(start, finish, start.Type));
-
-                Tree[dict[con.Previous]].Add(dict[con.Next]);
+        private void DeleteParameter_OnExecuted(object sender, ExecutedRoutedEventArgs e) {
+            if (e.Parameter is ParamDefinition def) {
+                Parameters.Remove(def);
+                Graph.Parameters.Remove(def);
+                Editor.RebuildGraph();
             }
         }
 
-        private void CreateNode_OnExecuted(object sender, ExecutedRoutedEventArgs e) {
-            if (e.Parameter is Type t) {
-                if (t.IsAssignableTo(typeof(Node))) {
-                    if (Activator.CreateInstance(t) is Node step) {
-                        Editor.ViewportTransform.Inverse.TryTransform(Mouse.GetPosition(Editor), out var point);
-                        step.NodeLocation = point;
-                        _graph.Nodes.Add(step);
-                        var node = step.GenerateNode();
-                        Nodes.Add(node);
-                        Tree[node] = new();
-                    }
-                }
-            }
-        }
-
-        private void DeleteSelectedNodes() {
-            var selection = new List<EditorNode>();
-
-            foreach (EditorNode node in ((MultiSelector)Editor).SelectedItems) {
-                selection.Add(node);
-            }
-
-            foreach (var node in selection) {
-                Nodes.Remove(node);
-                Tree.Remove(node);
-
-                var conns = Connections.Where(x => x.Source.Parent == node || x.Target.Parent == node).ToList();
-
-                foreach (var con in conns) {
-                    Connections.Remove(con);
-                    Tree[con.Source.Parent].Remove(con.Target.Parent);
-                }
-            }
-
-            Editor.SelectedItem = null;
-        }
-
-        private void Test_OnClick(object sender, RoutedEventArgs e) {
-            _graph.RunGraph();
+        private void DeleteParameter_OnCanExecute(object sender, CanExecuteRoutedEventArgs e) {
+            e.CanExecute = e.Parameter is ParamDefinition;
         }
     }
 }

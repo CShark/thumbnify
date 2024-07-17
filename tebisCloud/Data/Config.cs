@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using tebisCloud.Data.ParamStore;
 
 namespace tebisCloud.Data {
     public class Config : INotifyPropertyChanged {
@@ -13,7 +14,6 @@ namespace tebisCloud.Data {
         private ObservableCollection<MediaSource> _media = new();
         private ObservableCollection<ThumbnailData> _thumbnails = new();
         private string _defaultThumbnail;
-
         public string VideoPath {
             get => _videoPath;
             set => SetField(ref _videoPath, value);
@@ -27,15 +27,6 @@ namespace tebisCloud.Data {
         public ObservableCollection<ThumbnailData> Thumbnails {
             get => _thumbnails;
             set => SetField(ref _thumbnails, value);
-        }
-
-        public string DefaultThumbnail {
-            get => _defaultThumbnail;
-            set => SetField(ref _defaultThumbnail, value);
-        }
-
-        public ThumbnailData? GetDefaultThumbnail() {
-            return Thumbnails.FirstOrDefault(x => x.PresetName.ToLower() == DefaultThumbnail.ToLower());
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

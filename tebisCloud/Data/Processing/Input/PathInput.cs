@@ -8,23 +8,25 @@ using tebisCloud.Data.Processing.Parameters;
 using tebisCloud.Postprocessing;
 
 namespace tebisCloud.Data.Processing.Input {
-    internal sealed class StringInput : Node {
+    internal sealed class PathInput : Node {
+        public Parameter<FilePath> Path { get; } =
+            new("path", false, new(FilePath.EPathMode.Directory, ""), false);
+
         [JsonIgnore]
-        public Result<StringParam> Result { get; } = new("value");
+        public Result<FilePath> Result { get; } = new("path");
 
-        public Parameter<StringParam> Input { get; } = new("value", false, new StringParam(), false);
-
-        public StringInput() {
-            RegisterParameter(Input);
+        public PathInput() {
+            RegisterParameter(Path);
             RegisterResult(Result);
         }
 
         protected override ENodeType NodeType => ENodeType.Parameter;
         protected override string NodeId => Id;
-        public static string Id => "input_text";
+
+        public static string Id = "input_path";
 
         protected override bool Execute(CancellationToken cancelToken) {
-            Result.Value = Input.Value;
+            Result.Value = Path.Value;
             return true;
         }
     }

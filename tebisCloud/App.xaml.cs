@@ -3,7 +3,9 @@ using System.Configuration;
 using System.Data;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Windows;
+using Microsoft.VisualBasic.FileIO;
 using Newtonsoft.Json;
 using tebisCloud.Data;
 using Config = tebisCloud.Data.Config;
@@ -15,6 +17,9 @@ namespace tebisCloud {
     public partial class App : Application {
         public static Config Settings { get; private set; }
         private static readonly string _settingsPath;
+
+        public static string TemporaryDirectory { get; } = Path.Combine(SpecialDirectories.CurrentUserApplicationData,
+            Assembly.GetExecutingAssembly().GetName().Name);
 
         static App() {
             _settingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
@@ -33,6 +38,8 @@ namespace tebisCloud {
                     part.Parent = media;
                 }
             }
+
+            WPFLocalizeExtension.Engine.LocalizeDictionary.Instance.Culture = Thread.CurrentThread.CurrentUICulture;
 
             base.OnStartup(e);
 

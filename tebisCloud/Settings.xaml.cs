@@ -11,8 +11,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Microsoft.Xaml.Behaviors.Core;
 using Ookii.Dialogs.Wpf;
 using tebisCloud.Data;
+using tebisCloud.Data.ParamStore;
 using tebisCloud.Dialogs;
 
 namespace tebisCloud {
@@ -21,18 +23,12 @@ namespace tebisCloud {
     /// </summary>
     public partial class Settings : Window {
         public Config Config { get; set; }
-
-        public static readonly DependencyProperty DefaultThumbnailProperty = DependencyProperty.Register(
-            nameof(DefaultThumbnail), typeof(ThumbnailData), typeof(Settings), new PropertyMetadata(default(ThumbnailData)));
-
-        public ThumbnailData? DefaultThumbnail {
-            get { return (ThumbnailData?)GetValue(DefaultThumbnailProperty); }
-            set { SetValue(DefaultThumbnailProperty, value); }
-        }
+        public static RoutedUICommand DeleteParam { get; } = new();
+        public static RoutedUICommand MoveParamUp { get; } = new();
+        public static RoutedUICommand MoveParamDown { get; } = new();
 
         public Settings(Config config) {
             Config = config;
-            DefaultThumbnail = config.GetDefaultThumbnail();
             InitializeComponent();
         }
 
@@ -44,23 +40,6 @@ namespace tebisCloud {
             var dlg = new VistaFolderBrowserDialog();
             if (dlg.ShowDialog(this) == true) {
                 Config.VideoPath = dlg.SelectedPath;
-            }
-        }
-
-        private void EditThumbPresets_OnClick(object sender, RoutedEventArgs e) {
-            var dlg = new ThumbnailPresetEditor();
-            dlg.Owner = this;
-            dlg.ShowDialog();
-        }
-
-        private void DefaultThumbnail_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
-            var dlg = new ThumbnailLoad();
-            dlg.Owner = this;
-            dlg.SelectedThumbnail = DefaultThumbnail;
-
-            if (dlg.ShowDialog() == true) {
-                DefaultThumbnail = dlg.SelectedThumbnail;
-                Config.DefaultThumbnail = DefaultThumbnail.PresetName;
             }
         }
     }

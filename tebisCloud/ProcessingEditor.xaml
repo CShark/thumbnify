@@ -14,43 +14,28 @@
         xmlns:audio="clr-namespace:tebisCloud.Data.Processing.Audio"
         xmlns:operations="clr-namespace:tebisCloud.Data.Processing.Operations"
         xmlns:input="clr-namespace:tebisCloud.Data.Processing.Input"
+        xmlns:lex="https://github.com/XAMLMarkupExtensions/WPFLocalizationExtension"
+        xmlns:video="clr-namespace:tebisCloud.Data.Processing.Video"
+        xmlns:paramStore="clr-namespace:tebisCloud.Data.ParamStore"
+        lex:LocalizeDictionary.DesignCulture="de-DE"
+        lex:ResxLocalizationProvider.DefaultAssembly="tebisCloud"
+        lex:ResxLocalizationProvider.DefaultDictionary="Controls"
         mc:Ignorable="d"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         WindowStartupLocation="CenterOwner"
         WindowState="Maximized"
         Style="{StaticResource Dark}"
-        Title="Verarbeitung" Height="450" Width="800">
+        Title="{lex:Loc Processing_Title}" Height="450" Width="800">
     <Window.CommandBindings>
-        <CommandBinding Command="{x:Static local:ProcessingEditor.CreateNode}" Executed="CreateNode_OnExecuted"></CommandBinding>
+        <CommandBinding Command="{x:Static local:ProcessingEditor.DeleteParameter}"
+                        Executed="DeleteParameter_OnExecuted" CanExecute="DeleteParameter_OnCanExecute">
+        </CommandBinding>
     </Window.CommandBindings>
     <Window.InputBindings>
         <KeyBinding Command="{Binding AddNode}" Key="A" Modifiers="Shift" />
-        <KeyBinding Command="{Binding DeleteNode}" Key="X" />
+        <KeyBinding Command="{x:Static controls:GraphEditor.DeleteNode}" Key="X" />
     </Window.InputBindings>
     <Window.Resources>
-        <GeometryDrawing x:Key="SmallGridGeometry"
-                         Geometry="M0,0 L0,1 0.03,1 0.03,0.03 1,0.03 1,0 Z"
-                         Brush="{StaticResource NodifyEditor.SelectionRectangleBackgroundBrush}" />
-
-        <GeometryDrawing x:Key="LargeGridGeometry"
-                         Geometry="M0,0 L0,1 0.015,1 0.015,0.015 1,0.015 1,0 Z"
-                         Brush="{StaticResource NodifyEditor.SelectionRectangleBackgroundBrush}" />
-
-        <DrawingBrush x:Key="SmallGridLinesDrawingBrush"
-                      TileMode="Tile"
-                      ViewportUnits="Absolute"
-                      Viewport="0 0 20 20"
-                      Transform="{Binding ViewportTransform, ElementName=Editor}"
-                      Drawing="{StaticResource SmallGridGeometry}" />
-
-        <DrawingBrush x:Key="LargeGridLinesDrawingBrush"
-                      TileMode="Tile"
-                      ViewportUnits="Absolute"
-                      Opacity="0.5"
-                      Viewport="0 0 100 100"
-                      Transform="{Binding ViewportTransform, ElementName=Editor}"
-                      Drawing="{StaticResource LargeGridGeometry}" />
-
         <Style TargetType="MenuItem">
             <Setter Property="CommandTarget"
                     Value="{Binding Path=PlacementTarget,RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}">
@@ -62,586 +47,172 @@
             <Setter Property="Foreground" Value="{StaticResource ControlForeground}" />
             <Setter Property="BorderBrush" Value="{StaticResource ControlForegroundDark}" />
         </Style>
-
-        <converter:BoolInvert x:Key="BoolInvert" />
-
-        <BooleanToVisibilityConverter x:Key="BoolToVis" />
-        <converter:BoolInvVisibility x:Key="BoolToInvVis" />
-
-        <converter:ParameterTypeToColor x:Key="ParamTypeToColor">
-            <converter:ParameterColor Type="{x:Type parameters:FilePath}" Color="LightPink" />
-            <converter:ParameterColor Type="{x:Type parameters:AudioStream}" Color="LightPink" />
-            <converter:ParameterColor Type="{x:Type parameters:StringParam}" Color="CornflowerBlue" />
-        </converter:ParameterTypeToColor>
-
-        <converter:ParameterTypeToConnector x:Key="ParamTypeToConnector">
-            <converter:ParameterConnector Type="{x:Type parameters:AudioStream}">
-                <ControlTemplate TargetType="Control">
-                    <Border Background="{TemplateBinding Background}" Width="10" Height="10" CornerRadius="10" />
-                </ControlTemplate>
-            </converter:ParameterConnector>
-            <converter:ParameterConnector Type="{x:Type parameters:FilePath}">
-                <ControlTemplate TargetType="Control">
-                    <Rectangle Fill="{TemplateBinding Background}" Width="10" Height="10">
-                        <Rectangle.LayoutTransform>
-                            <TransformGroup>
-                                <ScaleTransform ScaleX=".8" ScaleY=".8"></ScaleTransform>
-                                <RotateTransform Angle="45"></RotateTransform>
-                            </TransformGroup>
-                        </Rectangle.LayoutTransform>
-                    </Rectangle>
-                </ControlTemplate>
-            </converter:ParameterConnector>
-            <converter:ParameterConnector Type="{x:Type parameters:StringParam}">
-                <ControlTemplate TargetType="Control">
-                    <Rectangle Fill="{TemplateBinding Background}" Width="10" Height="10">
-                        <Rectangle.LayoutTransform>
-                            <TransformGroup>
-                                <ScaleTransform ScaleX=".8" ScaleY=".8"></ScaleTransform>
-                                <RotateTransform Angle="45"></RotateTransform>
-                            </TransformGroup>
-                        </Rectangle.LayoutTransform>
-                    </Rectangle>
-                </ControlTemplate>
-            </converter:ParameterConnector>
-        </converter:ParameterTypeToConnector>
-
-        <converter:ParameterTypeToControls x:Key="ParamTypeToEditor">
-            <converter:ParameterControls Type="{x:Type parameters:FilePath}">
-                <DataTemplate DataType="{x:Type parameters:FilePath}">
-                    <controls:FilePathControl FilePath="{Binding}" />
-                </DataTemplate>
-            </converter:ParameterControls>
-            <converter:ParameterControls Type="{x:Type parameters:StringParam}">
-                <DataTemplate DataType="{x:Type parameters:StringParam}">
-                    <TextBox Text="{Binding Value}" />
-                </DataTemplate>
-            </converter:ParameterControls>
-        </converter:ParameterTypeToControls>
-
-        <LinearGradientBrush x:Key="FadeOpacityMask"
-                             StartPoint="0 0"
-                             EndPoint="1 0">
-            <GradientStop Color="#22FFFFFF"
-                          Offset="0" />
-            <GradientStop Color="#88FFFFFF"
-                          Offset="0.3" />
-            <GradientStop Color="#88FFFFFF"
-                          Offset="0.7" />
-            <GradientStop Color="#22FFFFFF"
-                          Offset="1" />
-        </LinearGradientBrush>
-
-        <Style TargetType="nodify:NodeInput">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type nodify:NodeInput}">
-                        <Grid Background="{TemplateBinding Background}">
-                            <Border Visibility="Collapsed"
-                                    x:Name="Highlight"
-                                    OpacityMask="{StaticResource FadeOpacityMask}"
-                                    Background="{TemplateBinding BorderBrush}" />
-
-                            <StackPanel Orientation="{TemplateBinding Orientation}"
-                                        Margin="{TemplateBinding Padding}">
-
-                                <Control x:Name="PART_Connector"
-                                         Focusable="False"
-                                         Margin="-10 0 5 0"
-                                         VerticalAlignment="Center"
-                                         Background="Transparent"
-                                         BorderBrush="{TemplateBinding BorderBrush}"
-                                         Template="{TemplateBinding ConnectorTemplate}" />
-
-                                <ContentPresenter ContentSource="Header" />
-                            </StackPanel>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="Orientation"
-                                     Value="Vertical">
-                                <Setter TargetName="PART_Connector"
-                                        Property="Margin"
-                                        Value="0 -10 0 5" />
-                            </Trigger>
-
-                            <Trigger Property="IsConnected"
-                                     Value="True">
-                                <Setter TargetName="PART_Connector"
-                                        Property="Background"
-                                        Value="{Binding BorderBrush, RelativeSource={RelativeSource TemplatedParent}}" />
-                            </Trigger>
-                            <Trigger Property="nodify:PendingConnection.IsOverElement"
-                                     Value="True">
-                                <Setter TargetName="PART_Connector"
-                                        Property="Background"
-                                        Value="{Binding BorderBrush, RelativeSource={RelativeSource TemplatedParent}}" />
-                            </Trigger>
-                            <Trigger Property="IsMouseOver"
-                                     Value="True">
-                                <Setter TargetName="Highlight"
-                                        Property="Visibility"
-                                        Value="Visible" />
-                            </Trigger>
-                            <Trigger Property="nodify:PendingConnection.IsOverElement"
-                                     Value="True">
-                                <Setter TargetName="Highlight"
-                                        Property="Visibility"
-                                        Value="Visible" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style TargetType="nodify:NodeOutput">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type nodify:NodeOutput}">
-                        <Grid Background="{TemplateBinding Background}">
-                            <Border Visibility="Collapsed"
-                                    x:Name="Highlight"
-                                    OpacityMask="{StaticResource FadeOpacityMask}"
-                                    Background="{TemplateBinding BorderBrush}" />
-
-                            <StackPanel Orientation="{TemplateBinding Orientation}"
-                                        HorizontalAlignment="Right"
-                                        Margin="{TemplateBinding Padding}">
-
-                                <ContentPresenter ContentSource="Header" />
-
-                                <Control x:Name="PART_Connector"
-                                         Focusable="False"
-                                         Margin="5 0 -10 0"
-                                         VerticalAlignment="Center"
-                                         Background="Transparent"
-                                         BorderBrush="{TemplateBinding BorderBrush}"
-                                         Template="{TemplateBinding ConnectorTemplate}" />
-                            </StackPanel>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="Orientation"
-                                     Value="Vertical">
-                                <Setter TargetName="PART_Connector"
-                                        Property="Margin"
-                                        Value="0 5 0 -10" />
-                            </Trigger>
-
-                            <Trigger Property="IsConnected"
-                                     Value="True">
-                                <Setter TargetName="PART_Connector"
-                                        Property="Background"
-                                        Value="{Binding BorderBrush, RelativeSource={RelativeSource TemplatedParent}}" />
-                            </Trigger>
-                            <Trigger Property="nodify:PendingConnection.IsOverElement"
-                                     Value="True">
-                                <Setter TargetName="PART_Connector"
-                                        Property="Background"
-                                        Value="{Binding BorderBrush, RelativeSource={RelativeSource TemplatedParent}}" />
-                            </Trigger>
-                            <Trigger Property="IsMouseOver"
-                                     Value="True">
-                                <Setter TargetName="Highlight"
-                                        Property="Visibility"
-                                        Value="Visible" />
-                            </Trigger>
-                            <Trigger Property="nodify:PendingConnection.IsOverElement"
-                                     Value="True">
-                                <Setter TargetName="Highlight"
-                                        Property="Visibility"
-                                        Value="Visible" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style TargetType="nodify:Node">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type nodify:Node}">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                Padding="{TemplateBinding Padding}"
-                                CornerRadius="3">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-
-                                <!--Header-->
-                                <Border
-                                    Visibility="{TemplateBinding HasHeader, Converter={StaticResource BoolToVis}}"
-                                    Background="{TemplateBinding HeaderBrush}"
-                                    CornerRadius="3 3 0 0">
-                                    <ContentPresenter ContentSource="Header" />
-                                </Border>
-
-                                <!--Body-->
-                                <StackPanel Grid.Row="1">
-                                    <!--Data OUT-->
-                                    <ItemsControl ItemsSource="{TemplateBinding Output}"
-                                                  ItemTemplate="{TemplateBinding OutputConnectorTemplate}"
-                                                  VerticalAlignment="{TemplateBinding VerticalAlignment}"
-                                                  HorizontalContentAlignment="Right"
-                                                  Grid.Row="2"
-                                                  Focusable="False" />
-
-                                    <!--Content-->
-                                    <Border Grid.Row="1"
-                                            Padding="16 0 16 0"
-                                            Background="{TemplateBinding ContentBrush}">
-                                        <ContentPresenter
-                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
-                                    </Border>
-
-                                    <!--Data IN-->
-                                    <ItemsControl ItemsSource="{TemplateBinding Input}"
-                                                  VerticalAlignment="{TemplateBinding VerticalAlignment}"
-                                                  ItemTemplate="{TemplateBinding InputConnectorTemplate}"
-                                                  Focusable="False" />
-                                </StackPanel>
-
-                                <!--Footer-->
-                                <Border
-                                    Visibility="{TemplateBinding HasFooter, Converter={StaticResource BoolToVis}}"
-                                    Background="{TemplateBinding FooterBrush}"
-                                    CornerRadius="0 0 3 3"
-                                    Grid.Row="2"
-                                    Grid.ColumnSpan="3"
-                                    Padding="6 4 6 4">
-                                    <ContentPresenter ContentSource="Footer" />
-                                </Border>
-                            </Grid>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
     </Window.Resources>
-    <Window.ContextMenu>
-        <ContextMenu>
-            <MenuItem Header="_Input" InputGestureText="I">
-                <MenuItem.Icon>
-                    <wpf:MaterialIcon Kind="SourceCommitStart" />
-                </MenuItem.Icon>
+    <Grid Background="{StaticResource NodifyEditor.BackgroundBrush}"
+          lex:ResxLocalizationProvider.DefaultDictionary="Nodes">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="200"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
 
-                <MenuItem Header="Medienausschnitt">
-                    <MenuItem.Icon>
-                        <wpf:MaterialIcon Kind="Multimedia" />
-                    </MenuItem.Icon>
-                </MenuItem>
-                <Separator />
-                <MenuItem Header="Dateipfad">
-                    <MenuItem.Icon>
-                        <wpf:MaterialIcon Kind="Folder" />
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Text" Command="{x:Static local:ProcessingEditor.CreateNode}"
-                          CommandParameter="{x:Type input:StringInput}">
-                    <MenuItem.Icon>
-                        <wpf:MaterialIcon Kind="FormTextbox" />
-                    </MenuItem.Icon>
-                </MenuItem>
-            </MenuItem>
-            <MenuItem Header="_Video" InputGestureText="V">
-                <MenuItem.Icon>
-                    <wpf:MaterialIcon Kind="MovieOpen" />
-                </MenuItem.Icon>
-                <MenuItem Header="Speichern" Command="{x:Static local:ProcessingEditor.CreateNode}">
-                    <MenuItem.Icon>
-                        <wpf:MaterialIcon Kind="ContentSave" />
-                    </MenuItem.Icon>
-                </MenuItem>
-                <Separator />
-                <MenuItem Header="Youtube" Command="{x:Static local:ProcessingEditor.CreateNode}">
-                    <MenuItem.Icon>
-                        <wpf:MaterialIcon Kind="CloudUpload" />
-                    </MenuItem.Icon>
-                </MenuItem>
-            </MenuItem>
-            <MenuItem Header="_Audio" InputGestureText="A">
-                <MenuItem.Icon>
-                    <wpf:MaterialIcon Kind="Music" />
-                </MenuItem.Icon>
-                <MenuItem Header="Laden" Command="{x:Static local:ProcessingEditor.CreateNode}"
-                          CommandParameter="{x:Type audio:AudioLoadFile}">
-                    <MenuItem.Icon>
-                        <wpf:MaterialIcon Kind="FolderOpen" />
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Speichern" Command="{x:Static local:ProcessingEditor.CreateNode}"
-                          CommandParameter="{x:Type audio:AudioSaveFile}">
-                    <MenuItem.Icon>
-                        <wpf:MaterialIcon Kind="ContentSave" />
-                    </MenuItem.Icon>
-                </MenuItem>
-                <Separator />
-                <MenuItem Header="Merge" Command="{x:Static local:ProcessingEditor.CreateNode}">
-                    <MenuItem.Icon>
-                        <wpf:MaterialIcon Kind="CallMerge" />
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Normalisieren" Command="{x:Static local:ProcessingEditor.CreateNode}">
-                    <MenuItem.Icon>
-                        <wpf:MaterialIcon Kind="Waveform"></wpf:MaterialIcon>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <Separator />
-                <MenuItem Header="Upload FTP" Command="{x:Static local:ProcessingEditor.CreateNode}">
-                    <MenuItem.Icon>
-                        <wpf:MaterialIcon Kind="FolderUpload" />
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Upload WebDAV" Command="{x:Static local:ProcessingEditor.CreateNode}">
-                    <MenuItem.Icon>
-                        <wpf:MaterialIcon Kind="CloudUpload" />
-                    </MenuItem.Icon>
-                </MenuItem>
-            </MenuItem>
-            <MenuItem Header="_Operationen" InputGestureText="O">
-                <MenuItem.Icon>
-                    <wpf:MaterialIcon Kind="Cog" />
-                </MenuItem.Icon>
-                <MenuItem Header="Pfad kombinieren" Command="{x:Static local:ProcessingEditor.CreateNode}"
-                          CommandParameter="{x:Type operations:PathCombine}">
-                    <MenuItem.Icon>
-                        <wpf:MaterialIcon Kind="FileTree"></wpf:MaterialIcon>
-                    </MenuItem.Icon>
-                </MenuItem>
-            </MenuItem>
-            <Separator></Separator>
-            <MenuItem Header="Löschen" InputGestureText="X" Command="{Binding DeleteNode}" />
-        </ContextMenu>
-    </Window.ContextMenu>
+        <controls:GraphEditor Graph="{Binding Graph}" x:Name="Editor">
+            <controls:GraphEditor.ContextMenu>
+                <ContextMenu lex:ResxLocalizationProvider.DefaultDictionary="Nodes">
+                    <MenuItem Header="{lex:Loc mnu_input}">
+                        <MenuItem.Icon>
+                            <wpf:MaterialIcon Kind="SourceCommitStart" />
+                        </MenuItem.Icon>
 
-    <Grid Background="{StaticResource NodifyEditor.BackgroundBrush}">
-        <Grid Background="{StaticResource LargeGridLinesDrawingBrush}"></Grid>
-        <nodify:NodifyEditor x:Name="Editor" Connections="{Binding Connections}"
-                             Background="{StaticResource SmallGridLinesDrawingBrush}"
-                             DisconnectConnectorCommand="{Binding DisconnectCommand}"
-                             PendingConnection="{Binding PendingConnection}" ItemsSource="{Binding Nodes}">
-            <nodify:NodifyEditor.Resources>
-                <Style TargetType="nodify:ItemContainer">
-                    <Setter Property="BorderBrush" Value="DimGray" />
+                        <MenuItem Header="{lex:Loc {x:Static input:MediaPartInput.Id}}"
+                                  Command="{x:Static controls:GraphEditor.CreateNode}"
+                                  CommandParameter="{x:Type input:MediaPartInput}">
+                            <MenuItem.Icon>
+                                <wpf:MaterialIcon Kind="Multimedia" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Header="{lex:Loc Key={x:Static input:PathInput.Id}}"
+                                  Command="{x:Static controls:GraphEditor.CreateNode}"
+                                  CommandParameter="{x:Type input:PathInput}">
+                            <MenuItem.Icon>
+                                <wpf:MaterialIcon Kind="Folder" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="{lex:Loc {x:Static input:StringInput.Id}}"
+                                  Command="{x:Static controls:GraphEditor.CreateNode}"
+                                  CommandParameter="{x:Type input:StringInput}">
+                            <MenuItem.Icon>
+                                <wpf:MaterialIcon Kind="FormTextbox" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="{lex:Loc mnu_video}">
+                        <MenuItem.Icon>
+                            <wpf:MaterialIcon Kind="MovieOpen" />
+                        </MenuItem.Icon>
+                        <MenuItem Header="{lex:Loc {x:Static video:VideoSaveFile.Id}}"
+                                  Command="{x:Static controls:GraphEditor.CreateNode}"
+                                  CommandParameter="{x:Type video:VideoSaveFile}">
+                            <MenuItem.Icon>
+                                <wpf:MaterialIcon Kind="ContentSave" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Header="Youtube" Command="{x:Static controls:GraphEditor.CreateNode}">
+                            <MenuItem.Icon>
+                                <wpf:MaterialIcon Kind="CloudUpload" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="{lex:Loc mnu_audio}">
+                        <MenuItem.Icon>
+                            <wpf:MaterialIcon Kind="Music" />
+                        </MenuItem.Icon>
+                        <MenuItem Header="{lex:Loc {x:Static audio:AudioLoadFile.Id}}"
+                                  Command="{x:Static controls:GraphEditor.CreateNode}"
+                                  CommandParameter="{x:Type audio:AudioLoadFile}">
+                            <MenuItem.Icon>
+                                <wpf:MaterialIcon Kind="FolderOpen" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="{lex:Loc {x:Static audio:AudioSaveFile.Id}}"
+                                  Command="{x:Static controls:GraphEditor.CreateNode}"
+                                  CommandParameter="{x:Type audio:AudioSaveFile}">
+                            <MenuItem.Icon>
+                                <wpf:MaterialIcon Kind="ContentSave" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Header="Merge" Command="{x:Static controls:GraphEditor.CreateNode}">
+                            <MenuItem.Icon>
+                                <wpf:MaterialIcon Kind="CallMerge" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Normalisieren" Command="{x:Static controls:GraphEditor.CreateNode}">
+                            <MenuItem.Icon>
+                                <wpf:MaterialIcon Kind="Waveform"></wpf:MaterialIcon>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Header="Upload FTP" Command="{x:Static controls:GraphEditor.CreateNode}">
+                            <MenuItem.Icon>
+                                <wpf:MaterialIcon Kind="FolderUpload" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Upload WebDAV" Command="{x:Static controls:GraphEditor.CreateNode}">
+                            <MenuItem.Icon>
+                                <wpf:MaterialIcon Kind="CloudUpload" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="{lex:Loc mnu_operations}">
+                        <MenuItem.Icon>
+                            <wpf:MaterialIcon Kind="Cog" />
+                        </MenuItem.Icon>
+                        <MenuItem Header="{lex:Loc {x:Static operations:PathCombine.Id}}"
+                                  Command="{x:Static controls:GraphEditor.CreateNode}"
+                                  CommandParameter="{x:Type operations:PathCombine}">
+                            <MenuItem.Icon>
+                                <wpf:MaterialIcon Kind="FileTree"></wpf:MaterialIcon>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuItem>
+                    <Separator></Separator>
+                    <MenuItem Header="{lex:Loc mnu_delete}" Command="{x:Static controls:GraphEditor.DeleteNode}" />
+                </ContextMenu>
+            </controls:GraphEditor.ContextMenu>
+        </controls:GraphEditor>
 
-                    <Style.Triggers>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsSelected"
-                                           Value="True" />
-                                <Condition Property="IsPreviewingSelection"
-                                           Value="{x:Null}" />
-                            </MultiTrigger.Conditions>
-                            <MultiTrigger.Setters>
-                                <Setter Property="BorderBrush"
-                                        Value="{Binding SelectedBrush, RelativeSource={RelativeSource Self}}" />
-                                <Setter Property="Margin"
-                                        Value="{Binding SelectedMargin, RelativeSource={RelativeSource Self}}" />
-                                <Setter Property="BorderThickness"
-                                        Value="{Binding SelectedBorderThickness, RelativeSource={RelativeSource Self}}" />
-                            </MultiTrigger.Setters>
-                        </MultiTrigger>
-                        <Trigger Property="IsPreviewingSelection"
-                                 Value="True">
-                            <Setter Property="BorderBrush"
-                                    Value="{Binding SelectedBrush, RelativeSource={RelativeSource Self}}" />
-                            <Setter Property="Margin"
-                                    Value="{Binding SelectedMargin, RelativeSource={RelativeSource Self}}" />
-                            <Setter Property="BorderThickness"
-                                    Value="{Binding SelectedBorderThickness, RelativeSource={RelativeSource Self}}" />
-                        </Trigger>
-                        <Trigger Property="nodify:PendingConnection.IsOverElement"
-                                 Value="True">
-                            <Setter Property="BorderBrush"
-                                    Value="{Binding HighlightBrush, RelativeSource={RelativeSource Self}}" />
-                            <Setter Property="Margin"
-                                    Value="{Binding SelectedMargin, RelativeSource={RelativeSource Self}}" />
-                            <Setter Property="BorderThickness"
-                                    Value="{Binding SelectedBorderThickness, RelativeSource={RelativeSource Self}}" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </nodify:NodifyEditor.Resources>
-            <nodify:NodifyEditor.ItemTemplate>
-                <DataTemplate DataType="{x:Type postprocessing:EditorNode}">
-                    <nodify:Node Input="{Binding Inputs}" HorizontalContentAlignment="Stretch"
-                                 Output="{Binding Outputs}" Width="200">
-                        <nodify:Node.Header>
-                            <StackPanel Margin="0,1,0,0">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="20" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="20" />
-                                    </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="1">
+            <Expander Header="Einstellungen" Foreground="{StaticResource ControlForegroundDark}" IsExpanded="True"
+                      ExpandDirection="Down">
+                <StackPanel>
 
-                                    <CheckBox IsChecked="{Binding SourceNode.IsExpanded}" VerticalAlignment="Center">
-                                        <CheckBox.Template>
-                                            <ControlTemplate TargetType="CheckBox">
-                                                <Border Background="#01000000">
-                                                    <wpf:MaterialIcon Kind="ChevronDown" x:Name="Arrow"
-                                                                      Foreground="{StaticResource ControlForeground}" />
-                                                </Border>
+                </StackPanel>
+            </Expander>
+            <Expander Header="Parameter" Foreground="{StaticResource ControlForegroundDark}" IsExpanded="True"
+                      ExpandDirection="Down">
+                <StackPanel Margin="3">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
 
-                                                <ControlTemplate.Triggers>
-                                                    <DataTrigger Binding="{Binding SourceNode.IsExpanded}"
-                                                                 Value="False">
-                                                        <Setter TargetName="Arrow" Property="Kind" Value="ChevronRight" />
-                                                    </DataTrigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </CheckBox.Template>
-                                    </CheckBox>
-
-                                    <TextBlock Text="{Binding Title}" Margin="6,0,0,0" Grid.Column="1"
-                                               VerticalAlignment="Center" />
-
-                                    <ContentPresenter Content="{Binding SourceNode.NodeStatus}" Grid.Column="2">
-                                        <ContentPresenter.ContentTemplate>
-                                            <DataTemplate DataType="{x:Type processing:ENodeStatus}">
-                                                <wpf:MaterialIcon x:Name="Icon" Visibility="Collapsed" Height="16"
-                                                                  Cursor="Hand">
-                                                    <wpf:MaterialIcon.Effect>
-                                                        <DropShadowEffect ShadowDepth="0" BlurRadius="10" Opacity=".7"
-                                                                          Color="DimGray">
-                                                        </DropShadowEffect>
-                                                    </wpf:MaterialIcon.Effect>
-                                                </wpf:MaterialIcon>
-
-                                                <DataTemplate.Triggers>
-                                                    <DataTrigger Binding="{Binding}"
-                                                                 Value="{x:Static processing:ENodeStatus.Running}">
-                                                        <Setter TargetName="Icon" Property="Visibility"
-                                                                Value="Visible" />
-                                                        <Setter TargetName="Icon" Property="Kind"
-                                                                Value="ClockTimeFour" />
-                                                        <Setter TargetName="Icon" Property="Foreground"
-                                                                Value="DarkGray" />
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding}"
-                                                                 Value="{x:Static processing:ENodeStatus.Completed}">
-                                                        <Setter TargetName="Icon" Property="Visibility"
-                                                                Value="Visible" />
-                                                        <Setter TargetName="Icon" Property="Kind"
-                                                                Value="CheckCircle" />
-                                                        <Setter TargetName="Icon" Property="Foreground"
-                                                                Value="GreenYellow" />
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding}"
-                                                                 Value="{x:Static processing:ENodeStatus.Error}">
-                                                        <Setter TargetName="Icon" Property="Visibility"
-                                                                Value="Visible" />
-                                                        <Setter TargetName="Icon" Property="Kind"
-                                                                Value="CloseOctagon" />
-                                                        <Setter TargetName="Icon" Property="Foreground"
-                                                                Value="Orange" />
-                                                    </DataTrigger>
-                                                </DataTemplate.Triggers>
-                                            </DataTemplate>
-                                        </ContentPresenter.ContentTemplate>
-                                    </ContentPresenter>
-                                </Grid>
-                                <Border Background="{StaticResource ControlBackground}" Margin="0,1,0,0">
-                                    <ProgressBar Foreground="LightGreen" BorderThickness="0" Height="5"
-                                                 Margin="0,3,0,0" Maximum="1"
-                                                 Value="{Binding SourceNode.Progress, Mode=OneWay}"
-                                                 Background="Transparent" />
-                                </Border>
-                            </StackPanel>
-                        </nodify:Node.Header>
-                        <nodify:Node.HeaderBrush>
-                            <SolidColorBrush Color="{Binding NodeColor}" />
-                        </nodify:Node.HeaderBrush>
-                        <nodify:Node.InputConnectorTemplate>
-                            <DataTemplate DataType="{x:Type postprocessing:Connector}">
-                                <StackPanel>
-                                    <nodify:NodeInput Header="{Binding Name}" IsConnected="true"
-                                                      ConnectorTemplate="{Binding Type, Converter={StaticResource ParamTypeToConnector}}"
-                                                      Anchor="{Binding Anchor,Mode=OneWayToSource}">
-                                        <nodify:NodeInput.BorderBrush>
-                                            <SolidColorBrush
-                                                Color="{Binding Type, Converter={StaticResource ParamTypeToColor}}" />
-                                        </nodify:NodeInput.BorderBrush>
-                                    </nodify:NodeInput>
-                                    <Grid IsEnabled="{Binding IsConnected, Converter={StaticResource BoolInvert}}"
-                                          Visibility="{Binding Parent.SourceNode.IsExpanded, Converter={StaticResource BoolToVis}}">
-                                        <Grid
-                                            Visibility="{Binding IsConnected, Converter={StaticResource BoolToInvVis}}">
-                                            <ContentPresenter Margin="10,0,10,10"
-                                                              Content="{Binding Parameter.DefaultValueObj}"
-                                                              ContentTemplateSelector="{StaticResource ParamTypeToEditor}" />
-                                        </Grid>
-                                    </Grid>
-                                </StackPanel>
-                            </DataTemplate>
-                        </nodify:Node.InputConnectorTemplate>
-                        <nodify:Node.OutputConnectorTemplate>
-                            <DataTemplate DataType="{x:Type postprocessing:Connector}">
-                                <nodify:NodeOutput Header="{Binding Name}"
-                                                   IsConnected="true"
-                                                   ConnectorTemplate="{Binding Type, Converter={StaticResource ParamTypeToConnector}}"
-                                                   Anchor="{Binding Anchor,Mode=OneWayToSource}">
-                                    <nodify:NodeOutput.BorderBrush>
-                                        <SolidColorBrush
-                                            Color="{Binding Type, Converter={StaticResource ParamTypeToColor}}" />
-                                    </nodify:NodeOutput.BorderBrush>
-                                </nodify:NodeOutput>
-                            </DataTemplate>
-                        </nodify:Node.OutputConnectorTemplate>
-
-                        <ItemsControl ItemsSource="{Binding StaticParameters}"
-                                      Visibility="{Binding SourceNode.IsExpanded, Converter={StaticResource BoolToVis}}"
-                                      Margin="0,3">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate DataType="{x:Type processing:Parameter}">
-                                    <StackPanel Margin="0,3">
-                                        <TextBlock Text="{Binding Name}" HorizontalAlignment="Left"
-                                                   Visibility="{Binding ShowName, Converter={StaticResource BoolToVis}}" />
-                                        <ContentPresenter Content="{Binding DefaultValueObj}"
-                                                          ContentTemplateSelector="{StaticResource ParamTypeToEditor}" />
+                        <ListBox BorderThickness="0" Background="{StaticResource ControlBackgroundLight}" Height="200"
+                                 ItemsSource="{Binding Parameters}" SelectedItem="{Binding SelectedParam}"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate DataType="{x:Type paramStore:ParamDefinition}">
+                                    <StackPanel Margin="0,3" Orientation="Horizontal">
+                                        <Control Margin="5,0"
+                                                 Template="{Binding Type, Converter={StaticResource ParamTypeToConnector}}">
+                                            <Control.Background>
+                                                <SolidColorBrush
+                                                    Color="{Binding Type, Converter={StaticResource ParamTypeToColor}}">
+                                                </SolidColorBrush>
+                                            </Control.Background>
+                                        </Control>
+                                        <TextBlock Text="{Binding Name}"
+                                                   Foreground="{StaticResource ControlForeground}" />
                                     </StackPanel>
                                 </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </nodify:Node>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
 
-                </DataTemplate>
-            </nodify:NodifyEditor.ItemTemplate>
-            <nodify:NodifyEditor.ItemContainerStyle>
-                <Style TargetType="nodify:ItemContainer">
-                    <Setter Property="Location" Value="{Binding SourceNode.NodeLocation}" />
-                </Style>
-            </nodify:NodifyEditor.ItemContainerStyle>
-            <nodify:NodifyEditor.ConnectionTemplate>
-                <DataTemplate DataType="{x:Type postprocessing:Connection}">
-                    <nodify:Connection Source="{Binding Source.Anchor}" Target="{Binding Target.Anchor}"
-                                       SourceOffset="5,0" TargetOffset="5,0"
-                                       StrokeThickness="1" Spacing="0">
-                        <nodify:Connection.Stroke>
-                            <SolidColorBrush Color="{Binding Type, Converter={StaticResource ParamTypeToColor}}" />
-                        </nodify:Connection.Stroke>
-                        <nodify:Connection.Fill>
-                            <SolidColorBrush Color="{Binding Type, Converter={StaticResource ParamTypeToColor}}" />
-                        </nodify:Connection.Fill>
-                    </nodify:Connection>
-                </DataTemplate>
-            </nodify:NodifyEditor.ConnectionTemplate>
-            <nodify:NodifyEditor.PendingConnectionTemplate>
-                <DataTemplate DataType="{x:Type postprocessing:PendingConnection}">
-                    <nodify:PendingConnection StartedCommand="{Binding StartCommand}"
-                                              CompletedCommand="{Binding FinishCommand}" AllowOnlyConnectors="true"
-                                              StrokeThickness="1">
-                    </nodify:PendingConnection>
-                </DataTemplate>
-            </nodify:NodifyEditor.PendingConnectionTemplate>
-        </nodify:NodifyEditor>
-
-        <Button Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" Click="Test_OnClick">Test</Button>
+                        <StackPanel Grid.Column="1" Margin="3">
+                            <Button Style="{StaticResource FirstButtonVertical}" Command="{Binding CreateParameter}">
+                                <wpf:MaterialIcon Kind="Add"></wpf:MaterialIcon>
+                            </Button>
+                            <Button Style="{StaticResource LastButtonVertical}"
+                                    Command="{x:Static local:ProcessingEditor.DeleteParameter}"
+                                    CommandParameter="{Binding SelectedParam}">
+                                <wpf:MaterialIcon Kind="Minus"></wpf:MaterialIcon>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Expander>
+        </StackPanel>
     </Grid>
 </Window>

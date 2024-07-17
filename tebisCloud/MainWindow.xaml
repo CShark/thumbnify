@@ -33,8 +33,12 @@
         </Style>
     </Window.Resources>
     <Window.CommandBindings>
-        <CommandBinding Command="{x:Static local:MainWindow.EditMediaPart}" CanExecute="EditMediaPart_OnCanExecute" Executed="EditMediaPart_OnExecuted"></CommandBinding>
-        <CommandBinding Command="{x:Static local:MainWindow.DeleteMediaPart}" CanExecute="EditMediaPart_OnCanExecute" Executed="DeleteMediaPart_OnExecuted"></CommandBinding>
+        <CommandBinding Command="{x:Static local:MainWindow.EditMediaPart}" CanExecute="EditMediaPart_OnCanExecute"
+                        Executed="EditMediaPart_OnExecuted">
+        </CommandBinding>
+        <CommandBinding Command="{x:Static local:MainWindow.DeleteMediaPart}" CanExecute="EditMediaPart_OnCanExecute"
+                        Executed="DeleteMediaPart_OnExecuted">
+        </CommandBinding>
     </Window.CommandBindings>
 
     <Grid>
@@ -50,14 +54,26 @@
                 <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <mi:MaterialIcon Foreground="{StaticResource ControlForeground}" Kind="Multimedia"></mi:MaterialIcon>
-                <TextBlock Foreground="{StaticResource ControlForeground}"  FontSize="20">Medien</TextBlock>
+                <TextBlock Foreground="{StaticResource ControlForeground}" FontSize="20">Medien</TextBlock>
             </StackPanel>
 
             <WrapPanel Margin="2" Grid.Row="2">
-                <Button Click="OpenSettings_OnClick" Style="{StaticResource SingleButton}">
-                    <mi:MaterialIcon Kind="Settings"></mi:MaterialIcon>
+                <WrapPanel.Resources>
+                    <Style TargetType="Button" BasedOn="{StaticResource SingleButton}">
+                        <Setter Property="Margin" Value="3,0"></Setter>
+                    </Style>
+                </WrapPanel.Resources>
+
+                <Button Click="OpenSettings_OnClick">
+                    <mi:MaterialIcon Kind="Settings" />
+                </Button>
+                <Button Click="EditThumbnails_OnClick" ToolTip="Thumbnail-Vorlagen bearbeiten">
+                    <mi:MaterialIcon Kind="ImageEdit" />
+                </Button>
+                <Button Click="EditPostprocessing_OnClick" ToolTip="Nachbearbeitung-Vorlagen bearbeiten">
+                    <mi:MaterialIcon Kind="Graph" />
                 </Button>
             </WrapPanel>
 
@@ -140,9 +156,9 @@
                         <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
 
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <mi:MaterialIcon Foreground="{StaticResource ControlForeground}" Kind="TrayFull"></mi:MaterialIcon>
-                        <TextBlock Foreground="{StaticResource ControlForeground}"  FontSize="20">Warteschlange</TextBlock>
+                        <TextBlock Foreground="{StaticResource ControlForeground}" FontSize="20">Warteschlange</TextBlock>
                     </StackPanel>
                 </Grid>
             </Grid>
@@ -250,7 +266,8 @@
                     </Grid.RowDefinitions>
 
                     <controls:PartAreaOverlay MediaDuration="{Binding Player.Duration}"
-                                              MediaParts="{Binding SelectedMedia.Parts}" PartClicked="PartAreaOverlay_OnPartClicked"/>
+                                              MediaParts="{Binding SelectedMedia.Parts}"
+                                              PartClicked="PartAreaOverlay_OnPartClicked" />
 
                     <wpfsvl:WaveformTimeline x:Name="waveformOverview" Grid.Row="1">
                         <wpfsvl:WaveformTimeline.Template>

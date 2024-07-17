@@ -19,7 +19,9 @@
 		<PackageReference Include="Nodify" Version="6.0.0" />
 		<PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
 		<PackageReference Include="PixiEditor.ColorPicker" Version="3.4.1" />
+		<PackageReference Include="WPFLocalizeExtension" Version="3.10.0" />
 		<PackageReference Include="WPFSVL" Version="1.0.0" />
+		<PackageReference Include="xFFmpeg.NET" Version="7.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -50,7 +52,37 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Data\Processing\Video\" />
+	  <Compile Update="Resources\Controls.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>Controls.resx</DependentUpon>
+	  </Compile>
+	  <Compile Update="Resources\Nodes.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>Nodes.resx</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Update="Resources\Controls.de-DE.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Update="Resources\Controls.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	    <LastGenOutput>Controls.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
+	  <EmbeddedResource Update="Resources\Nodes.de-DE.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Update="Resources\Nodes.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	    <LastGenOutput>Nodes.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Data\Processing\Converters\" />
 	</ItemGroup>
 
 </Project>
