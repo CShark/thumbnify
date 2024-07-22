@@ -178,6 +178,15 @@ namespace tebisCloud.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Name ähnelt.
+        /// </summary>
+        internal static string param_name {
+            get {
+                return ResourceManager.GetString("param_name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Path ähnelt.
         /// </summary>
         internal static string param_path {

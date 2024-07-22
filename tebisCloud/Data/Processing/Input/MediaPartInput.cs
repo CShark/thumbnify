@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices.Marshalling;
 using System.Text;
 using System.Threading.Tasks;
 using FFmpeg.NET;
@@ -23,6 +24,9 @@ namespace tebisCloud.Data.Processing.Input {
         public Result<AudioStream> Audio { get; } = new("audio");
 
         [JsonIgnore]
+        public Result<StringParam> Name { get; } = new("name");
+
+        [JsonIgnore]
         public MediaPart? MediaPart { get; set; }
 
         [JsonIgnore]
@@ -31,6 +35,7 @@ namespace tebisCloud.Data.Processing.Input {
         public MediaPartInput() {
             RegisterResult(Video);
             RegisterResult(Audio);
+            RegisterResult(Name);
         }
 
         public void SetParamStore(IList<ParamDefinition> store) {
@@ -38,6 +43,7 @@ namespace tebisCloud.Data.Processing.Input {
 
             RegisterResult(Video);
             RegisterResult(Audio);
+            RegisterResult(Name);
 
             ParamStoreResults.Clear();
 
@@ -92,11 +98,17 @@ namespace tebisCloud.Data.Processing.Input {
                 VideoFileName = path
             };
 
+            // Load Parameters
+            foreach (var param in MediaPart.Metadata.Parameters) {
+                var target = ParamStoreResults.FirstOrDefault(x => x.Id == param.Id);
+                target?.SetValue(param.Value);
+            }
+
             return true;
         }
 
         private void FfmpegOnProgress(object? sender, ConversionProgressEventArgs e) {
-
+            ReportProgress(e.ProcessedDuration.Ticks, e.TotalDuration.Ticks);
         }
     }
 }

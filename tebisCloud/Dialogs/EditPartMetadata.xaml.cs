@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,36 +19,43 @@ namespace tebisCloud.Dialogs {
     /// Interaktionslogik für EditPartMetadata.xaml
     /// </summary>
     public partial class EditPartMetadata : Window {
-        public static readonly DependencyProperty MediaPartProperty = DependencyProperty.Register(
-            nameof(MediaPart), typeof(MediaPart), typeof(EditPartMetadata), new PropertyMetadata(default(MediaPart)));
+        public static readonly DependencyProperty PartMetadataProperty = DependencyProperty.Register(
+            nameof(PartMetadata), typeof(PartMetadata), typeof(EditPartMetadata), new PropertyMetadata(default(PartMetadata)));
 
-        public MediaPart MediaPart {
-            get { return (MediaPart)GetValue(MediaPartProperty); }
-            set { SetValue(MediaPartProperty, value); }
+        public PartMetadata PartMetadata {
+            get { return (PartMetadata)GetValue(PartMetadataProperty); }
+            set { SetValue(PartMetadataProperty, value); }
         }
 
         public EditPartMetadata() {
             InitializeComponent();
         }
 
-        private void LoadThumbnail_OnClick(object sender, RoutedEventArgs e) {
-            var dlg = new ThumbnailLoad();
-            dlg.Owner = this;
+        private void OpenPreset_OnClick(object sender, RoutedEventArgs e) {
+            var result = LoadSaveDialog.ShowOpenDialog(this, App.Settings.Processing);
 
-            if (dlg.ShowDialog() == true) {
-                MediaPart.Thumbnail = dlg.SelectedThumbnail;
+            if (result != null) {
+                var json = JsonConvert.SerializeObject(result);
+                var copy = JsonConvert.DeserializeObject<ProcessingGraph>(json);
+
+                PartMetadata.ProcessingGraph = copy;
+                PartMetadata.UpdateParameters();
             }
         }
 
-        private void EditThumbnail_OnClick(object sender, RoutedEventArgs e) {
-            var editor = new ThumbnailPresetEditor();
-            editor.Owner = this;
-            editor.Thumbnail = MediaPart.Thumbnail;
-            editor.PreviewMetadata = MediaPart.Metadata;
-            editor.ShowDialog();
+        private void EditPreset_OnClick(object sender, RoutedEventArgs e) {
+            var dlg = new ProcessingEditor();
+            dlg.Owner = this;
+            dlg.Graph = PartMetadata.ProcessingGraph ?? new();
+            
+            dlg.ShowDialog();
+
+            PartMetadata.ProcessingGraph = dlg.Graph;
+            PartMetadata.ProcessingGraph.Name = "<Custom>";
+            PartMetadata.UpdateParameters();
         }
 
-        private void Save_OnClick(object sender, RoutedEventArgs e) {
+        private void Apply_OnClick(object sender, RoutedEventArgs e) {
             DialogResult = true;
             Close();
         }

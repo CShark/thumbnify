@@ -14,45 +14,22 @@
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <GeometryDrawing x:Key="SmallGridGeometry"
-                         Geometry="M0,0 L0,1 0.03,1 0.03,0.03 1,0.03 1,0 Z"
-                         Brush="{StaticResource NodifyEditor.SelectionRectangleBackgroundBrush}" />
-
-        <GeometryDrawing x:Key="LargeGridGeometry"
-                         Geometry="M0,0 L0,1 0.015,1 0.015,0.015 1,0.015 1,0 Z"
-                         Brush="{StaticResource NodifyEditor.SelectionRectangleBackgroundBrush}" />
-
-        <DrawingBrush x:Key="SmallGridLinesDrawingBrush"
-                      TileMode="Tile"
-                      ViewportUnits="Absolute"
-                      Viewport="0 0 20 20"
-                      Transform="{Binding ViewportTransform, ElementName=Editor}"
-                      Drawing="{StaticResource SmallGridGeometry}" />
-
-        <DrawingBrush x:Key="LargeGridLinesDrawingBrush"
-                      TileMode="Tile"
-                      ViewportUnits="Absolute"
-                      Opacity="0.5"
-                      Viewport="0 0 100 100"
-                      Transform="{Binding ViewportTransform, ElementName=Editor}"
-                      Drawing="{StaticResource LargeGridGeometry}" />
-
         <converter:BoolInvert x:Key="BoolInvert" />
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
         <converter:BoolInvVisibility x:Key="BoolToInvVis" />
         <converter:NodeNameConverter x:Key="NodeNameConverter" />
-        
+
         <LinearGradientBrush x:Key="FadeOpacityMask"
-                     StartPoint="0 0"
-                     EndPoint="1 0">
+                             StartPoint="0 0"
+                             EndPoint="1 0">
             <GradientStop Color="#22FFFFFF"
-                  Offset="0" />
+                          Offset="0" />
             <GradientStop Color="#88FFFFFF"
-                  Offset="0.3" />
+                          Offset="0.3" />
             <GradientStop Color="#88FFFFFF"
-                  Offset="0.7" />
+                          Offset="0.7" />
             <GradientStop Color="#22FFFFFF"
-                  Offset="1" />
+                          Offset="1" />
         </LinearGradientBrush>
 
         <Style TargetType="nodify:NodeInput">
@@ -61,55 +38,56 @@
                     <ControlTemplate TargetType="{x:Type nodify:NodeInput}">
                         <Grid Background="{TemplateBinding Background}">
                             <Border Visibility="Collapsed"
-                            x:Name="Highlight"
-                            OpacityMask="{StaticResource FadeOpacityMask}"
-                            Background="{TemplateBinding BorderBrush}" />
+                                    x:Name="Highlight"
+                                    OpacityMask="{StaticResource FadeOpacityMask}"
+                                    Background="{TemplateBinding BorderBrush}" />
 
                             <StackPanel Orientation="{TemplateBinding Orientation}"
-                                Margin="{TemplateBinding Padding}">
+                                        Margin="{TemplateBinding Padding}">
 
                                 <Control x:Name="PART_Connector"
-                                 Focusable="False"
-                                 Margin="-10 0 5 0"
-                                 VerticalAlignment="Center"
-                                 Background="Transparent"
-                                 BorderBrush="{TemplateBinding BorderBrush}"
-                                 Template="{TemplateBinding ConnectorTemplate}" />
+                                         Focusable="False"
+                                         Margin="-10 0 5 0"
+                                         VerticalAlignment="Center"
+                                         Background="Transparent"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         Template="{TemplateBinding ConnectorTemplate}" />
 
-                                <ContentPresenter Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" />
+                                <ContentPresenter Content="{TemplateBinding Header}"
+                                                  ContentTemplate="{TemplateBinding HeaderTemplate}" />
                             </StackPanel>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="Orientation"
-                             Value="Vertical">
+                                     Value="Vertical">
                                 <Setter TargetName="PART_Connector"
-                                Property="Margin"
-                                Value="0 -10 0 5" />
+                                        Property="Margin"
+                                        Value="0 -10 0 5" />
                             </Trigger>
 
                             <Trigger Property="IsConnected"
-                             Value="True">
+                                     Value="True">
                                 <Setter TargetName="PART_Connector"
-                                Property="Background"
-                                Value="{Binding BorderBrush, RelativeSource={RelativeSource TemplatedParent}}" />
+                                        Property="Background"
+                                        Value="{Binding BorderBrush, RelativeSource={RelativeSource TemplatedParent}}" />
                             </Trigger>
                             <Trigger Property="nodify:PendingConnection.IsOverElement"
-                             Value="True">
+                                     Value="True">
                                 <Setter TargetName="PART_Connector"
-                                Property="Background"
-                                Value="{Binding BorderBrush, RelativeSource={RelativeSource TemplatedParent}}" />
+                                        Property="Background"
+                                        Value="{Binding BorderBrush, RelativeSource={RelativeSource TemplatedParent}}" />
                             </Trigger>
                             <Trigger Property="IsMouseOver"
-                             Value="True">
+                                     Value="True">
                                 <Setter TargetName="Highlight"
-                                Property="Visibility"
-                                Value="Visible" />
+                                        Property="Visibility"
+                                        Value="Visible" />
                             </Trigger>
                             <Trigger Property="nodify:PendingConnection.IsOverElement"
-                             Value="True">
+                                     Value="True">
                                 <Setter TargetName="Highlight"
-                                Property="Visibility"
-                                Value="Visible" />
+                                        Property="Visibility"
+                                        Value="Visible" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -123,56 +101,57 @@
                     <ControlTemplate TargetType="{x:Type nodify:NodeOutput}">
                         <Grid Background="{TemplateBinding Background}">
                             <Border Visibility="Collapsed"
-                            x:Name="Highlight"
-                            OpacityMask="{StaticResource FadeOpacityMask}"
-                            Background="{TemplateBinding BorderBrush}" />
+                                    x:Name="Highlight"
+                                    OpacityMask="{StaticResource FadeOpacityMask}"
+                                    Background="{TemplateBinding BorderBrush}" />
 
                             <StackPanel Orientation="{TemplateBinding Orientation}"
-                                HorizontalAlignment="Right"
-                                Margin="{TemplateBinding Padding}">
+                                        HorizontalAlignment="Right"
+                                        Margin="{TemplateBinding Padding}">
 
-                                <ContentPresenter Content="{TemplateBinding Header}"  ContentTemplateSelector="{TemplateBinding HeaderTemplate}" />
+                                <ContentPresenter Content="{TemplateBinding Header}"
+                                                  ContentTemplateSelector="{TemplateBinding HeaderTemplate}" />
 
                                 <Control x:Name="PART_Connector"
-                                 Focusable="False"
-                                 Margin="5 0 -10 0"
-                                 VerticalAlignment="Center"
-                                 Background="Transparent"
-                                 BorderBrush="{TemplateBinding BorderBrush}"
-                                 Template="{TemplateBinding ConnectorTemplate}" />
+                                         Focusable="False"
+                                         Margin="5 0 -10 0"
+                                         VerticalAlignment="Center"
+                                         Background="Transparent"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         Template="{TemplateBinding ConnectorTemplate}" />
                             </StackPanel>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="Orientation"
-                             Value="Vertical">
+                                     Value="Vertical">
                                 <Setter TargetName="PART_Connector"
-                                Property="Margin"
-                                Value="0 5 0 -10" />
+                                        Property="Margin"
+                                        Value="0 5 0 -10" />
                             </Trigger>
 
                             <Trigger Property="IsConnected"
-                             Value="True">
+                                     Value="True">
                                 <Setter TargetName="PART_Connector"
-                                Property="Background"
-                                Value="{Binding BorderBrush, RelativeSource={RelativeSource TemplatedParent}}" />
+                                        Property="Background"
+                                        Value="{Binding BorderBrush, RelativeSource={RelativeSource TemplatedParent}}" />
                             </Trigger>
                             <Trigger Property="nodify:PendingConnection.IsOverElement"
-                             Value="True">
+                                     Value="True">
                                 <Setter TargetName="PART_Connector"
-                                Property="Background"
-                                Value="{Binding BorderBrush, RelativeSource={RelativeSource TemplatedParent}}" />
+                                        Property="Background"
+                                        Value="{Binding BorderBrush, RelativeSource={RelativeSource TemplatedParent}}" />
                             </Trigger>
                             <Trigger Property="IsMouseOver"
-                             Value="True">
+                                     Value="True">
                                 <Setter TargetName="Highlight"
-                                Property="Visibility"
-                                Value="Visible" />
+                                        Property="Visibility"
+                                        Value="Visible" />
                             </Trigger>
                             <Trigger Property="nodify:PendingConnection.IsOverElement"
-                             Value="True">
+                                     Value="True">
                                 <Setter TargetName="Highlight"
-                                Property="Visibility"
-                                Value="Visible" />
+                                        Property="Visibility"
+                                        Value="Visible" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -185,10 +164,10 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type nodify:Node}">
                         <Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        Padding="{TemplateBinding Padding}"
-                        CornerRadius="3">
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}"
+                                CornerRadius="3">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -198,9 +177,9 @@
 
                                 <!--Header-->
                                 <Border
-                            Visibility="{TemplateBinding HasHeader, Converter={StaticResource BoolToVis}}"
-                            Background="{TemplateBinding HeaderBrush}"
-                            CornerRadius="3 3 0 0">
+                                    Visibility="{TemplateBinding HasHeader, Converter={StaticResource BoolToVis}}"
+                                    Background="{TemplateBinding HeaderBrush}"
+                                    CornerRadius="3 3 0 0">
                                     <ContentPresenter ContentSource="Header" />
                                 </Border>
 
@@ -208,37 +187,37 @@
                                 <StackPanel Grid.Row="1">
                                     <!--Data OUT-->
                                     <ItemsControl ItemsSource="{TemplateBinding Output}"
-                                          ItemTemplate="{TemplateBinding OutputConnectorTemplate}"
-                                          VerticalAlignment="{TemplateBinding VerticalAlignment}"
-                                          HorizontalContentAlignment="Right"
-                                          Grid.Row="2"
-                                          Focusable="False" />
+                                                  ItemTemplate="{TemplateBinding OutputConnectorTemplate}"
+                                                  VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                                                  HorizontalContentAlignment="Right"
+                                                  Grid.Row="2"
+                                                  Focusable="False" />
 
                                     <!--Content-->
                                     <Border Grid.Row="1"
-                                    Padding="16 0 16 0"
-                                    Background="{TemplateBinding ContentBrush}">
+                                            Padding="16 0 16 0"
+                                            Background="{TemplateBinding ContentBrush}">
                                         <ContentPresenter
-                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
+                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
                                     </Border>
 
                                     <!--Data IN-->
                                     <ItemsControl ItemsSource="{TemplateBinding Input}"
-                                          Margin="0,0,0,5"
-                                          VerticalAlignment="{TemplateBinding VerticalAlignment}"
-                                          ItemTemplate="{TemplateBinding InputConnectorTemplate}"
-                                          Focusable="False" />
+                                                  Margin="0,0,0,5"
+                                                  VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                                                  ItemTemplate="{TemplateBinding InputConnectorTemplate}"
+                                                  Focusable="False" />
                                 </StackPanel>
 
                                 <!--Footer-->
                                 <Border
-                            Visibility="{TemplateBinding HasFooter, Converter={StaticResource BoolToVis}}"
-                            Background="{TemplateBinding FooterBrush}"
-                            CornerRadius="0 0 3 3"
-                            Grid.Row="2"
-                            Grid.ColumnSpan="3"
-                            Padding="6 4 6 4">
+                                    Visibility="{TemplateBinding HasFooter, Converter={StaticResource BoolToVis}}"
+                                    Background="{TemplateBinding FooterBrush}"
+                                    CornerRadius="0 0 3 3"
+                                    Grid.Row="2"
+                                    Grid.ColumnSpan="3"
+                                    Padding="6 4 6 4">
                                     <ContentPresenter ContentSource="Footer" />
                                 </Border>
                             </Grid>
@@ -251,10 +230,37 @@
     <Grid DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:GraphEditor}}">
         <Grid Background="{StaticResource NodifyEditor.BackgroundBrush}"
               lex:ResxLocalizationProvider.DefaultDictionary="Nodes">
+            <Grid.Resources>
+                <GeometryDrawing x:Key="SmallGridGeometry"
+                                 Geometry="M0,0 L0,1 0.03,1 0.03,0.03 1,0.03 1,0 Z"
+                                 Brush="{StaticResource NodifyEditor.SelectionRectangleBackgroundBrush}" />
+
+                <GeometryDrawing x:Key="LargeGridGeometry"
+                                 Geometry="M0,0 L0,1 0.015,1 0.015,0.015 1,0.015 1,0 Z"
+                                 Brush="{StaticResource NodifyEditor.SelectionRectangleBackgroundBrush}" />
+
+                <DrawingBrush x:Key="SmallGridLinesDrawingBrush"
+                              TileMode="Tile"
+                              ViewportUnits="Absolute"
+                              Viewport="0 0 20 20"
+                              Transform="{Binding ViewportTransform, ElementName=Editor}"
+                              Drawing="{StaticResource SmallGridGeometry}" />
+
+                <DrawingBrush x:Key="LargeGridLinesDrawingBrush"
+                              TileMode="Tile"
+                              ViewportUnits="Absolute"
+                              Opacity="0.5"
+                              Viewport="0 0 100 100"
+                              Transform="{Binding ViewportTransform, ElementName=Editor}"
+                              Drawing="{StaticResource LargeGridGeometry}" />
+            </Grid.Resources>
+
             <Grid Background="{StaticResource LargeGridLinesDrawingBrush}"></Grid>
             <nodify:NodifyEditor x:Name="Editor" Connections="{Binding Connections}"
                                  Background="{StaticResource SmallGridLinesDrawingBrush}"
                                  DisconnectConnectorCommand="{Binding DisconnectCommand}"
+                                 EnableRealtimeSelection="True"
+                                 SelectedItems="{Binding SelectedNodes}"
                                  PendingConnection="{Binding PendingConnection}" ItemsSource="{Binding Nodes}">
                 <nodify:NodifyEditor.Resources>
                     <Style TargetType="nodify:ItemContainer">

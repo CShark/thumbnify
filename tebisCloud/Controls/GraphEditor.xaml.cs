@@ -66,11 +66,20 @@ namespace tebisCloud.Controls {
                 }
 
                 ((GraphEditor)o).RebuildGraph();
+                ((GraphEditor)o).FitAll();
             }));
 
         public ProcessingGraph Graph {
             get { return (ProcessingGraph)GetValue(GraphProperty); }
             set { SetValue(GraphProperty, value); }
+        }
+
+        public static readonly DependencyProperty SelectedNodesProperty = DependencyProperty.Register(
+            nameof(SelectedNodes), typeof(ObservableCollection<EditorNode>), typeof(GraphEditor), new PropertyMetadata(default(ObservableCollection<EditorNode>)));
+
+        public ObservableCollection<EditorNode> SelectedNodes {
+            get { return (ObservableCollection<EditorNode>)GetValue(SelectedNodesProperty); }
+            set { SetValue(SelectedNodesProperty, value); }
         }
 
         public static RoutedUICommand DisconnectNodes { get; } = new();
@@ -82,6 +91,7 @@ namespace tebisCloud.Controls {
         public GraphEditor() {
             Nodes = new();
             Connections = new();
+            SelectedNodes = new();
 
             PendingConnection = new PendingConnection((a, b) => {
                 if (a.Parameter != null) {
@@ -126,7 +136,6 @@ namespace tebisCloud.Controls {
                     if (MessageBox.ShowDialog(Window.GetWindow(this),
                             "Sollen die ausgewählten Aktionen gelöscht werden?",
                             "Aktionen löschen", MessageBoxButton.YesNo) == true) {
-
                         var selection = new List<EditorNode>();
 
                         foreach (EditorNode node in ((MultiSelector)Editor).SelectedItems) {
@@ -307,11 +316,16 @@ namespace tebisCloud.Controls {
 
             foreach (var con in Graph.ProcessConnects) {
                 var start = dict[con.Previous].Outputs.FirstOrDefault(x => x.Id == con.PreviousPort);
-                var finish = dict[con.Next].Outputs.FirstOrDefault(x => x.Id == con.NextPort);
+                var finish = dict[con.Next].Inputs.FirstOrDefault(x => x.Id == con.NextPort);
                 Connections.Add(new Connection(start, finish, start.Type));
 
                 Tree[dict[con.Previous]].Add(dict[con.Next]);
             }
+        }
+
+        public void FitAll() {
+            Editor.UpdateLayout();
+            Editor.FitToScreen();
         }
     }
 }

@@ -16,6 +16,7 @@ using Ookii.Dialogs.Wpf;
 using tebisCloud.Data;
 using tebisCloud.Data.ParamStore;
 using tebisCloud.Dialogs;
+using Vortice.Direct2D1;
 
 namespace tebisCloud {
     /// <summary>
@@ -40,6 +41,14 @@ namespace tebisCloud {
             var dlg = new VistaFolderBrowserDialog();
             if (dlg.ShowDialog(this) == true) {
                 Config.VideoPath = dlg.SelectedPath;
+            }
+        }
+
+        private void SelectGraph_OnClick(object sender, RoutedEventArgs e) {
+            var result = LoadSaveDialog.ShowOpenDialog(this, App.Settings.Processing);
+
+            if (result != null) {
+                Config.DefaultProcessing = result.Name;
             }
         }
     }

@@ -29,6 +29,13 @@
                 <Setter Property="Foreground" Value="{StaticResource ControlForeground}"></Setter>
             </Style>
 
+            <Style TargetType="ListBox">
+                <Setter Property="Background" Value="{StaticResource ControlBackgroundLight}" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="Foreground" Value="{StaticResource ControlForeground}" />
+            </Style>
+
             <Style TargetType="{x:Type ContextMenu}">
                 <Setter Property="SnapsToDevicePixels"
                         Value="True" />
@@ -337,7 +344,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-
+            
             <Style TargetType="ContentControl" x:Key="ContentButton">
                 <Setter Property="Height" Value="24"></Setter>
                 <Setter Property="MinWidth" Value="24"></Setter>
@@ -420,6 +427,8 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+
+            <Style TargetType="Button" BasedOn="{StaticResource ContentButton}" />
 
             <Style x:Key="SingleButton" TargetType="ContentControl">
                 <Setter Property="Width" Value="24"></Setter>
@@ -628,7 +637,7 @@
             </Style>
 
             <Style x:Key="FirstButton" TargetType="ContentControl">
-                <Setter Property="Width" Value="30"></Setter>
+                <Setter Property="MinWidth" Value="30"></Setter>
                 <Setter Property="Height" Value="24"></Setter>
                 <Setter Property="FontSize" Value="14"></Setter>
                 <Setter Property="Foreground" Value="{StaticResource ControlForeground}"></Setter>
@@ -638,33 +647,30 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="ContentControl">
                             <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="12"></ColumnDefinition>
-                                    <ColumnDefinition></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-
-                                <Ellipse Width="24" Height="24" Stroke="{StaticResource ControlBorder}"
+                                <Ellipse Width="24" Height="24" Stroke="{StaticResource ControlBorder}" HorizontalAlignment="Left"
                                          Fill="{StaticResource ControlBackground}">
+                                    <Ellipse.Clip>
+                                        <RectangleGeometry Rect="0,0,12,24"></RectangleGeometry>
+                                    </Ellipse.Clip>
                                 </Ellipse>
                                 <Border Grid.Column="1" Background="{StaticResource ControlBackground}"
-                                        BorderBrush="{StaticResource ControlBorder}" BorderThickness="0,1,1,1">
+                                        BorderBrush="{StaticResource ControlBorder}" BorderThickness="0,1,1,1"
+                                        Margin="12,0,0,0">
                                 </Border>
 
-                                <Grid Opacity="0" x:Name="Highlight" Grid.ColumnSpan="2">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="12"></ColumnDefinition>
-                                        <ColumnDefinition></ColumnDefinition>
-                                    </Grid.ColumnDefinitions>
-
+                                <Grid Opacity="0" x:Name="Highlight">
                                     <Ellipse Width="24" Height="24"
-                                             Fill="Gray">
+                                             Fill="Gray" HorizontalAlignment="Left">
+                                        <Ellipse.Clip>
+                                            <RectangleGeometry Rect="0,0,12,24"></RectangleGeometry>
+                                        </Ellipse.Clip>
                                     </Ellipse>
-                                    <Border Grid.Column="1" Background="Gray">
+                                    <Border Background="Gray" Margin="12,0,0,0">
                                     </Border>
                                 </Grid>
 
                                 <ContentPresenter Content="{TemplateBinding Content}" VerticalAlignment="Center"
-                                                  HorizontalAlignment="Center" Grid.ColumnSpan="2" Margin="6,0,0,0" />
+                                                  HorizontalAlignment="Center" Margin="6,0,0,0" />
 
                                 <VisualStateManager.VisualStateGroups>
                                     <VisualStateGroup Name="CommonStates">
@@ -688,7 +694,7 @@
             </Style>
 
             <Style x:Key="LastButton" TargetType="ContentControl">
-                <Setter Property="Width" Value="30"></Setter>
+                <Setter Property="MinWidth" Value="30"></Setter>
                 <Setter Property="Height" Value="24"></Setter>
                 <Setter Property="FontSize" Value="14"></Setter>
                 <Setter Property="Foreground" Value="{StaticResource ControlForeground}"></Setter>
@@ -698,29 +704,19 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="ContentControl">
                             <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition></ColumnDefinition>
-                                    <ColumnDefinition Width="12"></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-
-                                <Ellipse Grid.Column="1" Width="24" Margin="-12,0,0,0" Height="24"
+                                <Ellipse Width="24" Margin="0,0,0,0" Height="24" HorizontalAlignment="Right"
                                          Stroke="{StaticResource ControlBorder}"
                                          Fill="{StaticResource ControlBackground}">
                                 </Ellipse>
-                                <Border Background="{StaticResource ControlBackground}"
+                                <Border Background="{StaticResource ControlBackground}" Margin="0,0,12,0"
                                         BorderBrush="{StaticResource ControlBorder}" BorderThickness="1,1,0,1">
                                 </Border>
 
-                                <Grid Opacity="0" x:Name="Highlight" Grid.ColumnSpan="2">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition></ColumnDefinition>
-                                        <ColumnDefinition Width="12"></ColumnDefinition>
-                                    </Grid.ColumnDefinitions>
-
-                                    <Ellipse Grid.Column="1" Margin="-12,0,0,0" Width="24" Height="24"
+                                <Grid Opacity="0" x:Name="Highlight">
+                                    <Ellipse Width="24" Height="24" HorizontalAlignment="Right"
                                              Fill="Gray">
                                     </Ellipse>
-                                    <Border Background="Gray">
+                                    <Border Background="Gray" Margin="0,0,12,0">
                                     </Border>
                                 </Grid>
 

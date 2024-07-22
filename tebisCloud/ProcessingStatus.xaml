@@ -1,0 +1,65 @@
+﻿<Window x:Class="tebisCloud.ProcessingStatus"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:tebisCloud"
+        xmlns:data="clr-namespace:tebisCloud.Data"
+        xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        Style="{StaticResource Dark}"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Title="ProcessingStatus" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="15"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <ProgressBar></ProgressBar>
+
+        <ListBox Grid.Row="1" ItemsSource="{Binding MediaParts}" d:ItemsSource="{d:SampleData ItemCount=2}">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type data:QueueItemStatus}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="10"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel>
+                            <TextBlock Text="{Binding MediaPart.Parent.Name}" />
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0}: {1}">
+                                        <Binding Path="MediaPart.Name" />
+                                        <Binding Path="MediaPart.Metadata.Name" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </StackPanel>
+
+                        <WrapPanel Grid.Column="1">
+                            <Button Command="{x:Static local:ProcessingStatus.OpenGraph}" CommandParameter="{Binding}">
+                                <wpf:MaterialIcon Kind="Search" Width="16"/>
+                            </Button>
+                        </WrapPanel>
+
+                        <ProgressBar Grid.Row="1" Grid.ColumnSpan="2">
+
+                        </ProgressBar>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Button Grid.Row="3" HorizontalAlignment="Center" Margin="5">Schließen</Button>
+    </Grid>
+</Window>

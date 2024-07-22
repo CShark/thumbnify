@@ -33,7 +33,6 @@
     </Window.CommandBindings>
     <Window.InputBindings>
         <KeyBinding Command="{Binding AddNode}" Key="A" Modifiers="Shift" />
-        <KeyBinding Command="{x:Static controls:GraphEditor.DeleteNode}" Key="X" />
     </Window.InputBindings>
     <Window.Resources>
         <Style TargetType="MenuItem">
@@ -48,14 +47,16 @@
             <Setter Property="BorderBrush" Value="{StaticResource ControlForegroundDark}" />
         </Style>
     </Window.Resources>
-    <Grid Background="{StaticResource NodifyEditor.BackgroundBrush}"
-          lex:ResxLocalizationProvider.DefaultDictionary="Nodes">
+    <Grid lex:ResxLocalizationProvider.DefaultDictionary="Nodes">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="200"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
         <controls:GraphEditor Graph="{Binding Graph}" x:Name="Editor">
+            <controls:GraphEditor.InputBindings>
+                <KeyBinding Command="{x:Static controls:GraphEditor.DeleteNode}" Key="X" />
+            </controls:GraphEditor.InputBindings>
             <controls:GraphEditor.ContextMenu>
                 <ContextMenu lex:ResxLocalizationProvider.DefaultDictionary="Nodes">
                     <MenuItem Header="{lex:Loc mnu_input}">
@@ -163,6 +164,26 @@
             </controls:GraphEditor.ContextMenu>
         </controls:GraphEditor>
 
+        <WrapPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5">
+            <WrapPanel.Resources>
+                <Style TargetType="Button" BasedOn="{StaticResource SingleButton}">
+                    <Setter Property="Margin" Value="3"></Setter>
+                </Style>
+                <Style TargetType="wpf:MaterialIcon">
+                    <Setter Property="Margin" Value="3"></Setter>
+                </Style>
+            </WrapPanel.Resources>
+            <Button>
+                <wpf:MaterialIcon Kind="FilePlus"></wpf:MaterialIcon>
+            </Button>
+            <Button Click="GraphLoad_OnClick">
+                <wpf:MaterialIcon Kind="FolderOpen"></wpf:MaterialIcon>
+            </Button>
+            <Button Click="GraphSave_OnClick">
+                <wpf:MaterialIcon Kind="ContentSave"></wpf:MaterialIcon>
+            </Button>
+        </WrapPanel>
+
         <StackPanel Grid.Column="1">
             <Expander Header="Einstellungen" Foreground="{StaticResource ControlForegroundDark}" IsExpanded="True"
                       ExpandDirection="Down">
@@ -180,7 +201,7 @@
                         </Grid.ColumnDefinitions>
 
                         <ListBox BorderThickness="0" Background="{StaticResource ControlBackgroundLight}" Height="200"
-                                 ItemsSource="{Binding Parameters}" SelectedItem="{Binding SelectedParam}"
+                                 ItemsSource="{Binding Graph.Parameters}" SelectedItem="{Binding SelectedParam}"
                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                             <ListBox.ItemTemplate>
                                 <DataTemplate DataType="{x:Type paramStore:ParamDefinition}">

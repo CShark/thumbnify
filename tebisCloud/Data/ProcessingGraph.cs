@@ -1,20 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
+using Newtonsoft.Json;
 using tebisCloud.Data.ParamStore;
 using tebisCloud.Data.Processing;
 using tebisCloud.Data.Processing.Input;
 
 namespace tebisCloud.Data {
-    public class ProcessingGraph {
+    public class ProcessingGraph : IDialogItem, INotifyPropertyChanged {
         public ObservableCollection<Node> Nodes { get; } = new();
 
         public ObservableCollection<ProcessConnect> ProcessConnects { get; set; } = new();
 
-        public ObservableCollection<ParamDefinition> Parameters { get; } = new();
+        public ObservableCollection<ParamDefinition> Parameters {
+            get => _parameters;
+            set => SetField(ref _parameters, value);
+        }
 
         private HashSet<Node> _openNodes = new();
 
@@ -23,6 +32,8 @@ namespace tebisCloud.Data {
         private Dictionary<string, Node> _nodes;
         private Dictionary<string, Dictionary<string, List<(string Node, string Port)>>> _edgesForward;
         private Dictionary<string, Dictionary<string, (string Node, string Result)?>> _edgesBackward;
+        private string _name;
+        private ObservableCollection<ParamDefinition> _parameters = new();
 
         public ProcessingGraph() {
             Nodes.CollectionChanged += (_, args) => {
@@ -170,6 +181,69 @@ namespace tebisCloud.Data {
                     _nodes[next[0].Node].Parameters[next[0].Port].ApplyValue(result.Value.GetValue());
                 }
             }
+        }
+
+        public string Name {
+            get => _name;
+            set => SetField(ref _name, value);
+        }
+
+        public string? Base64Image { get; set; }
+
+        [JsonIgnore]
+        public BitmapSource? Preview { get; set; }
+
+        [OnDeserialized]
+        internal void OnDeserialized(StreamingContext context) {
+            if (Base64Image != null) {
+                var bytes = Convert.FromBase64String(Base64Image);
+                using (var ms = new MemoryStream(bytes)) {
+                    var bmp = new BitmapImage();
+                    bmp.BeginInit();
+                    bmp.CacheOption = BitmapCacheOption.OnLoad;
+                    bmp.StreamSource = ms;
+                    bmp.EndInit();
+                    bmp.Freeze();
+
+                    Preview = bmp;
+                }
+            }
+
+            foreach (var node in Nodes.OfType<MediaPartInput>()) {
+                node.SetParamStore(Parameters);
+            }
+        }
+
+        [OnSerializing]
+        internal void OnSerializing(StreamingContext context) {
+            if (Preview != null) {
+                var encoder = new JpegBitmapEncoder();
+                encoder.QualityLevel = 70;
+                encoder.Frames.Add(BitmapFrame.Create(Preview));
+
+                using (var ms = new MemoryStream()) {
+                    encoder.Save(ms);
+
+                    var bytes = new byte[ms.Length];
+                    ms.Seek(0, SeekOrigin.Begin);
+                    ms.Read(bytes);
+
+                    Base64Image = Convert.ToBase64String(bytes);
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null) {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null) {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
         }
     }
 }

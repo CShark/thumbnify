@@ -1,0 +1,27 @@
+﻿<Window x:Class="tebisCloud.GraphViewer"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:tebisCloud"
+        xmlns:controls="clr-namespace:tebisCloud.Controls"
+        mc:Ignorable="d"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        WindowStartupLocation="CenterOwner"
+        Title="GraphViewer" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="150"></RowDefinition>
+        </Grid.RowDefinitions>
+        <controls:GraphEditor Graph="{Binding Graph}" SelectedNodes="{Binding SelectedNodes}"/>
+
+        <Expander Grid.Row="1" IsExpanded="True" ExpandDirection="Up">
+            <TextBox Text="{Binding LogMessages}" IsReadOnly="True">
+
+            </TextBox>
+        </Expander>
+
+        <GridSplitter Grid.Row="0" Height="5" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" />
+    </Grid>
+</Window>

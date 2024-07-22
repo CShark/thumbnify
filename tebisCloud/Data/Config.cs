@@ -14,6 +14,9 @@ namespace tebisCloud.Data {
         private ObservableCollection<MediaSource> _media = new();
         private ObservableCollection<ThumbnailData> _thumbnails = new();
         private string _defaultThumbnail;
+        private ObservableCollection<ProcessingGraph> _processing = new();
+        private string _defaultProcessing;
+
         public string VideoPath {
             get => _videoPath;
             set => SetField(ref _videoPath, value);
@@ -27,6 +30,16 @@ namespace tebisCloud.Data {
         public ObservableCollection<ThumbnailData> Thumbnails {
             get => _thumbnails;
             set => SetField(ref _thumbnails, value);
+        }
+
+        public ObservableCollection<ProcessingGraph> Processing {
+            get => _processing;
+            set => SetField(ref _processing, value);
+        }
+
+        public string DefaultProcessing {
+            get => _defaultProcessing;
+            set => SetField(ref _defaultProcessing, value);
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

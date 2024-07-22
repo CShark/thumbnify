@@ -9,8 +9,7 @@ using tebisCloud.Postprocessing;
 
 namespace tebisCloud.Data.Processing.Input {
     internal sealed class PathInput : Node {
-        public Parameter<FilePath> Path { get; } =
-            new("path", false, new(FilePath.EPathMode.Directory, ""), false);
+        public Parameter<FilePath> Path { get; } = new("path", false, new(FilePath.EPathMode.Directory, ""), false);
 
         [JsonIgnore]
         public Result<FilePath> Result { get; } = new("path");

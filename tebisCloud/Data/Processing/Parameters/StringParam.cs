@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace tebisCloud.Data.Processing.Parameters {
-    internal class StringParam : ParamType {
+    public class StringParam : ParamType {
         public string Value { get; set; } = "";
 
         public override ParamType Clone() {

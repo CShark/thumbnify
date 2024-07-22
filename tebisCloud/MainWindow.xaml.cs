@@ -108,6 +108,9 @@ namespace tebisCloud {
             set { SetValue(UploadQueueProperty, value); }
         }
 
+        public static RoutedUICommand AddToQueue { get; } = new();
+        public static RoutedUICommand DelFromQueue { get; } = new();
+
         private const long MaxZoom = 2000000;
         private const long MinZoom = 400000;
 
@@ -124,13 +127,51 @@ namespace tebisCloud {
             Media = new ListCollectionView(App.Settings.Media);
             Media.SortDescriptions.Add(new SortDescription(nameof(MediaSource.Date), ListSortDirection.Descending));
 
+            UploadQueue = new();
+
             InitializeComponent();
 
             ScanMedia();
 
             MediaList_OnSelectionChanged(null, null);
 
+            CommandBindings.Add(new CommandBinding(AddToQueue, (_, args) => {
+                if (args.Parameter is MediaPart part) {
+                    UploadQueue.Add(part);
+                }
+            }, (_, args) => {
+                var param = args.Parameter as MediaPart;
+                args.CanExecute = false;
+
+                if (param != null && !UploadQueue.Contains(param)) {
+                    args.CanExecute = true;
+                }
+            }));
+
+            CommandBindings.Add(new(DelFromQueue, (_, args) => {
+                if (args.Parameter is MediaPart part) {
+                    UploadQueue.Remove(part);
+                }
+            }, (_, args) => {
+                var param = args.Parameter as MediaPart;
+                args.CanExecute = false;
+
+                if (param != null && UploadQueue.Contains(param)) {
+                    args.CanExecute = true;
+                }
+            }));
+
             CommandManager.InvalidateRequerySuggested();
+
+            VideoSeekSlider.PreviewMouseMove += (sender, args) => {
+                if (args.LeftButton == MouseButtonState.Pressed) {
+                    VideoSeekSlider.RaiseEvent(
+                        new MouseButtonEventArgs(args.MouseDevice, args.Timestamp, MouseButton.Left) {
+                            RoutedEvent = UIElement.PreviewMouseLeftButtonDownEvent,
+                            Source = args.Source
+                        });
+                }
+            };
         }
 
         private void OpenSettings_OnClick(object sender, RoutedEventArgs e) {
@@ -225,12 +266,24 @@ namespace tebisCloud {
         #region Waveform dragging
 
         private bool _isWaveformDragging = false;
-
+        private MediaPart? _draggedMediaPart = null;
         private Point _waveformDragStart = new();
 
         private void DragWaveform_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
             _isWaveformDragging = true;
             _waveformDragStart = e.GetPosition(this);
+            _draggedMediaPart = null;
+
+            VisualTreeHelper.HitTest(this, null, x => {
+                if (x.VisualHit is FrameworkElement elem) {
+                    if (elem.DataContext is MediaPart media) {
+                        _draggedMediaPart = media;
+                        return HitTestResultBehavior.Stop;
+                    }
+                }
+
+                return HitTestResultBehavior.Continue;
+            }, new PointHitTestParameters(e.GetPosition(this)));
         }
 
         private void DragWaveform_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
@@ -240,12 +293,23 @@ namespace tebisCloud {
         private void DragWaveform_OnMouseMove(object sender, MouseEventArgs e) {
             if (_isWaveformDragging) {
                 var offset = (long)((_waveformDragStart.X - e.GetPosition(this).X) * DetailWaveformZoom);
-                _waveformDragStart = e.GetPosition(this);
 
                 if (offset != 0) {
-                    //Player.CurTime += 200;
-                    Player.CurTime = Math.Clamp(Player.CurTime + offset, 0, Player.Duration);
+                    if (_draggedMediaPart != null) {
+                        _draggedMediaPart.Start -= offset;
+                        _draggedMediaPart.End -= offset;
+
+                        _draggedMediaPart.Start = Math.Clamp(_draggedMediaPart.Start, 0,
+                            Player.Duration - _draggedMediaPart.Duration);
+
+                        _draggedMediaPart.End =
+                            Math.Clamp(_draggedMediaPart.End, _draggedMediaPart.Start, Player.Duration);
+                    } else {
+                        Player.CurTime = Math.Clamp(Player.CurTime + offset, 0, Player.Duration);
+                    }
                 }
+
+                _waveformDragStart = e.GetPosition(this);
             }
         }
 
@@ -311,8 +375,13 @@ namespace tebisCloud {
             SelectionVisible = false;
 
             if (SelectedMedia != null) {
-                //var json = JsonConvert.SerializeObject(App.Settings.GetDefaultThumbnail());
-                //var thumb = JsonConvert.DeserializeObject<ThumbnailData>(json);
+                var graph = App.Settings.Processing.FirstOrDefault(x =>
+                    x.Name.ToLower() == App.Settings.DefaultProcessing.ToLower());
+
+                if (graph != null) {
+                    var json = JsonConvert.SerializeObject(graph);
+                    graph = JsonConvert.DeserializeObject<ProcessingGraph>(json);
+                }
 
                 var part = new MediaPart {
                     Start = SelectionStart,
@@ -320,15 +389,16 @@ namespace tebisCloud {
                     Duration = SelectionLength,
                     Color = PartColors[SelectedMedia.Parts.Count % PartColors.Count],
                     Name = $"#{SelectedMedia.Parts.Count}",
-                   // Thumbnail = thumb,
                     Metadata = new PartMetadata {
-                        Date = SelectedMedia.Date
+                        ProcessingGraph = graph
                     },
                     Parent = SelectedMedia
                 };
 
+                part.Metadata.UpdateParameters();
+
                 var dlg = new EditPartMetadata();
-                dlg.MediaPart = part;
+                dlg.PartMetadata = part.Metadata;
                 dlg.Owner = this;
 
                 if (dlg.ShowDialog() == true) {
@@ -357,13 +427,15 @@ namespace tebisCloud {
                 var json = JsonConvert.SerializeObject(part);
 
                 var dlg = new EditPartMetadata();
-                dlg.MediaPart = part;
+                dlg.PartMetadata = part.Metadata;
                 dlg.Owner = this;
 
                 if (dlg.ShowDialog() != true) {
                     part.Thumbnail = null;
                     part.Metadata = null;
                     JsonConvert.PopulateObject(json, part);
+                } else {
+                    App.SaveSettings();
                 }
             }
         }
@@ -387,6 +459,13 @@ namespace tebisCloud {
         private void EditPostprocessing_OnClick(object sender, RoutedEventArgs e) {
             var dlg = new ProcessingEditor();
             dlg.Owner = this;
+            dlg.ShowDialog();
+        }
+
+        private void StartProcessing_OnClick(object sender, RoutedEventArgs e) {
+            var dlg = new ProcessingStatus();
+            dlg.Owner = this;
+            dlg.StartProcessing(UploadQueue);
             dlg.ShowDialog();
         }
     }

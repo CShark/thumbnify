@@ -75,7 +75,8 @@ namespace tebisCloud.Data {
         [OnSerializing]
         internal void OnSerializing(StreamingContext context) {
             if (Preview != null) {
-                var encoder = new PngBitmapEncoder();
+                var encoder = new JpegBitmapEncoder();
+                encoder.QualityLevel = 70;
                 encoder.Frames.Add(BitmapFrame.Create(Preview));
 
                 using (var ms = new MemoryStream()) {

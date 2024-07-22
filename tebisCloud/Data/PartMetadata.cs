@@ -1,63 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using tebisCloud.Data.ParamStore;
 
 namespace tebisCloud.Data {
     public class PartMetadata :INotifyPropertyChanged{
-        private string _prediger = "";
-        private string _thema = "";
-        private string? _title;
-        private string? _fileName;
-        private DateTime _date;
+        private ProcessingGraph? _processingGraph;
+        private ObservableCollection<ParamDefinition> _parameters = new();
+        private string _name;
 
-        public string Prediger {
-            get => _prediger;
-            set {
-                SetField(ref _prediger, value);
-                OnPropertyChanged(nameof(Title));
-                OnPropertyChanged(nameof(FileName));
-            }
+        public string Name {
+            get => _name;
+            set => SetField(ref _name, value);
         }
 
-        public string Thema {
-            get => _thema;
-            set {
-                SetField(ref _thema, value);
-                OnPropertyChanged(nameof(Title));
-                OnPropertyChanged(nameof(FileName));
-            }
+        public ProcessingGraph? ProcessingGraph {
+            get => _processingGraph;
+            set => SetField(ref _processingGraph, value);
         }
 
-        public string Title {
-            get => _title ?? $"{Prediger} - {Thema}";
-            set {
-                if (!string.IsNullOrWhiteSpace(_title)) {
-                    SetField(ref _title, value);
-                } else {
-                    SetField(ref _title, null);
+
+        public ObservableCollection<ParamDefinition> Parameters {
+            get => _parameters;
+            set => SetField(ref _parameters, value);
+        }
+
+        public void UpdateParameters() {
+            var paramList = Parameters.ToList();
+
+            Parameters.Clear();
+            foreach (var param in _processingGraph.Parameters) {
+                var clone = param.Clone();
+
+                var orig = paramList.FirstOrDefault(x =>
+                    (x.Id == clone.Id || x.Name.ToLower() == clone.Name.ToLower()) && x.Type == clone.Type);
+
+                if (orig != null) {
+                    clone.Value = orig.Value;
                 }
+
+                Parameters.Add(clone);
             }
         }
 
-        public string FileName {
-            get => _fileName ?? $"{Prediger} - {Thema}";
-            set {
-                if (!string.IsNullOrWhiteSpace(value)) {
-                    SetField(ref _fileName, value);
-                } else {
-                    SetField(ref _fileName, value);
-                }
-            }
-        }
-
-        public DateTime Date {
-            get => _date;
-            set => SetField(ref _date, value);
-        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 

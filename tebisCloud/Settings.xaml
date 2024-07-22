@@ -35,6 +35,21 @@
                     <wpf:MaterialIcon Kind="FolderOpen" />
                 </Button>
             </Grid>
+
+            <Rectangle Height="10"></Rectangle>
+            <TextBlock>Standard-Nachbearbeitung</TextBlock>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <TextBox IsReadOnly="True" Text="{Binding Config.DefaultProcessing}" VerticalContentAlignment="Center" />
+                <Button Grid.Column="1" Margin="5,0" Click="SelectGraph_OnClick" Width="24"
+                        Style="{StaticResource SquareButton}">
+                    <wpf:MaterialIcon Kind="FolderOpen" />
+                </Button>
+            </Grid>
         </StackPanel>
     </Grid>
 </Window>

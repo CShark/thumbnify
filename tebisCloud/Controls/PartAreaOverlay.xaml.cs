@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using tebisCloud.Data;
+using Vortice.MediaFoundation;
 
 namespace tebisCloud.Controls {
     /// <summary>
@@ -73,18 +75,64 @@ namespace tebisCloud.Controls {
             set { SetValue(MediaDurationProperty, value); }
         }
 
-        public PartAreaOverlay() {
-            InitializeComponent();
+        public static readonly DependencyProperty OverlayOpacityProperty = DependencyProperty.Register(
+            nameof(OverlayOpacity), typeof(double), typeof(PartAreaOverlay), new PropertyMetadata(1.0d));
+
+        public double OverlayOpacity {
+            get { return (double)GetValue(OverlayOpacityProperty); }
+            set { SetValue(OverlayOpacityProperty, value); }
         }
 
-        private void ClickPart_OnExecuted(object sender, ExecutedRoutedEventArgs e) {
-            if (e.Parameter is MediaPart p) {
-                OnPartClicked(p);
-            }
+        public static readonly DependencyProperty ShowLabelsProperty = DependencyProperty.Register(
+            nameof(ShowLabels), typeof(bool), typeof(PartAreaOverlay), new PropertyMetadata(default(bool)));
+
+        public bool ShowLabels {
+            get { return (bool)GetValue(ShowLabelsProperty); }
+            set { SetValue(ShowLabelsProperty, value); }
         }
+
+        public PartAreaOverlay() {
+            InitializeComponent();
+
+            CommandBindings.Add(new(ClickPart, (_, e) => {
+                if (e.Parameter is MediaPart p) {
+                    OnPartClicked(p);
+
+                    PopupControls.PlacementTarget = e.OriginalSource as UIElement;
+                    PopupControls.IsOpen = true;
+                    PopupControls.StaysOpen = true;
+                    PopupControls.DataContext = p;
+                    CommandManager.InvalidateRequerySuggested();
+
+                    Window.GetWindow(this).PreviewMouseLeftButtonUp += Window_OnMouseLeftButtonUp;
+                    Window.GetWindow(this).MouseLeave += Window_OnMouseLeave;
+                }
+            }));
+        }
+
+        private void Window_OnMouseLeave(object sender, MouseEventArgs e) {
+            Window_OnMouseLeftButtonUp(null, null);
+        }
+
+        private void Window_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
+            PopupControls.StaysOpen = false;
+
+            Window.GetWindow(this).PreviewMouseLeftButtonUp -= Window_OnMouseLeftButtonUp;
+            Window.GetWindow(this).MouseLeave -= Window_OnMouseLeave;
+        }
+
 
         protected virtual void OnPartClicked(MediaPart obj) {
             PartClicked?.Invoke(obj);
+        }
+
+        private void PopupControls_OnClosed(object? sender, EventArgs e) {
+            Window.GetWindow(this).PreviewMouseLeftButtonUp -= Window_OnMouseLeftButtonUp;
+            Window.GetWindow(this).MouseLeave -= Window_OnMouseLeave;
+        }
+
+        private void PopupControls_OnPreviewMouseUp(object sender, MouseButtonEventArgs e) {
+            PopupControls.IsOpen = false;
         }
     }
 }

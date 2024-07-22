@@ -7,78 +7,115 @@
              xmlns:data="clr-namespace:tebisCloud.Data"
              xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
              xmlns:tebisCloud="clr-namespace:tebisCloud"
+             xmlns:converter="clr-namespace:tebisCloud.Converter"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
-        <Style TargetType="MenuItem">
-            <Setter Property="CommandTarget"
-                    Value="{Binding Path=PlacementTarget,RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}">
-            </Setter>
-        </Style>
+        <converter:MediaPartOffsetConverter x:Key="ViewboxConv" />
     </UserControl.Resources>
-    <UserControl.CommandBindings>
-        <CommandBinding Command="{x:Static local:PartAreaOverlay.ClickPart}" Executed="ClickPart_OnExecuted"></CommandBinding>
-    </UserControl.CommandBindings>
 
-    <Viewbox Stretch="Fill"
-             DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:PartAreaOverlay}}">
-        <Grid Height="50" Width="{Binding MediaDuration}">
-            <ItemsControl ItemsSource="{Binding MediaParts}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <Canvas />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
+    <Grid DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:PartAreaOverlay}}">
+        <Viewbox Stretch="Fill" x:Name="ViewBox" Opacity="{Binding OverlayOpacity}">
+            <Grid Height="50" Width="{Binding MediaDuration}">
+                <ItemsControl ItemsSource="{Binding MediaParts}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
 
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type data:MediaPart}">
-                        <Border Height="50" Width="{Binding Duration}" Cursor="Hand">
-                            <Border.InputBindings>
-                                <MouseBinding MouseAction="LeftClick"
-                                              Command="{x:Static local:PartAreaOverlay.ClickPart}"
-                                              CommandParameter="{Binding}">
-                                </MouseBinding>
-                            </Border.InputBindings>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type data:MediaPart}">
+                            <Border Height="50" Width="{Binding Duration}" Cursor="Hand">
+                                <Border.InputBindings>
+                                    <MouseBinding MouseAction="LeftClick"
+                                                  Command="{x:Static local:PartAreaOverlay.ClickPart}"
+                                                  CommandParameter="{Binding}">
+                                    </MouseBinding>
+                                </Border.InputBindings>
 
-                            <Border.Background>
-                                <SolidColorBrush Color="{Binding Color}"></SolidColorBrush>
-                            </Border.Background>
+                                <Border.Background>
+                                    <SolidColorBrush Color="{Binding Color}"></SolidColorBrush>
+                                </Border.Background>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ContentPresenter">
+                            <Setter Property="Canvas.Left" Value="{Binding Start}" />
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                </ItemsControl>
+                <Canvas Visibility="{Binding SelectionVisible, Converter={StaticResource BoolToVis}}">
+                    <Border Height="50" Canvas.Left="{Binding SelectionStart}" Background="#FFFFFF"
+                            Width="{Binding SelectionLength}">
+                    </Border>
+                </Canvas>
+            </Grid>
+        </Viewbox>
+        <ItemsControl VerticalAlignment="Bottom" Height="16" ItemsSource="{Binding MediaParts}" IsHitTestVisible="False" Visibility="{Binding ShowLabels, Converter={StaticResource BoolToVis}}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
 
-                            <Border.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="{Binding Name}" FontWeight="Bold" IsEnabled="false"></MenuItem>
-                                    <MenuItem Header="Bearbeiten" Command="{x:Static tebisCloud:MainWindow.EditMediaPart}" CommandParameter="{Binding}">
-                                        <MenuItem.Icon>
-                                            <wpf:MaterialIcon Kind="Edit" Margin="0"></wpf:MaterialIcon>
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                    <MenuItem Header="Zur Warteschlange hinzufügen">
-                                        <MenuItem.Icon>
-                                            <wpf:MaterialIcon Kind="TrayPlus" Margin="0"></wpf:MaterialIcon>
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                    <MenuItem Header="Entfernen" Command="{x:Static tebisCloud:MainWindow.DeleteMediaPart}" CommandParameter="{Binding}">
-                                        <MenuItem.Icon>
-                                            <wpf:MaterialIcon Kind="Trash" Margin="0"></wpf:MaterialIcon>
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                </ContextMenu>
-                            </Border.ContextMenu>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-                <ItemsControl.ItemContainerStyle>
-                    <Style TargetType="ContentPresenter">
-                        <Setter Property="Canvas.Left" Value="{Binding Start}" />
-                    </Style>
-                </ItemsControl.ItemContainerStyle>
-            </ItemsControl>
-            <Canvas Visibility="{Binding SelectionVisible, Converter={StaticResource BoolToVis}}">
-                <Border Height="50" Canvas.Left="{Binding SelectionStart}" Background="#FFFFFF"
-                        Width="{Binding SelectionLength}">
-                </Border>
-            </Canvas>
-        </Grid>
-    </Viewbox>
+            <ItemsControl.ItemContainerStyle>
+                <Style TargetType="ContentPresenter">
+                    <Setter Property="Canvas.Left">
+                        <Setter.Value>
+                            <MultiBinding Converter="{StaticResource ViewboxConv}">
+                                <Binding ElementName="ViewBox" Path="ActualWidth" />
+                                <Binding
+                                    RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:PartAreaOverlay}}"
+                                    Path="MediaDuration" />
+                                <Binding Path="Start" />
+                            </MultiBinding>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type data:MediaPart}">
+                    <TextBlock Foreground="{StaticResource ControlForeground}" TextTrimming="CharacterEllipsis">
+                        <TextBlock.Width>
+                            <MultiBinding Converter="{StaticResource ViewboxConv}">
+                                <Binding ElementName="ViewBox" Path="ActualWidth" />
+                                <Binding
+                                    RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:PartAreaOverlay}}"
+                                    Path="MediaDuration" />
+                                <Binding Path="Duration" />
+                            </MultiBinding>
+                        </TextBlock.Width>
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0}: {1}">
+                                <Binding Path="Name" />
+                                <Binding Path="Metadata.Name" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <Popup x:Name="PopupControls" AllowsTransparency="True" StaysOpen="False" Placement="Center"
+               VerticalOffset="-100" Closed="PopupControls_OnClosed" PreviewMouseUp="PopupControls_OnPreviewMouseUp">
+            <StackPanel Orientation="Horizontal">
+                <Button Style="{StaticResource FirstButton}" Command="{x:Static tebisCloud:MainWindow.EditMediaPart}"
+                        CommandParameter="{Binding}">
+                    <wpf:MaterialIcon Kind="Edit" />
+                </Button>
+                <Button Style="{StaticResource MiddleButton}" Command="{x:Static tebisCloud:MainWindow.AddToQueue}"
+                        CommandParameter="{Binding}">
+                    <wpf:MaterialIcon Kind="TrayPlus" />
+                </Button>
+                <Button Style="{StaticResource LastButton}" Command="{x:Static tebisCloud:MainWindow.DeleteMediaPart}"
+                        CommandParameter="{Binding}">
+                    <wpf:MaterialIcon Kind="Delete" />
+                </Button>
+            </StackPanel>
+        </Popup>
+    </Grid>
 </UserControl>

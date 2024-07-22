@@ -42,9 +42,13 @@ namespace tebisCloud.Data.ParamStore {
 
         public string Name { get; set; }
 
-        public object? Value { get; set; }
+        public ParamType Value { get; set; }
 
         public Type Type { get; set; }
+
+        public ParamDefinition Clone() {
+            return new ParamDefinition { Id = Id, Name = Name, Value = Value.Clone() };
+        }
 
         public Result? BuildResult() {
             switch (Value) {

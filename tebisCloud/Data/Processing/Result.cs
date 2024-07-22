@@ -15,6 +15,8 @@ namespace tebisCloud.Data.Processing {
 
         public abstract ParamType? GetValue();
 
+        public abstract void SetValue(ParamType value);
+
         public abstract void Clear();
 
         public abstract void Dispose();
@@ -33,6 +35,12 @@ namespace tebisCloud.Data.Processing {
 
         public override ParamType? GetValue() {
             return Value;
+        }
+
+        public override void SetValue(ParamType value) {
+            if (value is T obj) {
+                Value = obj;
+            }
         }
 
         public override void Clear() {

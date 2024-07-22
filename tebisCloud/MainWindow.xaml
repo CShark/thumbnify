@@ -59,7 +59,7 @@
                 <TextBlock Foreground="{StaticResource ControlForeground}" FontSize="20">Medien</TextBlock>
             </StackPanel>
 
-            <WrapPanel Margin="2" Grid.Row="2">
+            <WrapPanel Margin="4" Grid.Row="2">
                 <WrapPanel.Resources>
                     <Style TargetType="Button" BasedOn="{StaticResource SingleButton}">
                         <Setter Property="Margin" Value="3,0"></Setter>
@@ -77,12 +77,10 @@
                 </Button>
             </WrapPanel>
 
-            <ListBox BorderThickness="0" Grid.Row="1" ItemsSource="{Binding Media}"
+            <ListBox Grid.Row="1" ItemsSource="{Binding Media}"
                      SelectionChanged="MediaList_OnSelectionChanged"
-                     IsSynchronizedWithCurrentItem="True" Background="Transparent"
-                     Foreground="{StaticResource ControlForeground}"
-                     SelectedItem="{Binding SelectedMedia}"
-                     HorizontalContentAlignment="Stretch">
+                     IsSynchronizedWithCurrentItem="True"
+                     SelectedItem="{Binding SelectedMedia}" d:ItemsSource="{d:SampleData ItemCount=2}">
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type data:MediaSource}">
                         <StackPanel>
@@ -111,7 +109,7 @@
 
                                             <StackPanel Grid.Column="1" Margin="5,0">
                                                 <TextBlock Text="{Binding Name}"></TextBlock>
-                                                <TextBlock Text="{Binding Metadata.Title}"></TextBlock>
+                                                <TextBlock Text="{Binding Metadata.Name}"></TextBlock>
                                             </StackPanel>
 
                                             <Grid.ContextMenu>
@@ -141,26 +139,75 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="200" MinWidth="200"></ColumnDefinition>
+                    <ColumnDefinition Width="250" MinWidth="250"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
                 <wpf:FlyleafHost Player="{Binding Player}" AttachedDragMove="Both" KeyBindings="Both"
                                  ToggleFullScreenOnDoubleClick="None" OpenOnDrop="None" MouseBindings="None">
                 </wpf:FlyleafHost>
 
-                <GridSplitter Width="2" Grid.Column="1" HorizontalAlignment="Left"></GridSplitter>
-
                 <Grid Grid.Column="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
                     </Grid.RowDefinitions>
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <mi:MaterialIcon Foreground="{StaticResource ControlForeground}" Kind="TrayFull"></mi:MaterialIcon>
                         <TextBlock Foreground="{StaticResource ControlForeground}" FontSize="20">Warteschlange</TextBlock>
                     </StackPanel>
+
+                    <ListBox Grid.Row="1" SelectedIndex="0"
+                             ItemsSource="{Binding UploadQueue}" d:ItemsSource="{d:SampleData ItemCount=2}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type data:MediaPart}">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Parent.Name}"></TextBlock>
+                                    <TextBlock>
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0}: {1}">
+                                                <Binding Path="Name" />
+                                                <Binding Path="Metadata.Name" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <TextBlock>Nachbearbeitung:</TextBlock>
+                                    <TextBlock Text="{Binding Metadata.ProcessingGraph.Name}"></TextBlock>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                                                Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}, Path=IsSelected, Converter={StaticResource BoolToVis}}">
+                                        <Button Style="{StaticResource FirstButton}"
+                                                Command="{x:Static tebisCloud:MainWindow.EditMediaPart}"
+                                                CommandParameter="{Binding}">
+                                            <mi:MaterialIcon Kind="Edit" />
+                                        </Button>
+                                        <Button Style="{StaticResource LastButton}"
+                                                Command="{x:Static tebisCloud:MainWindow.DelFromQueue}"
+                                                CommandParameter="{Binding}">
+                                            <mi:MaterialIcon Kind="TrayRemove" />
+                                        </Button>
+                                    </StackPanel>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <WrapPanel Grid.Row="2" Margin="4" HorizontalAlignment="Center">
+                        <WrapPanel.Resources>
+                            <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
+                                <Setter Property="Margin" Value="3,0"></Setter>
+                            </Style>
+                        </WrapPanel.Resources>
+
+                        <Button Click="StartProcessing_OnClick">
+                            <WrapPanel>
+                                <mi:MaterialIcon Kind="ClockStart" />
+                                <TextBlock VerticalAlignment="Center">Verarbeiten</TextBlock>
+                            </WrapPanel>
+                        </Button>
+                    </WrapPanel>
                 </Grid>
+                <GridSplitter Width="2" Grid.Column="1" HorizontalAlignment="Left"></GridSplitter>
             </Grid>
 
             <Grid Grid.Row="1" IsSharedSizeScope="True" Margin="10,0">
@@ -295,11 +342,12 @@
                                               SelectionLength="{Binding SelectionLength}"
                                               SelectionVisible="{Binding SelectionVisible}"
                                               Grid.Row="1"
-                                              Opacity=".5" />
+                                              ShowLabels="True"
+                                              OverlayOpacity=".5" />
 
                     <Slider Maximum="{Binding Player.Duration}" Value="{Binding Player.CurTime}" Grid.Row="1"
                             IsMoveToPointEnabled="True" SmallChange="{Binding Config.Player.SeekOffset}"
-                            LargeChange="{Binding Config.Player.SeekOffset2}">
+                            LargeChange="{Binding Config.Player.SeekOffset2}" x:Name="VideoSeekSlider">
                         <Slider.Template>
                             <ControlTemplate>
                                 <Grid>
@@ -325,13 +373,13 @@
                 </Grid>
             </Grid>
 
-            <Grid Grid.Row="3" HorizontalAlignment="Stretch" ClipToBounds="True">
+            <Grid Grid.Row="3" HorizontalAlignment="Stretch" ClipToBounds="True" Background="{StaticResource ControlBackgroundLight}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <Grid Grid.Column="1" HorizontalAlignment="Left">
+                <Grid Grid.Column="1" HorizontalAlignment="Left" Background="{StaticResource ControlBackground}">
                     <Grid.Width>
                         <MultiBinding Converter="{StaticResource WaveformLengthConverter}">
                             <Binding Path="Player.Duration"></Binding>
@@ -377,10 +425,11 @@
                                               SelectionStart="{Binding SelectionStart}"
                                               SelectionLength="{Binding SelectionLength}"
                                               SelectionVisible="{Binding SelectionVisible}"
-                                              Opacity=".3" Margin="0,20,0,0" />
+                                              ShowLabels="True"
+                                              OverlayOpacity=".3" Margin="0,20,0,0" />
                 </Grid>
 
-                <Grid Grid.ColumnSpan="2" HorizontalAlignment="Center">
+                <Grid Grid.ColumnSpan="2" HorizontalAlignment="Center" IsHitTestVisible="False">
                     <Border Background="Turquoise" Width="1" HorizontalAlignment="Center"></Border>
                     <Path Data="M 0 0 L 10 0 L 5 5 Z" Fill="Turquoise">
                     </Path>

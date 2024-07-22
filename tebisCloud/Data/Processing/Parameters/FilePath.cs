@@ -23,10 +23,8 @@ namespace tebisCloud.Data.Processing.Parameters {
             set => SetField(ref _fileName, value);
         }
 
-        [JsonIgnore]
         public EPathMode Mode { get; }
 
-        [JsonIgnore]
         public string Filter { get; }
 
         public override ParamType Clone() {

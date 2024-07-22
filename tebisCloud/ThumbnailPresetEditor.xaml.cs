@@ -209,12 +209,12 @@ namespace tebisCloud {
         private void SaveThumbnail_OnExecuted(object sender, ExecutedRoutedEventArgs e) {
             var result = LoadSaveDialog.ShowSaveDialog(this, App.Settings.Thumbnails, x => {
                 App.Settings.Thumbnails.Remove(x);
+                App.SaveSettings();
             });
 
             if (result != null) {
                 var json = JsonConvert.SerializeObject(Thumbnail);
                 var copy = JsonConvert.DeserializeObject<ThumbnailData>(json);
-
 
                 var preview = new ThumbnailPreview();
                 preview.Thumbnail = copy;
@@ -242,6 +242,7 @@ namespace tebisCloud {
         private void LoadThumbnail_OnExecuted(object sender, ExecutedRoutedEventArgs e) {
             var result = LoadSaveDialog.ShowOpenDialog(this, App.Settings.Thumbnails, x => {
                 App.Settings.Thumbnails.Remove(x);
+                App.SaveSettings();
             });
 
             if (result != null) {

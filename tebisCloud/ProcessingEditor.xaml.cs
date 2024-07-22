@@ -3,8 +3,11 @@ using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Microsoft.Xaml.Behaviors.Core;
 using Newtonsoft.Json;
+using tebisCloud.Controls;
 using tebisCloud.Data;
 using tebisCloud.Data.ParamStore;
 using tebisCloud.Data.Processing;
@@ -21,15 +24,6 @@ namespace tebisCloud {
     /// Interaktionslogik für ProcessingEditor.xaml
     /// </summary>
     public partial class ProcessingEditor : Window {
-        public static readonly DependencyProperty ParametersProperty = DependencyProperty.Register(
-            nameof(Parameters), typeof(ObservableCollection<ParamDefinition>), typeof(ProcessingEditor),
-            new PropertyMetadata(default(ObservableCollection<ParamDefinition>)));
-
-        public ObservableCollection<ParamDefinition> Parameters {
-            get { return (ObservableCollection<ParamDefinition>)GetValue(ParametersProperty); }
-            set { SetValue(ParametersProperty, value); }
-        }
-
         public static readonly DependencyProperty SelectedParamProperty = DependencyProperty.Register(
             nameof(SelectedParam), typeof(ParamDefinition), typeof(ProcessingEditor),
             new PropertyMetadata(default(ParamDefinition)));
@@ -53,14 +47,11 @@ namespace tebisCloud {
         public static RoutedUICommand DeleteParameter { get; } = new();
 
         public ProcessingEditor() {
-            Parameters = new();
-
             CreateParameter = new ActionCommand(() => {
                 var def = ParamDefCreate.ShowDialog(this);
 
                 if (def != null) {
                     Graph.Parameters.Add(def);
-                    Parameters.Add(def);
                     Editor.RebuildGraph();
                 }
             });
@@ -79,7 +70,6 @@ namespace tebisCloud {
 
         private void DeleteParameter_OnExecuted(object sender, ExecutedRoutedEventArgs e) {
             if (e.Parameter is ParamDefinition def) {
-                Parameters.Remove(def);
                 Graph.Parameters.Remove(def);
                 Editor.RebuildGraph();
             }
@@ -87,6 +77,54 @@ namespace tebisCloud {
 
         private void DeleteParameter_OnCanExecute(object sender, CanExecuteRoutedEventArgs e) {
             e.CanExecute = e.Parameter is ParamDefinition;
+        }
+
+        private void GraphSave_OnClick(object sender, RoutedEventArgs e) {
+            var result = LoadSaveDialog.ShowSaveDialog(this, App.Settings.Processing, x => {
+                App.Settings.Processing.Remove(x);
+                App.SaveSettings();
+            });
+
+            if (result != null) {
+                var json = JsonConvert.SerializeObject(Graph);
+                var copy = JsonConvert.DeserializeObject<ProcessingGraph>(json);
+
+                var preview = new GraphEditor();
+                preview.Graph = copy;
+                preview.Measure(new Size(1920, 1080));
+                preview.Arrange(new Rect(0, 0, 1920, 1080));
+                preview.UpdateLayout();
+                preview.FitAll();
+
+                var render = new RenderTargetBitmap(1920, 1080, 96, 96, PixelFormats.Pbgra32);
+                render.Render(preview);
+                copy.Preview = render;
+                copy.Name = result;
+
+                var orig = App.Settings.Processing.FirstOrDefault(x => x.Name.ToLower() == result.ToLower());
+
+                if (orig != null) {
+                    App.Settings.Processing.Remove(orig);
+                }
+
+                App.Settings.Processing.Add(copy);
+                App.SaveSettings();
+            }
+        }
+
+        private void GraphLoad_OnClick(object sender, RoutedEventArgs e) {
+            var result = LoadSaveDialog.ShowOpenDialog(this, App.Settings.Processing, x => {
+                App.Settings.Processing.Remove(x);
+                App.SaveSettings();
+            });
+
+            if (result != null) {
+                var json = JsonConvert.SerializeObject(result);
+                var copy = JsonConvert.DeserializeObject<ProcessingGraph>(json);
+
+                Graph = copy;
+                Editor.FitAll();
+            }
         }
     }
 }

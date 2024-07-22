@@ -6,51 +6,69 @@
         xmlns:local="clr-namespace:tebisCloud.Dialogs"
         xml:lang="de-DE"
         xmlns:controls="clr-namespace:tebisCloud.Controls"
+        xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+        xmlns:paramStore="clr-namespace:tebisCloud.Data.ParamStore"
         mc:Ignorable="d"
         Style="{StaticResource Dark}"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="Ausschnitt Bearbeiten" Height="380" Width="740">
+        Title="Ausschnitt Bearbeiten" Height="450" Width="300">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <StackPanel Margin="5" Grid.Column="1">
-            <TextBlock>Prediger</TextBlock>
-            <TextBox Text="{Binding MediaPart.Metadata.Prediger, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-            <TextBlock>Thema</TextBlock>
-            <TextBox Text="{Binding MediaPart.Metadata.Thema, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-            <TextBlock>Titel</TextBlock>
-            <TextBox Text="{Binding MediaPart.Metadata.Title}"></TextBox>
-            <TextBlock>Datum</TextBlock>
-            <DatePicker SelectedDate="{Binding MediaPart.Metadata.Date}" BorderThickness="0"></DatePicker>
+        <StackPanel Margin="5">
+            <TextBlock>Anzeige-Name:</TextBlock>
+            <TextBox Text="{Binding PartMetadata.Name}" Margin="5"></TextBox>
+
+            <TextBlock>Nachbearbeitungs-Vorlage</TextBlock>
+            <Grid Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="5"></ColumnDefinition>
+                    <ColumnDefinition Width="32"></ColumnDefinition>
+                    <ColumnDefinition Width="32"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TextBox Text="{Binding PartMetadata.ProcessingGraph.Name}" IsReadOnly="True" />
+                <Button Grid.Column="2" Style="{StaticResource FirstButton}" Click="OpenPreset_OnClick">
+                    <WrapPanel>
+                        <wpf:MaterialIcon Kind="FolderOpen" Height="16" />
+                    </WrapPanel>
+                </Button>
+                <Button Grid.Column="3" Style="{StaticResource LastButton}" Click="EditPreset_OnClick">
+                    <WrapPanel>
+                        <wpf:MaterialIcon Kind="Edit" Height="16" />
+                    </WrapPanel>
+                </Button>
+            </Grid>
         </StackPanel>
 
-        <Grid Grid.Column="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-            </Grid.RowDefinitions>
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled" Grid.Row="1" Margin="0,5">
+            <ItemsControl ItemsSource="{Binding PartMetadata.Parameters}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type paramStore:ParamDefinition}">
+                        <StackPanel Margin="5">
+                            <TextBlock Text="{Binding Name}" />
+                            <ContentPresenter Content="{Binding Value}"></ContentPresenter>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
 
-            <TextBlock HorizontalAlignment="Center" Margin="4">Thumbnail</TextBlock>
-            <controls:ThumbnailPreview Grid.Row="1" Width="420" Height="236" Thumbnail="{Binding MediaPart.Thumbnail}" PreviewMetadata="{Binding MediaPart.Metadata}"></controls:ThumbnailPreview>
-            <UniformGrid Columns="2" Grid.Row="2">
-                <Button Margin="5" Click="LoadThumbnail_OnClick">Laden</Button>
-                <Button Margin="5" Click="EditThumbnail_OnClick">Bearbeiten</Button>
-            </UniformGrid>
-        </Grid>
+        <UniformGrid Grid.Row="2" Columns="2" HorizontalAlignment="Right">
+            <UniformGrid.Resources>
+                <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
+                    <Setter Property="Margin" Value="3"></Setter>
+                </Style>
+            </UniformGrid.Resources>
 
-        <UniformGrid Columns="2" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Right" Margin="3">
-            <Button Padding="3" Margin="3" IsDefault="True" Click="Save_OnClick">Speichern</Button>
-            <Button Padding="3" Margin="3" IsCancel="True" Click="Cancel_OnClick">Abbrechen</Button>
+            <Button IsDefault="True" Click="Apply_OnClick">Übernehmen</Button>
+            <Button IsCancel="True" Click="Cancel_OnClick">Abbrechen</Button>
         </UniformGrid>
     </Grid>
 </Window>
