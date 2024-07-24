@@ -23,6 +23,10 @@
         </StackPanel>
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type parameters:FlagParameter}">
+        <CheckBox IsChecked="{Binding Value}" />
+    </DataTemplate>
+
 
     <!-- Parameter-Connector darstellung -->
     <converter:ParameterTypeToColor x:Key="ParamTypeToColor">
@@ -63,16 +67,16 @@
 
     <converter:ParameterTypeToConnector x:Key="ParamTypeToConnector">
         <converter:ParameterConnector Type="{x:Type parameters:AudioStream}"
-                          Template="{StaticResource ConnectorCircle}" />
+                                      Template="{StaticResource ConnectorCircle}" />
         <converter:ParameterConnector Type="{x:Type parameters:VideoFile}"
-                          Template="{StaticResource ConnectorCircle}" />
+                                      Template="{StaticResource ConnectorCircle}" />
         <converter:ParameterConnector Type="{x:Type parameters:FilePath}"
-                          Template="{StaticResource ConnectorDiamond}" />
+                                      Template="{StaticResource ConnectorDiamond}" />
         <converter:ParameterConnector Type="{x:Type parameters:StringParam}"
-                          Template="{StaticResource ConnectorDiamond}" />
+                                      Template="{StaticResource ConnectorDiamond}" />
         <converter:ParameterConnector Type="{x:Type parameters:DateParam}"
-                          Template="{StaticResource ConnectorEmptyDiamond}" />
+                                      Template="{StaticResource ConnectorEmptyDiamond}" />
         <converter:ParameterConnector Type="{x:Type parameters:ThumbnailParam}"
-                          Template="{StaticResource ConnectorEmptyDiamond}" />
+                                      Template="{StaticResource ConnectorEmptyDiamond}" />
     </converter:ParameterTypeToConnector>
 </ResourceDictionary>

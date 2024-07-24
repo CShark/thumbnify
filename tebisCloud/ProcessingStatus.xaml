@@ -9,6 +9,7 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False"
+        Closed="ProcessingStatus_OnClosed"
         Style="{StaticResource Dark}"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="ProcessingStatus" Height="450" Width="800">
@@ -32,6 +33,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
 
                         <StackPanel>
@@ -46,14 +48,16 @@
                             </TextBlock>
                         </StackPanel>
 
-                        <WrapPanel Grid.Column="1">
+                        <ContentPresenter Grid.Column="1" Content="{Binding Graph.GraphState}" VerticalAlignment="Center" Margin="5,0"/>
+
+                        <WrapPanel Grid.Column="2" VerticalAlignment="Center">
                             <Button Command="{x:Static local:ProcessingStatus.OpenGraph}" CommandParameter="{Binding}">
-                                <wpf:MaterialIcon Kind="Search" Width="16"/>
+                                <wpf:MaterialIcon Kind="Search" Width="16" />
                             </Button>
                         </WrapPanel>
 
-                        <ProgressBar Grid.Row="1" Grid.ColumnSpan="2">
-
+                        <ProgressBar Grid.Row="1" Grid.ColumnSpan="3" Maximum="1"
+                                     Value="{Binding Graph.Progress, Mode=OneWay}">
                         </ProgressBar>
                     </Grid>
                 </DataTemplate>

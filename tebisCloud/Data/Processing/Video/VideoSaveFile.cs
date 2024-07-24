@@ -26,11 +26,21 @@ namespace tebisCloud.Data.Processing.Video {
         }
 
         protected override bool Execute(CancellationToken cancelToken) {
-            if (File.Exists(Path.Value.FileName)) {
-                File.Delete(Path.Value.FileName);
+            var filename = Path.Value.FileName;
+
+            if (!filename.ToLower().EndsWith(".mp4")) {
+                filename += ".mp4";
             }
 
-            File.Copy(Video.Value.VideoFileName, Path.Value.FileName);
+            if (File.Exists(filename)) {
+                File.Delete(filename);
+            }
+
+            using (var src = new FileStream(Video.Value.VideoFileName, FileMode.Open)) {
+                using (var dest = new FileStream(filename, FileMode.Create)) {
+                    FileTools.CopyStreams(src, dest, ReportProgress, CancelToken, 1024 * 1024);
+                }
+            }
 
             return true;
         }

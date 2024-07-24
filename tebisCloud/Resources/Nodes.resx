@@ -151,4 +151,7 @@
   <data name="param_name" xml:space="preserve">
     <value>Name</value>
   </data>
+  <data name="param_copystream" xml:space="preserve">
+    <value>Copy Stream</value>
+  </data>
 </root>

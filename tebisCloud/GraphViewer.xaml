@@ -5,21 +5,48 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:tebisCloud"
         xmlns:controls="clr-namespace:tebisCloud.Controls"
+        xmlns:data="clr-namespace:tebisCloud.Data"
+        xmlns:events="clr-namespace:Serilog.Events;assembly=Serilog"
         mc:Ignorable="d"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         WindowStartupLocation="CenterOwner"
+        WindowState="Maximized"
         Title="GraphViewer" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="150"></RowDefinition>
+            <RowDefinition Height="250"></RowDefinition>
         </Grid.RowDefinitions>
-        <controls:GraphEditor Graph="{Binding Graph}" SelectedNodes="{Binding SelectedNodes}"/>
+        <controls:GraphEditor Graph="{Binding Graph}" SelectedNodes="{Binding SelectedNodes}" />
 
         <Expander Grid.Row="1" IsExpanded="True" ExpandDirection="Up">
-            <TextBox Text="{Binding LogMessages}" IsReadOnly="True">
+            <ListBox ItemsSource="{Binding Graph.LogMessages.MessageList}" d:ItemsSource="{d:SampleData ItemCount=5}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type data:LogMessage}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"></ColumnDefinition>
+                                <ColumnDefinition Width="100"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
 
-            </TextBox>
+                            <TextBlock Text="{Binding Timestamp, StringFormat={}{0:HH:mm:ss:fff}}"
+                                       FontFamily="Consolas">
+                            </TextBlock>
+                            <TextBlock Grid.Column="1" Text="{Binding Level, StringFormat={}[{0}]}" x:Name="LogLevel"
+                                       FontFamily="Consolas">
+                            </TextBlock>
+                            <TextBlock Grid.Column="2" Text="{Binding Message}" FontFamily="Consolas"></TextBlock>
+                        </Grid>
+
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Level}" Value="{x:Static events:LogEventLevel.Information}">
+                                <Setter TargetName="LogLevel" Property="Foreground" Value="LightSkyBlue"></Setter>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </Expander>
 
         <GridSplitter Grid.Row="0" Height="5" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" />

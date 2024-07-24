@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices.Marshalling;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using FFmpeg.NET;
 using FFmpeg.NET.Events;
-using Microsoft.VisualBasic.FileIO;
 using NAudio.Wave;
 using Newtonsoft.Json;
 using tebisCloud.Data.ParamStore;
@@ -31,11 +23,15 @@ namespace tebisCloud.Data.Processing.Input {
 
         [JsonIgnore]
         public List<Result> ParamStoreResults { get; } = new();
+
+        public Parameter<FlagParameter> CopyStream { get; } = new("copystream", false, new FlagParameter { Value = true });
         
         public MediaPartInput() {
             RegisterResult(Video);
             RegisterResult(Audio);
             RegisterResult(Name);
+
+            RegisterParameter(CopyStream);
         }
 
         public void SetParamStore(IList<ParamDefinition> store) {
@@ -66,7 +62,7 @@ namespace tebisCloud.Data.Processing.Input {
 
         protected override bool Execute(CancellationToken cancelToken) {
             if (MediaPart == null) {
-                LogMessage("No part was defined");
+                Logger.Error("No part was defined");
                 return false;
             }
 
@@ -74,12 +70,16 @@ namespace tebisCloud.Data.Processing.Input {
             path = Path.Combine(path, Path.GetRandomFileName() + ".mp4");
 
             // Cut Video
-            var ffmpeg = new Engine("");
+            var ffmpeg = new Engine(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "FFmpeg\\ffmpeg.exe"));
             ffmpeg.Progress += FfmpegOnProgress;
 
             var opt = new ConversionOptions();
-            opt.CutMedia(new TimeSpan(MediaPart.Start), new TimeSpan(MediaPart.Duration));
+            if (CopyStream.Value.Value) {
+                opt.ExtraArguments = "-c copy";
+            }
 
+            opt.CutMedia(new TimeSpan(MediaPart.Start), new TimeSpan(MediaPart.Duration));
+            
             var input = new InputFile(MediaPart.Parent.FileName);
             var output = new OutputFile(path);
 
@@ -103,12 +103,16 @@ namespace tebisCloud.Data.Processing.Input {
                 var target = ParamStoreResults.FirstOrDefault(x => x.Id == param.Id);
                 target?.SetValue(param.Value);
             }
+            
+            Name.SetValue(new StringParam {
+                Value = MediaPart.Metadata.Name
+            });
 
             return true;
         }
 
         private void FfmpegOnProgress(object? sender, ConversionProgressEventArgs e) {
-            ReportProgress(e.ProcessedDuration.Ticks, e.TotalDuration.Ticks);
+            ReportProgress(e.ProcessedDuration.Ticks, MediaPart.Duration);
         }
     }
 }

@@ -178,6 +178,15 @@ namespace tebisCloud.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Copy Stream ähnelt.
+        /// </summary>
+        internal static string param_copystream {
+            get {
+                return ResourceManager.GetString("param_copystream", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Name ähnelt.
         /// </summary>
         internal static string param_name {

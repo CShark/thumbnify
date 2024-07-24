@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Newtonsoft.Json;
+using Serilog;
 using tebisCloud.Data.ParamStore;
 using tebisCloud.Data.Processing;
 using tebisCloud.Data.Processing.Input;
@@ -34,6 +35,29 @@ namespace tebisCloud.Data {
         private Dictionary<string, Dictionary<string, (string Node, string Result)?>> _edgesBackward;
         private string _name;
         private ObservableCollection<ParamDefinition> _parameters = new();
+        private double _progress;
+        private ENodeStatus _graphState;
+
+        private ILogger _logger;
+        private LocalLogSink _logMessages;
+
+        [JsonIgnore]
+        public double Progress {
+            get => _progress;
+            private set => SetField(ref _progress, value);
+        }
+
+        [JsonIgnore]
+        public ENodeStatus GraphState {
+            get => _graphState;
+            private set => SetField(ref _graphState, value);
+        }
+
+        [JsonIgnore]
+        public LocalLogSink LogMessages {
+            get => _logMessages;
+            set => SetField(ref _logMessages, value);
+        }
 
         public ProcessingGraph() {
             Nodes.CollectionChanged += (_, args) => {
@@ -83,15 +107,26 @@ namespace tebisCloud.Data {
         public void RunGraph() {
             if (IsGraphRunning()) return;
 
+            LogMessages = new();
+            _logger = new LoggerConfiguration()
+                .WriteTo.Sink(LogMessages)
+                .CreateLogger();
+            _logger.Information("Starting graph");
+
             _cancelToken = new();
             _nodes = new();
             _edgesForward = new();
             _edgesBackward = new();
+            GraphState = ENodeStatus.Running;
 
+            Progress = 0;
+
+            _logger.Information("Initializing Nodes");
             // Clear Run Data
             foreach (var node in Nodes) {
                 node.CancelToken = _cancelToken.Token;
                 node.NodeCompleted -= OnNodeCompleted;
+                node.PropertyChanged -= NodeOnPropertyChanged;
                 node.ClearNode();
 
                 _nodes[node.Uid] = node;
@@ -105,6 +140,9 @@ namespace tebisCloud.Data {
                 foreach (var result in node.Results) {
                     _edgesForward[node.Uid][result.Key] = new();
                 }
+
+                node.PropertyChanged += NodeOnPropertyChanged;
+                node.SetLogger(_logger.ForContext(new NodeEnricher(node)));
             }
 
             foreach (var edge in ProcessConnects) {
@@ -142,6 +180,7 @@ namespace tebisCloud.Data {
             }
 
             // Run nodes without parameters
+            _logger.Information("Starting Initial Nodes");
             foreach (var node in Nodes.Where(x => _edgesBackward[x.Uid].Count == 0)) {
                 node.TriggerNode();
             }
@@ -158,6 +197,23 @@ namespace tebisCloud.Data {
 
         public bool IsGraphRunning() {
             return _openNodes.Any();
+        }
+
+        private void NodeOnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(Node.Progress)) {
+                Progress = Nodes.Aggregate(0d, (x, n) => x + n.Progress / Nodes.Count);
+            } else if (e.PropertyName == nameof(Node.NodeStatus)) {
+                if (Nodes.Any(x => x.NodeStatus == ENodeStatus.Error)) {
+                    GraphState = ENodeStatus.Error;
+                } else if (Nodes.Any(x => x.NodeStatus == ENodeStatus.Cancelled)) {
+                    GraphState = ENodeStatus.Cancelled;
+                } else if (Nodes.All(x => x.NodeStatus == ENodeStatus.Completed)) {
+                    GraphState = ENodeStatus.Completed;
+                    _logger.Information("Graph finished");
+                } else {
+                    GraphState = ENodeStatus.Running;
+                }
+            }
         }
 
         private void OnNodeCompleted(Node node) {

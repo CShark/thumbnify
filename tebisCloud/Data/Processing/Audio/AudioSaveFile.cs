@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Documents;
+﻿using System.IO;
 using NAudio.Lame;
-using NAudio.Wave;
 using tebisCloud.Data.Processing.Parameters;
 using tebisCloud.Postprocessing;
 
@@ -27,24 +20,25 @@ namespace tebisCloud.Data.Processing.Audio {
         public static string Id => "audio_save";
 
         protected override bool Execute(CancellationToken cancelToken) {
-            throw new Exception("Test");
+            var filename = AudioFile.Value.FileName;
+
+            if (!filename.ToLower().EndsWith(".mp3")) {
+                filename += ".mp3";
+            }
+
+            if (File.Exists(filename)) {
+                File.Delete(filename);
+            }
 
             try {
-                using (var writer = new LameMP3FileWriter(AudioFile.Value.FileName,
+                using (var writer = new LameMP3FileWriter(filename,
                            AudioStream.Value.WaveStream.WaveFormat, LAMEPreset.ABR_96)) {
-                    var buffer = new byte[16 * 1024];
-
-                    int read;
-                    while ((read = AudioStream.Value.WaveStream.Read(buffer)) > 0) {
-                        if (cancelToken.IsCancellationRequested) return false;
-                        writer.Write(buffer);
-                        ReportProgress(AudioStream.Value.WaveStream.Position, AudioStream.Value.WaveStream.Length);
-                    }
+                    FileTools.CopyStreams(AudioStream.Value.WaveStream, writer, ReportProgress, CancelToken);
                 }
 
                 return true;
             } catch (Exception ex) {
-                LogMessage("Failed to save audio: " + ex);
+                Logger.Error(ex, "Failed to save audio");
                 return false;
             }
         }

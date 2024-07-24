@@ -31,7 +31,7 @@ namespace tebisCloud.Data.Processing.Audio {
         protected override bool Execute(CancellationToken cancelToken) {
             try {
                 if (!File.Exists(AudioFile.Value.FileName)) {
-                    LogMessage("Audio file does not exist");
+                    Logger.Error("Audio file does not exist");
                     return false;
                 }
 
@@ -41,11 +41,11 @@ namespace tebisCloud.Data.Processing.Audio {
 
                 return true;
             } catch (Exception ex) {
-                LogMessage("Failed to load audio file: " + ex);
+                Logger.Error(ex, "Failed to load audio file");
                 return false;
             }
         }
-        
+
 
         //public async Task<EStepStatus> ExecuteInternal(CancellationToken cancelToken) {
         //    //if (!File.Exists(AudioFile)) {

@@ -341,49 +341,6 @@
                                                    VerticalAlignment="Center" />
 
                                         <ContentPresenter Content="{Binding SourceNode.NodeStatus}" Grid.Column="2">
-                                            <ContentPresenter.ContentTemplate>
-                                                <DataTemplate DataType="{x:Type processing:ENodeStatus}">
-                                                    <wpf:MaterialIcon x:Name="Icon" Visibility="Collapsed" Height="16"
-                                                                      Cursor="Hand">
-                                                        <wpf:MaterialIcon.Effect>
-                                                            <DropShadowEffect ShadowDepth="0" BlurRadius="10"
-                                                                              Opacity=".7"
-                                                                              Color="DimGray">
-                                                            </DropShadowEffect>
-                                                        </wpf:MaterialIcon.Effect>
-                                                    </wpf:MaterialIcon>
-
-                                                    <DataTemplate.Triggers>
-                                                        <DataTrigger Binding="{Binding}"
-                                                                     Value="{x:Static processing:ENodeStatus.Running}">
-                                                            <Setter TargetName="Icon" Property="Visibility"
-                                                                    Value="Visible" />
-                                                            <Setter TargetName="Icon" Property="Kind"
-                                                                    Value="ClockTimeFour" />
-                                                            <Setter TargetName="Icon" Property="Foreground"
-                                                                    Value="DarkGray" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding}"
-                                                                     Value="{x:Static processing:ENodeStatus.Completed}">
-                                                            <Setter TargetName="Icon" Property="Visibility"
-                                                                    Value="Visible" />
-                                                            <Setter TargetName="Icon" Property="Kind"
-                                                                    Value="CheckCircle" />
-                                                            <Setter TargetName="Icon" Property="Foreground"
-                                                                    Value="GreenYellow" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding}"
-                                                                     Value="{x:Static processing:ENodeStatus.Error}">
-                                                            <Setter TargetName="Icon" Property="Visibility"
-                                                                    Value="Visible" />
-                                                            <Setter TargetName="Icon" Property="Kind"
-                                                                    Value="CloseOctagon" />
-                                                            <Setter TargetName="Icon" Property="Foreground"
-                                                                    Value="Orange" />
-                                                        </DataTrigger>
-                                                    </DataTemplate.Triggers>
-                                                </DataTemplate>
-                                            </ContentPresenter.ContentTemplate>
                                         </ContentPresenter>
                                     </Grid>
                                     <Border Background="{StaticResource ControlBackground}" Margin="0,1,0,0">
@@ -443,7 +400,7 @@
                                     <DataTemplate DataType="{x:Type processing:Parameter}">
                                         <StackPanel Margin="0,3">
                                             <TextBlock
-                                                Text="{lex:Loc {Binding Converter={StaticResource NodeNameConverter}}}"
+                                                Text="{Binding Converter={StaticResource NodeNameConverter}}"
                                                 HorizontalAlignment="Left"
                                                 Visibility="{Binding ShowName, Converter={StaticResource BoolToVis}}" />
                                             <ContentPresenter Content="{Binding DefaultValueObj}" />

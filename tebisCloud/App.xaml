@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:tebisCloud"
              xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+             xmlns:processing="clr-namespace:tebisCloud.Data.Processing"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
@@ -11,8 +12,6 @@
                 <ResourceDictionary Source="ExpressionDark.xaml"></ResourceDictionary>
                 <ResourceDictionary
                     Source="pack://application:,,,/ColorPicker;component/Styles/DefaultColorPickerStyle.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/generic.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Themes/dark.amber.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Nodify;component/Themes/Dark.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
@@ -937,6 +936,47 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+
+            <DataTemplate DataType="{x:Type processing:ENodeStatus}">
+                <wpf:MaterialIcon x:Name="Icon" Visibility="Collapsed" Height="16">
+                    <wpf:MaterialIcon.Effect>
+                        <DropShadowEffect ShadowDepth="0" BlurRadius="10"
+                                          Opacity=".7"
+                                          Color="DimGray">
+                        </DropShadowEffect>
+                    </wpf:MaterialIcon.Effect>
+                </wpf:MaterialIcon>
+
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding}"
+                                 Value="{x:Static processing:ENodeStatus.Running}">
+                        <Setter TargetName="Icon" Property="Visibility"
+                                Value="Visible" />
+                        <Setter TargetName="Icon" Property="Kind"
+                                Value="ClockTimeFour" />
+                        <Setter TargetName="Icon" Property="Foreground"
+                                Value="LightGray" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding}"
+                                 Value="{x:Static processing:ENodeStatus.Completed}">
+                        <Setter TargetName="Icon" Property="Visibility"
+                                Value="Visible" />
+                        <Setter TargetName="Icon" Property="Kind"
+                                Value="CheckCircle" />
+                        <Setter TargetName="Icon" Property="Foreground"
+                                Value="GreenYellow" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding}"
+                                 Value="{x:Static processing:ENodeStatus.Error}">
+                        <Setter TargetName="Icon" Property="Visibility"
+                                Value="Visible" />
+                        <Setter TargetName="Icon" Property="Kind"
+                                Value="CloseOctagon" />
+                        <Setter TargetName="Icon" Property="Foreground"
+                                Value="Red" />
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

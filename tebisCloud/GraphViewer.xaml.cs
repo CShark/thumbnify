@@ -29,7 +29,7 @@ namespace tebisCloud {
             get { return (ProcessingGraph)GetValue(GraphProperty); }
             set { SetValue(GraphProperty, value); }
         }
-
+        
         public static readonly DependencyProperty SelectedNodesProperty = DependencyProperty.Register(
             nameof(SelectedNodes), typeof(ObservableCollection<EditorNode>), typeof(GraphViewer), new PropertyMetadata(
                 default(ObservableCollection<EditorNode>),
@@ -44,7 +44,7 @@ namespace tebisCloud {
                 }));
 
         private void Selection_OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {
-            LogMessages = SelectedNodes.Aggregate("", (x, node) => x + node.SourceNode.Messages + "\r\n\r\n");
+            
         }
 
         public ObservableCollection<EditorNode> SelectedNodes {
@@ -52,13 +52,6 @@ namespace tebisCloud {
             set { SetValue(SelectedNodesProperty, value); }
         }
 
-        public static readonly DependencyProperty LogMessagesProperty = DependencyProperty.Register(
-            nameof(LogMessages), typeof(string), typeof(GraphViewer), new PropertyMetadata(default(string)));
-
-        public string LogMessages {
-            get { return (string)GetValue(LogMessagesProperty); }
-            set { SetValue(LogMessagesProperty, value); }
-        }
 
         public GraphViewer() {
             SelectedNodes = new();

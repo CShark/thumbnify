@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace tebisCloud.Data {
+    static class FileTools {
+        public static void CopyStreams(Stream src, Stream dest, Action<double> progressCallback, CancellationToken token,
+            uint bufferSize = 16 * 1024) {
+            
+            var length = src.Length;
+            var buffer = new byte[bufferSize];
+            int read = 0;
+
+            while ((read = src.Read(buffer)) > 0) {
+                if (token.IsCancellationRequested) return;
+
+                dest.Write(buffer, 0, read);
+                progressCallback((double)src.Position / src.Length);
+            }
+        }
+    }
+}

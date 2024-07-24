@@ -1,21 +1,9 @@
 ﻿using JsonKnownTypes;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Threading;
 using Newtonsoft.Json;
-using tebisCloud.Data.Thumbnail;
+using Serilog;
 using tebisCloud.Postprocessing;
-using Application = System.Windows.Application;
 using Point = System.Windows.Point;
 
 namespace tebisCloud.Data.Processing {
@@ -33,6 +21,7 @@ namespace tebisCloud.Data.Processing {
         private double _progress;
         private ENodeStatus _nodeStatus = ENodeStatus.Pending;
         private bool _isExpanded = true;
+        private ILogger _logger;
 
         private Dictionary<string, Parameter> _parameters = new();
         private Dictionary<string, Result> _results = new();
@@ -60,6 +49,9 @@ namespace tebisCloud.Data.Processing {
             get => _nodeStatus;
             private set => SetField(ref _nodeStatus, value);
         }
+
+        [JsonIgnore]
+        protected ILogger Logger { get; private set; }
 
         public bool IsExpanded {
             set => SetField(ref _isExpanded, value);
@@ -114,16 +106,17 @@ namespace tebisCloud.Data.Processing {
                             NodeStatus = ENodeStatus.Running;
                             try {
                                 NodeStatus = Execute(CancelToken) ? ENodeStatus.Completed : ENodeStatus.Error;
+                                Logger.Information("Node completed");
 
                                 foreach (var param in Parameters.Values) {
                                     param.Clear();
                                 }
                             } catch (Exception ex) {
-                                LogMessage("Node execution failed: " + ex);
+                                Logger.Error(ex, "Node execution failed");
                                 NodeStatus = ENodeStatus.Error;
                             }
 
-                            Progress = 1000;
+                            Progress = 1;
                             OnNodeCompleted();
                         }, CancelToken);
                     }
@@ -149,12 +142,12 @@ namespace tebisCloud.Data.Processing {
             ParamOnValueChanged();
         }
 
-        protected abstract bool Execute(CancellationToken cancelToken);
-
-        protected void LogMessage(string message) {
-            Messages += message + "\n\n";
+        public void SetLogger(ILogger logger) {
+            Logger = logger;
         }
 
+        protected abstract bool Execute(CancellationToken cancelToken);
+        
         protected void ReportProgress(double progress) {
             Progress = progress;
         }

@@ -225,6 +225,10 @@ namespace tebisCloud.Controls {
                     Graph.ProcessConnects.CollectionChanged -= Connections_CollectionChanged;
                 }
             };
+
+            Loaded += (sender, args) => {
+                FitAll();
+            };
         }
 
         private bool IsCyclic(Connection? pending = null) {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,7 +39,7 @@ namespace tebisCloud {
                 if (args.Parameter is QueueItemStatus item) {
                     var dlg = new GraphViewer();
                     dlg.Owner = this;
-                    dlg.Graph = item.MediaPart.Metadata.ProcessingGraph;
+                    dlg.Graph = item.Graph;
                     dlg.Show();
                 }
             }));
@@ -48,8 +49,16 @@ namespace tebisCloud {
             MediaParts.Clear();
 
             foreach (var part in parts) {
-                MediaParts.Add(new QueueItemStatus(part));
-                part.Metadata.ProcessingGraph.RunGraph(part);
+                var queueItem = new QueueItemStatus(part);
+                MediaParts.Add(queueItem);
+                queueItem.Graph.RunGraph(part);
+            }
+        }
+
+        private void ProcessingStatus_OnClosed(object? sender, EventArgs e) {
+            foreach (var item in MediaParts) {
+                var tempDir = item.MediaPart.GetTempDir();
+                Directory.Delete(tempDir, true);
             }
         }
     }
