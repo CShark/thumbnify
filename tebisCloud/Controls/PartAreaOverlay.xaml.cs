@@ -14,10 +14,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using tebisCloud.Data;
+using Thumbnify.Data;
 using Vortice.MediaFoundation;
 
-namespace tebisCloud.Controls {
+namespace Thumbnify.Controls {
     /// <summary>
     /// Interaktionslogik für PartAreaOverlay.xaml
     /// </summary>

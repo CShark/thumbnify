@@ -13,9 +13,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using tebisCloud.Data;
+using Thumbnify.Data;
 
-namespace tebisCloud.Dialogs {
+namespace Thumbnify.Dialogs {
     /// <summary>
     /// Interaktionslogik für LoadSaveDialog.xaml
     /// </summary>

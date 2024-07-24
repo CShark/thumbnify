@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using tebisCloud.Data.Processing.Parameters;
+using Thumbnify.Data.Processing.Parameters;
 
-namespace tebisCloud.Data.Processing {
+namespace Thumbnify.Data.Processing {
     public abstract class Result {
         public string Id { get; set; }
         public Type Type { get; set; }

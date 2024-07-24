@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using JsonKnownTypes;
 using Newtonsoft.Json;
 
-namespace tebisCloud.Data.Processing.Parameters {
+namespace Thumbnify.Data.Processing.Parameters {
     [JsonConverter(typeof(JsonKnownTypesConverter<ParamType>))]
     public abstract class ParamType : IDisposable {
         public abstract ParamType Clone();

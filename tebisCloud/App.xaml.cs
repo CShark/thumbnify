@@ -7,10 +7,12 @@ using System.Reflection;
 using System.Windows;
 using Microsoft.VisualBasic.FileIO;
 using Newtonsoft.Json;
-using tebisCloud.Data;
-using Config = tebisCloud.Data.Config;
+using Thumbnify.Data;
+using Config = Thumbnify.Data.Config;
 
-namespace tebisCloud {
+namespace Thumbnify {
+    using Config = Data.Config;
+
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>

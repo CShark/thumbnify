@@ -13,10 +13,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using tebisCloud.Data;
-using tebisCloud.Postprocessing;
+using Thumbnify.Data;
+using Thumbnify.Postprocessing;
 
-namespace tebisCloud {
+namespace Thumbnify {
     /// <summary>
     /// Interaktionslogik für GraphViewer.xaml
     /// </summary>

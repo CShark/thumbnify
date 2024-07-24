@@ -12,9 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.Xaml.Behaviors.Core;
-using tebisCloud.Tools;
+using Thumbnify.Tools;
 
-namespace tebisCloud.Dialogs {
+namespace Thumbnify.Dialogs {
     /// <summary>
     /// Interaktionslogik für MessageBox.xaml
     /// </summary>

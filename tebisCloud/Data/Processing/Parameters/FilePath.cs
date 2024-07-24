@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace tebisCloud.Data.Processing.Parameters {
+namespace Thumbnify.Data.Processing.Parameters {
     public class FilePath : ParamType, INotifyPropertyChanged {
 
         public enum EPathMode {

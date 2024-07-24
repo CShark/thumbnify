@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using tebisCloud.Data.Processing.Parameters;
+using Thumbnify.Data.Processing.Parameters;
 using WPFLocalizeExtension.Engine;
 
-namespace tebisCloud.Data.Processing {
+namespace Thumbnify.Data.Processing {
     public abstract class Parameter {
         public event Action ValueChanged;
 

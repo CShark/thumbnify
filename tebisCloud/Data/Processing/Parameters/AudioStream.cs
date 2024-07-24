@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NAudio.Wave;
 
-namespace tebisCloud.Data.Processing.Parameters {
+namespace Thumbnify.Data.Processing.Parameters {
     public class AudioStream : ParamType {
         public WaveStream WaveStream { get; set; }
 

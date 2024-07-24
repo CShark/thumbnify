@@ -1,21 +1,21 @@
-﻿<Window x:Class="tebisCloud.MainWindow"
+﻿<Window x:Class="Thumbnify.MainWindow"
         Style="{StaticResource Dark}"
         xml:lang="de-DE"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:tebisCloud"
+        xmlns:local="clr-namespace:Thumbnify"
         xmlns:wpf="clr-namespace:FlyleafLib.Controls.WPF;assembly=FlyleafLib"
         xmlns:mi="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
-        xmlns:data="clr-namespace:tebisCloud.Data"
+        xmlns:data="clr-namespace:Thumbnify.Data"
         xmlns:wpfsvl="clr-namespace:WPFSoundVisualizationLib;assembly=WPFSoundVisualizationLib"
-        xmlns:tebisCloud="clr-namespace:tebisCloud"
-        xmlns:converter="clr-namespace:tebisCloud.Converter"
-        xmlns:controls="clr-namespace:tebisCloud.Controls"
+        xmlns:thumbnify="clr-namespace:Thumbnify"
+        xmlns:converter="clr-namespace:Thumbnify.Converter"
+        xmlns:controls="clr-namespace:Thumbnify.Controls"
         xmlns:lex="http://wpflocalizeextension.codeplex.com"
         lex:LocalizeDictionary.DesignCulture="de-DE"
-        lex:ResxLocalizationProvider.DefaultAssembly="tebisCloud"
+        lex:ResxLocalizationProvider.DefaultAssembly="Thumbnify"
         lex:ResxLocalizationProvider.DefaultDictionary="Controls"
         mc:Ignorable="d"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
@@ -181,12 +181,12 @@
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
                                                 Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}, Path=IsSelected, Converter={StaticResource BoolToVis}}">
                                         <Button Style="{StaticResource FirstButton}"
-                                                Command="{x:Static tebisCloud:MainWindow.EditMediaPart}"
+                                                Command="{x:Static thumbnify:MainWindow.EditMediaPart}"
                                                 CommandParameter="{Binding}">
                                             <mi:MaterialIcon Kind="Edit" />
                                         </Button>
                                         <Button Style="{StaticResource LastButton}"
-                                                Command="{x:Static tebisCloud:MainWindow.DelFromQueue}"
+                                                Command="{x:Static thumbnify:MainWindow.DelFromQueue}"
                                                 CommandParameter="{Binding}">
                                             <mi:MaterialIcon Kind="TrayRemove" />
                                         </Button>

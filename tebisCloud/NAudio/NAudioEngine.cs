@@ -10,10 +10,10 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using NAudio.Wave;
-using tebisCloud.Data;
+using Thumbnify.Data;
 using WPFSoundVisualizationLib;
 
-namespace tebisCloud.NAudio {
+namespace Thumbnify.NAudio {
     public class NAudioEngine : INotifyPropertyChanged, ISpectrumPlayer, IWaveformPlayer, IDisposable {
         #region Fields
 

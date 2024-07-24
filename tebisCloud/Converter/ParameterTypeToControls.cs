@@ -9,7 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace tebisCloud.Converter {
+namespace Thumbnify.Converter {
     [ContentProperty(nameof(Template))]
     public class ParameterControls {
         public Type Type { get; set; }

@@ -16,12 +16,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ColorPicker.Models;
-using tebisCloud.Data;
-using tebisCloud.Data.Thumbnail;
+using Thumbnify.Data;
+using Thumbnify.Data.Thumbnail;
 using WpfColorFontDialog;
 using Path = System.IO.Path;
 
-namespace tebisCloud.Controls {
+namespace Thumbnify.Controls {
     /// <summary>
     /// Interaktionslogik für ThumbnailPreview.xaml
     /// </summary>

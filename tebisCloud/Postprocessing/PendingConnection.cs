@@ -7,7 +7,7 @@ using System.Windows.Input;
 using FFmpeg.AutoGen;
 using Microsoft.Xaml.Behaviors.Core;
 
-namespace tebisCloud.Postprocessing {
+namespace Thumbnify.Postprocessing {
     public class PendingConnection {
         private Connector? _start;
 

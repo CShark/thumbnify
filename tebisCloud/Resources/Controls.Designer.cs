@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace tebisCloud.Resources {
+namespace Thumbnify.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace tebisCloud.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("tebisCloud.Resources.Controls", typeof(Controls).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Thumbnify.Resources.Controls", typeof(Controls).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -70,7 +70,7 @@ namespace tebisCloud.Resources {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die tebis Video Processor ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Thumbnify ähnelt.
         /// </summary>
         internal static string AppName {
             get {

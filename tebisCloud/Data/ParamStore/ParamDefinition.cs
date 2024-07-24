@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Material.Icons;
-using tebisCloud.Data.Processing;
-using tebisCloud.Data.Processing.Parameters;
+using Thumbnify.Data.Processing;
+using Thumbnify.Data.Processing.Parameters;
 
-namespace tebisCloud.Data.ParamStore {
+namespace Thumbnify.Data.ParamStore {
     public class ParamGenerator {
         public string Id { get; set; }
 

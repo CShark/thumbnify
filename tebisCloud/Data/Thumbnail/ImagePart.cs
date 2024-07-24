@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace tebisCloud.Data.Thumbnail {
+namespace Thumbnify.Data.Thumbnail {
     public class ImagePart : ControlPart {
         private string _imageSource;
 

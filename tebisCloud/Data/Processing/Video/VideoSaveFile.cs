@@ -5,10 +5,10 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
-using tebisCloud.Data.Processing.Parameters;
-using tebisCloud.Postprocessing;
+using Thumbnify.Data.Processing.Parameters;
+using Thumbnify.Postprocessing;
 
-namespace tebisCloud.Data.Processing.Video {
+namespace Thumbnify.Data.Processing.Video {
     class VideoSaveFile : Node {
         public Parameter<VideoFile> Video { get; } = new("video", true);
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace tebisCloud.Data.Processing.Parameters {
+namespace Thumbnify.Data.Processing.Parameters {
     public class VideoFile : ParamType {
         public string VideoFileName { get; set; } = "";
 

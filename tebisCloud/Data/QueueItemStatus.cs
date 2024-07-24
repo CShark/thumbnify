@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace tebisCloud.Data {
+namespace Thumbnify.Data {
     public class QueueItemStatus {
         public QueueItemStatus(MediaPart mediaPart) {
             MediaPart = mediaPart;

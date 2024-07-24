@@ -7,19 +7,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Xaml.Behaviors.Core;
 using Newtonsoft.Json;
-using tebisCloud.Controls;
-using tebisCloud.Data;
-using tebisCloud.Data.ParamStore;
-using tebisCloud.Data.Processing;
-using tebisCloud.Dialogs;
-using tebisCloud.Postprocessing;
-using Connection = tebisCloud.Postprocessing.Connection;
-using Connector = tebisCloud.Postprocessing.Connector;
-using MessageBox = tebisCloud.Dialogs.MessageBox;
-using Node = tebisCloud.Data.Processing.Node;
-using PendingConnection = tebisCloud.Postprocessing.PendingConnection;
+using Thumbnify.Controls;
+using Thumbnify.Data.Processing;
+using Thumbnify.Dialogs;
+using Thumbnify.Data;
+using Thumbnify.Data.ParamStore;
+using Thumbnify.Postprocessing;
+using Connection = Thumbnify.Postprocessing.Connection;
+using Connector = Thumbnify.Postprocessing.Connector;
+using MessageBox = Thumbnify.Dialogs.MessageBox;
+using Node = Thumbnify.Data.Processing.Node;
+using PendingConnection = Thumbnify.Postprocessing.PendingConnection;
 
-namespace tebisCloud {
+namespace Thumbnify {
     /// <summary>
     /// Interaktionslogik für ProcessingEditor.xaml
     /// </summary>

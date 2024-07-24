@@ -6,9 +6,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using tebisCloud.Data.ParamStore;
+using Thumbnify.Data.ParamStore;
 
-namespace tebisCloud.Data {
+namespace Thumbnify.Data {
     public class PartMetadata :INotifyPropertyChanged{
         private ProcessingGraph? _processingGraph;
         private ObservableCollection<ParamDefinition> _parameters = new();

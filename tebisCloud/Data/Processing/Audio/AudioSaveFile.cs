@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using NAudio.Lame;
-using tebisCloud.Data.Processing.Parameters;
-using tebisCloud.Postprocessing;
+using Thumbnify.Data.Processing.Parameters;
+using Thumbnify.Postprocessing;
 
-namespace tebisCloud.Data.Processing.Audio {
+namespace Thumbnify.Data.Processing.Audio {
     internal sealed class AudioSaveFile : Node {
         public Parameter<AudioStream> AudioStream { get; } = new("audio", true);
 

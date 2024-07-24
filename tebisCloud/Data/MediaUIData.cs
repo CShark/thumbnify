@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using tebisCloud.NAudio;
+using Thumbnify.NAudio;
 
-namespace tebisCloud.Data {
+namespace Thumbnify.Data {
     public class MediaUIData {
         public Stream? FileStream { get; set; }
 

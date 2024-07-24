@@ -13,17 +13,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using tebisCloud.Data;
-using tebisCloud.NAudio;
 using Config = FlyleafLib.Config;
 using Path = System.IO.Path;
 using FlyleafLib;
 using NAudio.CoreAudioApi;
 using Newtonsoft.Json;
-using tebisCloud.Dialogs;
-using MessageBox = tebisCloud.Dialogs.MessageBox;
+using Thumbnify.Data;
+using Thumbnify.Dialogs;
+using Thumbnify.NAudio;
+using MessageBox = Thumbnify.Dialogs.MessageBox;
 
-namespace tebisCloud {
+namespace Thumbnify {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>

@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Newtonsoft.Json;
-using tebisCloud.Data.Thumbnail;
+using Thumbnify.Data.Thumbnail;
 
-namespace tebisCloud.Data {
+namespace Thumbnify.Data {
     public class ThumbnailData : INotifyPropertyChanged, IDialogItem {
         private string _presetName;
         private ObservableCollection<ControlPart> _controls = new();

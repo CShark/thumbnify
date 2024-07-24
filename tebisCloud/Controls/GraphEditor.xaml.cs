@@ -15,12 +15,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using tebisCloud.Data;
-using tebisCloud.Data.Processing;
-using tebisCloud.Postprocessing;
-using MessageBox = tebisCloud.Dialogs.MessageBox;
+using Thumbnify.Data;
+using Thumbnify.Data.Processing;
+using Thumbnify.Postprocessing;
+using MessageBox = Thumbnify.Dialogs.MessageBox;
 
-namespace tebisCloud.Controls {
+namespace Thumbnify.Controls {
     /// <summary>
     /// Interaktionslogik für GraphEditor.xaml
     /// </summary>
@@ -133,7 +133,7 @@ namespace tebisCloud.Controls {
 
             CommandBindings.Add(new CommandBinding(DeleteNode, (_, _) => {
                 if (((MultiSelector)Editor).SelectedItems.Count > 0) {
-                    if (MessageBox.ShowDialog(Window.GetWindow(this), "deleteActions", MessageBoxButton.YesNo) == true) {
+                    if (Dialogs.MessageBox.ShowDialog(Window.GetWindow(this), "deleteActions", MessageBoxButton.YesNo) == true) {
                         var selection = new List<EditorNode>();
 
                         foreach (EditorNode node in ((MultiSelector)Editor).SelectedItems) {

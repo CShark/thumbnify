@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace tebisCloud.Data {
+namespace Thumbnify.Data {
     public interface IDialogItem {
         public string Name { get; }
 

@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
-using tebisCloud.Data.Processing;
-using tebisCloud.Postprocessing;
+using Thumbnify.Data.Processing;
+using Thumbnify.Postprocessing;
 using WPFLocalizeExtension.Engine;
 
-namespace tebisCloud.Converter {
+namespace Thumbnify.Converter {
     internal class NodeNameConverter : IValueConverter {
         public object? Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             if (value is Parameter param) {
@@ -28,7 +28,7 @@ namespace tebisCloud.Converter {
         }
 
         private string? Translate(string id, CultureInfo culture) {
-            return LocalizeDictionary.Instance.GetLocalizedObject("tebisCloud", "Nodes", id, culture) as string;
+            return LocalizeDictionary.Instance.GetLocalizedObject("Thumbnify", "Nodes", id, culture) as string;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

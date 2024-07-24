@@ -1,10 +1,10 @@
 ﻿using System.IO;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
-using tebisCloud.Data.Processing.Parameters;
-using tebisCloud.Postprocessing;
+using Thumbnify.Data.Processing.Parameters;
+using Thumbnify.Postprocessing;
 
-namespace tebisCloud.Data.Processing.Operations {
+namespace Thumbnify.Data.Processing.Operations {
     internal sealed class PathCombine : Node {
         public Parameter<FilePath> SourcePath { get; } =
             new("path", true, new FilePath(FilePath.EPathMode.Directory, ""));

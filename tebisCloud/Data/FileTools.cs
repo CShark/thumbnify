@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace tebisCloud.Data {
+namespace Thumbnify.Data {
     static class FileTools {
         public static void CopyStreams(Stream src, Stream dest, Action<double> progressCallback, CancellationToken token,
             uint bufferSize = 16 * 1024) {

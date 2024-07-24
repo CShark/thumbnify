@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace tebisCloud.Converter {
+namespace Thumbnify.Converter {
     public class ComboBoxTemplateSelector : DataTemplateSelector {
         public DataTemplate? SelectedItemTemplate { get; set; }
         public DataTemplateSelector? SelectedItemTemplateSelector { get; set; }

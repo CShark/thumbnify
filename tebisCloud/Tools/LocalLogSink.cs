@@ -1,9 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using Serilog.Core;
 using Serilog.Events;
-using tebisCloud.Data.Processing;
+using Thumbnify.Data.Processing;
 
-namespace tebisCloud.Tools {
+namespace Thumbnify.Tools {
     public class LogMessage {
         public string Message { get; }
 

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace tebisCloud.Converter {
+namespace Thumbnify.Converter {
     internal class BoolInvert : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             if (value is bool b) {

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using tebisCloud.Data.Processing.Parameters;
-using tebisCloud.Postprocessing;
+using Thumbnify.Data.Processing.Parameters;
+using Thumbnify.Postprocessing;
 
-namespace tebisCloud.Data.Processing.Input {
+namespace Thumbnify.Data.Processing.Input {
     internal sealed class PathInput : Node {
         public Parameter<FilePath> Path { get; } = new("path", false, new(FilePath.EPathMode.Directory, ""), false);
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using JsonKnownTypes;
 using Newtonsoft.Json;
 
-namespace tebisCloud.Data.Thumbnail {
+namespace Thumbnify.Data.Thumbnail {
     [JsonConverter(typeof(JsonKnownTypesConverter<ControlPart>))]
     public abstract class ControlPart : INotifyPropertyChanged {
         private string _name;

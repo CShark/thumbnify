@@ -3,10 +3,10 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
 using Serilog;
-using tebisCloud.Postprocessing;
+using Thumbnify.Postprocessing;
 using Point = System.Windows.Point;
 
-namespace tebisCloud.Data.Processing {
+namespace Thumbnify.Data.Processing {
     public enum ENodeStatus {
         Pending,
         Running,

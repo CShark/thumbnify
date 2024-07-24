@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using Newtonsoft.Json;
 
-namespace tebisCloud.Data {
+namespace Thumbnify.Data {
     public class MediaPart : INotifyPropertyChanged {
         private long _start;
         private long _end;

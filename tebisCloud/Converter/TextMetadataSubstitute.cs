@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
-using tebisCloud.Data;
+using Thumbnify.Data;
 
-namespace tebisCloud.Converter {
+namespace Thumbnify.Converter {
     internal class TextMetadataSubstitute : IMultiValueConverter {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
             if (values.Length == 3) {

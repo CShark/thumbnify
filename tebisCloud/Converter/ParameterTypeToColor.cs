@@ -8,7 +8,7 @@ using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows.Media;
 
-namespace tebisCloud.Converter {
+namespace Thumbnify.Converter {
     public class ParameterColor {
         public Type Type { get; set; }
         public Color Color { get; set; }

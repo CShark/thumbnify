@@ -13,12 +13,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.Xaml.Behaviors.Core;
 using Ookii.Dialogs.Wpf;
-using tebisCloud.Data;
-using tebisCloud.Data.ParamStore;
-using tebisCloud.Dialogs;
+using Thumbnify.Data.ParamStore;
+using Thumbnify.Dialogs;
+using Thumbnify.Data;
 using Vortice.Direct2D1;
 
-namespace tebisCloud {
+namespace Thumbnify {
     /// <summary>
     /// Interaktionslogik für Settings.xaml
     /// </summary>

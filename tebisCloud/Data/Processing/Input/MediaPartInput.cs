@@ -3,11 +3,11 @@ using FFmpeg.NET;
 using FFmpeg.NET.Events;
 using NAudio.Wave;
 using Newtonsoft.Json;
-using tebisCloud.Data.ParamStore;
-using tebisCloud.Data.Processing.Parameters;
-using tebisCloud.Postprocessing;
+using Thumbnify.Data.ParamStore;
+using Thumbnify.Data.Processing.Parameters;
+using Thumbnify.Postprocessing;
 
-namespace tebisCloud.Data.Processing.Input {
+namespace Thumbnify.Data.Processing.Input {
     public sealed class MediaPartInput : Node {
         [JsonIgnore]
         public Result<VideoFile> Video { get; } = new("video");

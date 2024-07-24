@@ -4,13 +4,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Newtonsoft.Json;
-using tebisCloud.Controls;
-using tebisCloud.Data;
-using tebisCloud.Data.Thumbnail;
-using tebisCloud.Dialogs;
+using Thumbnify.Controls;
+using Thumbnify.Dialogs;
+using Thumbnify.Data;
+using Thumbnify.Data.Thumbnail;
 using Path = System.IO.Path;
 
-namespace tebisCloud {
+namespace Thumbnify {
     /// <summary>
     /// Interaktionslogik für ThumbnailPresetEditor.xaml
     /// </summary>

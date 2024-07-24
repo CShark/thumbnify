@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
-namespace tebisCloud.Postprocessing {
+namespace Thumbnify.Postprocessing {
     public class Connection {
         public Connector Source { get; }
         public Connector Target { get; }

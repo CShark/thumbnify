@@ -8,10 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using tebisCloud.Data.Processing;
+using Thumbnify.Data.Processing;
 using Vortice.XAudio2;
 
-namespace tebisCloud.Postprocessing {
+namespace Thumbnify.Postprocessing {
     public enum ENodeType {
         None = 0,
         Audio = 1,

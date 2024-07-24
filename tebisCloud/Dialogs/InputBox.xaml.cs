@@ -11,9 +11,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using tebisCloud.Tools;
+using Thumbnify.Tools;
 
-namespace tebisCloud.Dialogs {
+namespace Thumbnify.Dialogs {
     /// <summary>
     /// Interaktionslogik für InputBox.xaml
     /// </summary>

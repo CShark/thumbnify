@@ -5,7 +5,7 @@
 
 using NAudio.Dsp;
 
-namespace tebisCloud.NAudio {
+namespace Thumbnify.NAudio {
     public class SampleAggregator {
         private float volumeLeftMaxValue;
         private float volumeLeftMinValue;

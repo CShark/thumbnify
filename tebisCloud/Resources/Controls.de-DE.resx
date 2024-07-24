@@ -98,7 +98,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AppName" xml:space="preserve">
-    <value>tebis Video Verarbeitung</value>
+    <value>Thumbnify</value>
   </data>
   <data name="GraphViewer" xml:space="preserve">
     <value>Graph Viewer</value>

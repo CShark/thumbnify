@@ -1,8 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:controls="clr-namespace:tebisCloud.Controls"
-                    xmlns:parameters="clr-namespace:tebisCloud.Data.Processing.Parameters"
-                    xmlns:converter="clr-namespace:tebisCloud.Converter">
+                    xmlns:controls="clr-namespace:Thumbnify.Controls"
+                    xmlns:parameters="clr-namespace:Thumbnify.Data.Processing.Parameters"
+                    xmlns:converter="clr-namespace:Thumbnify.Converter">
 
     <DataTemplate DataType="{x:Type parameters:FilePath}">
         <controls:FilePathControl FilePath="{Binding}" />

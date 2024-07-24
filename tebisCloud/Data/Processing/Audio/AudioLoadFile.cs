@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 using FlyleafLib.MediaPlayer;
 using NAudio.Wave;
 using Newtonsoft.Json;
-using tebisCloud.Data.Processing.Parameters;
-using tebisCloud.Postprocessing;
+using Thumbnify.Data.Processing.Parameters;
+using Thumbnify.Postprocessing;
 
-namespace tebisCloud.Data.Processing.Audio {
+namespace Thumbnify.Data.Processing.Audio {
     internal sealed class AudioLoadFile : Node {
         public Parameter<FilePath> AudioFile { get; } = new("path", true,
             new(FilePath.EPathMode.OpenFile, "Alle Dateien|*.mp4;*.mkv;*.mp3"));

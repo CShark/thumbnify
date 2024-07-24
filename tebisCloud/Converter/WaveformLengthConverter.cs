@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
-namespace tebisCloud.Converter {
+namespace Thumbnify.Converter {
     internal class WaveformLengthConverter : IMultiValueConverter {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
             if (values.Length == 2 && values[0] is long l && values[1] is long factor) {

@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using tebisCloud.Data.Processing;
+using Thumbnify.Data.Processing;
 
-namespace tebisCloud.Postprocessing {
+namespace Thumbnify.Postprocessing {
     public class Connector : INotifyPropertyChanged {
         private Point _anchor;
         private bool _isConnected;

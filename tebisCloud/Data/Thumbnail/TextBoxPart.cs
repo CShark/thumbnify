@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using Newtonsoft.Json;
 
-namespace tebisCloud.Data.Thumbnail {
+namespace Thumbnify.Data.Thumbnail {
     public class TextBoxPart : ControlPart {
         private string _placeholder = "[TextBox]";
         private Color _foreground = Colors.Black;

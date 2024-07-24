@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace tebisCloud.Data.Processing {
+namespace Thumbnify.Data.Processing {
     public class ProcessConnect {
         public string Previous { get; set; }
 

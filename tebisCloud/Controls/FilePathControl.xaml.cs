@@ -15,10 +15,10 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 using Ookii.Dialogs.Wpf;
-using tebisCloud.Data.Processing.Parameters;
+using Thumbnify.Data.Processing.Parameters;
 using Vortice.Direct2D1;
 
-namespace tebisCloud.Controls {
+namespace Thumbnify.Controls {
     /// <summary>
     /// Interaktionslogik für FilePathControl.xaml
     /// </summary>

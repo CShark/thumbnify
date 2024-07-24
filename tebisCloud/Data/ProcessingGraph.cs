@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Newtonsoft.Json;
 using Serilog;
-using tebisCloud.Data.ParamStore;
-using tebisCloud.Data.Processing;
-using tebisCloud.Data.Processing.Input;
-using tebisCloud.Tools;
+using Thumbnify.Data.ParamStore;
+using Thumbnify.Data.Processing;
+using Thumbnify.Data.Processing.Input;
+using Thumbnify.Tools;
 
-namespace tebisCloud.Data {
+namespace Thumbnify.Data {
     public class ProcessingGraph : IDialogItem, INotifyPropertyChanged {
         public ObservableCollection<Node> Nodes { get; } = new();
 
