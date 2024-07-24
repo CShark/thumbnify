@@ -97,97 +97,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AppName" xml:space="preserve">
-    <value>tebis Video Verarbeitung</value>
+  <data name="msg_deleteActions" xml:space="preserve">
+    <value>Sollen die ausgewählten Aktionen gelöscht werden?</value>
   </data>
-  <data name="GraphViewer" xml:space="preserve">
-    <value>Graph Viewer</value>
+  <data name="title_deleteActions" xml:space="preserve">
+    <value>Aktionen löschen</value>
   </data>
-  <data name="Settings" xml:space="preserve">
-    <value>Einstellungen</value>
+  <data name="msg_deleteMediaPart" xml:space="preserve">
+    <value>Soll der Ausschnitt wirklich gelöscht werden?</value>
   </data>
-  <data name="GraphEditor" xml:space="preserve">
-    <value>Graph Editor</value>
+  <data name="title_deleteMediaPart" xml:space="preserve">
+    <value>Medienausschnitt Löschen</value>
   </data>
-  <data name="ThumbnailEditor" xml:space="preserve">
-    <value>Thumbnail Editor</value>
+  <data name="title_deletePreset" xml:space="preserve">
+    <value>Preset Löschen</value>
   </data>
-  <data name="ProcessingStatus" xml:space="preserve">
-    <value>Status Verarbeitung</value>
+  <data name="msg_deletePreset" xml:space="preserve">
+    <value>Soll das ausgewählte Preset wirklich gelöscht werden?</value>
   </data>
-  <data name="CreateParamDef" xml:space="preserve">
-    <value>Parameter erstellen</value>
+  <data name="msg_overwritePreset" xml:space="preserve">
+    <value>Soll das Preset überschrieben werden?</value>
   </data>
-  <data name="EditMediaPart" xml:space="preserve">
-    <value>Medienausschnitt Bearbeiten</value>
-  </data>
-  <data name="Preview" xml:space="preserve">
-    <value>Vorschau</value>
-  </data>
-  <data name="ObsPath" xml:space="preserve">
-    <value>Pfad zu den OBS-Aufnahmen</value>
-  </data>
-  <data name="DefaultGraph" xml:space="preserve">
-    <value>Standard Verarbeitungs-Graph</value>
-  </data>
-  <data name="Close" xml:space="preserve">
-    <value>Schließen</value>
-  </data>
-  <data name="Parameter" xml:space="preserve">
-    <value>Parameter</value>
-  </data>
-  <data name="MediaList" xml:space="preserve">
-    <value>Medien</value>
-  </data>
-  <data name="QueueList" xml:space="preserve">
-    <value>Warteschlange</value>
-  </data>
-  <data name="QueueStart" xml:space="preserve">
-    <value>Verarbeiten</value>
-  </data>
-  <data name="ParameterName" xml:space="preserve">
-    <value>Name des Parameters</value>
-  </data>
-  <data name="ParameterType" xml:space="preserve">
-    <value>Typ des Parameters</value>
-  </data>
-  <data name="Create" xml:space="preserve">
-    <value>Erstellen</value>
-  </data>
-  <data name="Cancel" xml:space="preserve">
-    <value>Abbrechen</value>
-  </data>
-  <data name="Ok" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="DisplayName" xml:space="preserve">
-    <value>Anzeigename</value>
-  </data>
-  <data name="ProcessingGraph" xml:space="preserve">
-    <value>Verarbeitungs-Graph</value>
-  </data>
-  <data name="Apply" xml:space="preserve">
-    <value>Anwenden</value>
-  </data>
-  <data name="Load" xml:space="preserve">
-    <value>Öffnen</value>
-  </data>
-  <data name="Save" xml:space="preserve">
-    <value>Speichern</value>
-  </data>
-  <data name="Delete" xml:space="preserve">
-    <value>Löschen</value>
-  </data>
-  <data name="PresetName" xml:space="preserve">
-    <value>Name:</value>
-  </data>
-  <data name="LoadSaveDialog" xml:space="preserve">
-    <value>Preset Öffnen / Speichern</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Ja</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>Nein</value>
+  <data name="title_overwritePreset" xml:space="preserve">
+    <value>Preset Überschreiben</value>
   </data>
 </root>

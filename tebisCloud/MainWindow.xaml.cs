@@ -442,8 +442,7 @@ namespace tebisCloud {
 
         private void DeleteMediaPart_OnExecuted(object sender, ExecutedRoutedEventArgs e) {
             if (e.Parameter is MediaPart part) {
-                if (MessageBox.ShowDialog(this, "Soll der Ausschnitt wirklich permanent gelöscht werden?",
-                        "Ausschnitt löschen", MessageBoxButton.YesNo) == true) {
+                if (MessageBox.ShowDialog(this, "deleteMediaPart", MessageBoxButton.YesNo) == true) {
                     part.Parent.Parts.Remove(part);
                     UploadQueue.Remove(part);
                 }

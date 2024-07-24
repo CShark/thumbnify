@@ -13,10 +13,14 @@
         xmlns:tebisCloud="clr-namespace:tebisCloud"
         xmlns:converter="clr-namespace:tebisCloud.Converter"
         xmlns:controls="clr-namespace:tebisCloud.Controls"
+        xmlns:lex="http://wpflocalizeextension.codeplex.com"
+        lex:LocalizeDictionary.DesignCulture="de-DE"
+        lex:ResxLocalizationProvider.DefaultAssembly="tebisCloud"
+        lex:ResxLocalizationProvider.DefaultDictionary="Controls"
         mc:Ignorable="d"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         WindowState="Maximized"
-        Title="MainWindow" Height="450" Width="800">
+        Title="{lex:Loc AppName}" Height="450" Width="800">
     <Window.Resources>
         <converter:WaveformLengthConverter x:Key="WaveformLengthConverter" />
         <converter:PlaybackMarginConverter x:Key="PlaybackMarginConverter" />
@@ -56,7 +60,7 @@
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <mi:MaterialIcon Foreground="{StaticResource ControlForeground}" Kind="Multimedia"></mi:MaterialIcon>
-                <TextBlock Foreground="{StaticResource ControlForeground}" FontSize="20">Medien</TextBlock>
+                <TextBlock Foreground="{StaticResource ControlForeground}" FontSize="20" Text="{lex:Loc MediaList}"></TextBlock>
             </StackPanel>
 
             <WrapPanel Margin="4" Grid.Row="2">
@@ -155,7 +159,7 @@
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <mi:MaterialIcon Foreground="{StaticResource ControlForeground}" Kind="TrayFull"></mi:MaterialIcon>
-                        <TextBlock Foreground="{StaticResource ControlForeground}" FontSize="20">Warteschlange</TextBlock>
+                        <TextBlock Foreground="{StaticResource ControlForeground}" FontSize="20" Text="{lex:Loc QueueList}"></TextBlock>
                     </StackPanel>
 
                     <ListBox Grid.Row="1" SelectedIndex="0"
@@ -202,7 +206,7 @@
                         <Button Click="StartProcessing_OnClick">
                             <WrapPanel>
                                 <mi:MaterialIcon Kind="ClockStart" />
-                                <TextBlock VerticalAlignment="Center">Verarbeiten</TextBlock>
+                                <TextBlock VerticalAlignment="Center" Text="{lex:Loc QueueStart}"></TextBlock>
                             </WrapPanel>
                         </Button>
                     </WrapPanel>

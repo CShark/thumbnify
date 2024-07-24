@@ -11,18 +11,19 @@
         xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
         lex:LocalizeDictionary.DesignCulture="de-DE"
         lex:ResxLocalizationProvider.DefaultAssembly="tebisCloud"
+        lex:ResxLocalizationProvider.DefaultDictionary="Controls"
         WindowStartupLocation="CenterOwner"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         mc:Ignorable="d"
         ResizeMode="NoResize"
-        Title="Einstellungen" Height="450" Width="300" Style="{StaticResource Dark}">
+        Title="{lex:Loc Settings}" Height="450" Width="300" Style="{StaticResource Dark}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
         <StackPanel Margin="10">
-            <TextBlock>Pfad zu den OBS-Aufnahmen</TextBlock>
+            <TextBlock Text="{lex:Loc ObsPath}"></TextBlock>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
@@ -37,7 +38,7 @@
             </Grid>
 
             <Rectangle Height="10"></Rectangle>
-            <TextBlock>Standard-Nachbearbeitung</TextBlock>
+            <TextBlock Text="{lex:Loc DefaultGraph}"></TextBlock>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>

@@ -9,26 +9,21 @@
         lex:LocalizeDictionary.DesignCulture="de-DE"
         lex:ResxLocalizationProvider.DefaultAssembly="tebisCloud"
         lex:ResxLocalizationProvider.DefaultDictionary="Controls"
-
         mc:Ignorable="d" Style="{StaticResource Dark}"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
-        Title="Parameter erstellen" Width="500" SizeToContent="Height">
+        Title="{lex:Loc CreateParamDef}"  Width="500" SizeToContent="Height">
     <Window.Resources>
         <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
             <Setter Property="Margin" Value="3"></Setter>
         </Style>
     </Window.Resources>
     <StackPanel>
-        <TextBlock Margin="5">
-            Name des Parameters
-        </TextBlock>
+        <TextBlock Margin="5" Text="{lex:Loc ParameterName}" />
         <TextBox Margin="5,0" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-        <TextBlock Margin="5">
-            Typ des Parameters
-        </TextBlock>
+        <TextBlock Margin="5" Text="{lex:Loc ParameterType}"/>
         <ComboBox Margin="5,0" ItemsSource="{x:Static paramStore:ParamDefinition.SupportedTypes}" SelectedItem="{Binding ParamType}" lex:ResxLocalizationProvider.DefaultDictionary="Nodes">
             <ComboBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type paramStore:ParamGenerator}">
@@ -38,8 +33,8 @@
         </ComboBox>
 
         <UniformGrid HorizontalAlignment="Right" Margin="5" Columns="2">
-            <Button IsDefault="True" Click="Ok_OnClick">Erstellen</Button>
-            <Button IsCancel="True" Click="Cancel_OnClick">Abbrechen</Button>
+            <Button IsDefault="True" Click="Ok_OnClick" Content="{lex:Loc Create}"></Button>
+            <Button IsCancel="True" Click="Cancel_OnClick" Content="{lex:Loc Cancel}"></Button>
         </UniformGrid>
     </StackPanel>
 </Window>

@@ -7,11 +7,16 @@
         xmlns:controls="clr-namespace:tebisCloud.Controls"
         xmlns:data="clr-namespace:tebisCloud.Data"
         xmlns:events="clr-namespace:Serilog.Events;assembly=Serilog"
+        xmlns:lex="http://wpflocalizeextension.codeplex.com"
+        xmlns:tools="clr-namespace:tebisCloud.Tools"
+        lex:LocalizeDictionary.DesignCulture="de-DE"
+        lex:ResxLocalizationProvider.DefaultAssembly="tebisCloud"
+        lex:ResxLocalizationProvider.DefaultDictionary="Controls"
         mc:Ignorable="d"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         WindowStartupLocation="CenterOwner"
         WindowState="Maximized"
-        Title="GraphViewer" Height="450" Width="800">
+        Title="{lex:Loc GraphViewer}" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
@@ -22,7 +27,7 @@
         <Expander Grid.Row="1" IsExpanded="True" ExpandDirection="Up">
             <ListBox ItemsSource="{Binding Graph.LogMessages.MessageList}" d:ItemsSource="{d:SampleData ItemCount=5}">
                 <ListBox.ItemTemplate>
-                    <DataTemplate DataType="{x:Type data:LogMessage}">
+                    <DataTemplate DataType="{x:Type tools:LogMessage}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="100"></ColumnDefinition>

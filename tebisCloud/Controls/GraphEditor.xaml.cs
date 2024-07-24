@@ -133,9 +133,7 @@ namespace tebisCloud.Controls {
 
             CommandBindings.Add(new CommandBinding(DeleteNode, (_, _) => {
                 if (((MultiSelector)Editor).SelectedItems.Count > 0) {
-                    if (MessageBox.ShowDialog(Window.GetWindow(this),
-                            "Sollen die ausgewählten Aktionen gelöscht werden?",
-                            "Aktionen löschen", MessageBoxButton.YesNo) == true) {
+                    if (MessageBox.ShowDialog(Window.GetWindow(this), "deleteActions", MessageBoxButton.YesNo) == true) {
                         var selection = new List<EditorNode>();
 
                         foreach (EditorNode node in ((MultiSelector)Editor).SelectedItems) {

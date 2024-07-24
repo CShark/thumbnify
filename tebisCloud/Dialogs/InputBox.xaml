@@ -4,6 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:tebisCloud.Dialogs"
+        xmlns:lex="http://wpflocalizeextension.codeplex.com"
+        lex:LocalizeDictionary.DesignCulture="de-DE"
+        lex:ResxLocalizationProvider.DefaultAssembly="tebisCloud"
+        lex:ResxLocalizationProvider.DefaultDictionary="Controls"
         mc:Ignorable="d" Style="{StaticResource Dark}" ResizeMode="NoResize" ShowInTaskbar="False"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         WindowStartupLocation="CenterOwner"
@@ -17,8 +21,8 @@
         <TextBlock Margin="5" Text="{Binding Message}"></TextBlock>
         <TextBox Margin="5" Text="{Binding Value}" x:Name="Input"></TextBox>
         <UniformGrid Columns="2" HorizontalAlignment="Right" Margin="5">
-            <Button IsDefault="True" Click="Ok_OnClick">OK</Button>
-            <Button IsCancel="True" Click="Cancel_OnClick">Abbrechen</Button>
+            <Button IsDefault="True" Click="Ok_OnClick" Content="{lex:Loc Ok}"></Button>
+            <Button IsCancel="True" Click="Cancel_OnClick" Content="{lex:Loc Cancel}"></Button>
         </UniformGrid>
     </StackPanel>
 </Window>

@@ -13,15 +13,15 @@ namespace tebisCloud.Converter {
     internal class NodeNameConverter : IValueConverter {
         public object? Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             if (value is Parameter param) {
-                return Translate($"param_{param.Id}", culture);
+                return Translate($"param_{param.Id}", Thread.CurrentThread.CurrentUICulture);
             } else if (value is Result res) {
                 if (res.Name != null) {
                     return res.Name;
                 } else {
-                    return Translate($"param_{res.Id}",culture);
+                    return Translate($"param_{res.Id}", Thread.CurrentThread.CurrentUICulture);
                 }
             } else if (value is EditorNode node) {
-                return Translate(node.TitleId,culture);
+                return Translate(node.TitleId,Thread.CurrentThread.CurrentUICulture);
             }
 
             return null;

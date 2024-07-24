@@ -8,12 +8,16 @@
         xmlns:controls="clr-namespace:tebisCloud.Controls"
         xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
         xmlns:paramStore="clr-namespace:tebisCloud.Data.ParamStore"
+        xmlns:lex="http://wpflocalizeextension.codeplex.com"
+        lex:LocalizeDictionary.DesignCulture="de-DE"
+        lex:ResxLocalizationProvider.DefaultAssembly="tebisCloud"
+        lex:ResxLocalizationProvider.DefaultDictionary="Controls"
         mc:Ignorable="d"
         Style="{StaticResource Dark}"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="Ausschnitt Bearbeiten" Height="450" Width="300">
+        Title="{lex:Loc EditMediaPart}" Height="450" Width="300">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -22,10 +26,10 @@
         </Grid.RowDefinitions>
 
         <StackPanel Margin="5">
-            <TextBlock>Anzeige-Name:</TextBlock>
+            <TextBlock Text="{lex:Loc DisplayName}"></TextBlock>
             <TextBox Text="{Binding PartMetadata.Name}" Margin="5"></TextBox>
 
-            <TextBlock>Nachbearbeitungs-Vorlage</TextBlock>
+            <TextBlock Text="{lex:Loc ProcessingGraph}"></TextBlock>
             <Grid Margin="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
@@ -67,8 +71,8 @@
                 </Style>
             </UniformGrid.Resources>
 
-            <Button IsDefault="True" Click="Apply_OnClick">Übernehmen</Button>
-            <Button IsCancel="True" Click="Cancel_OnClick">Abbrechen</Button>
+            <Button IsDefault="True" Click="Apply_OnClick" Content="{lex:Loc Apply}"></Button>
+            <Button IsCancel="True" Click="Cancel_OnClick" Content="{lex:Loc Cancel}"></Button>
         </UniformGrid>
     </Grid>
 </Window>

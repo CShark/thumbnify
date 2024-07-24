@@ -7,13 +7,17 @@
         xmlns:data="clr-namespace:tebisCloud.Data"
         xmlns:converter="clr-namespace:tebisCloud.Converter"
         xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+        xmlns:lex="http://wpflocalizeextension.codeplex.com"
+        lex:LocalizeDictionary.DesignCulture="de-DE"
+        lex:ResxLocalizationProvider.DefaultAssembly="tebisCloud"
+        lex:ResxLocalizationProvider.DefaultDictionary="Controls"
         mc:Ignorable="d"
         ShowInTaskbar="False"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
         Style="{StaticResource Dark}"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="LoadSaveDialog" Height="550" Width="1000">
+        Title="{lex:Loc LoadSaveDialog}" Height="550" Width="1000">
     <Window.Resources>
         <Style TargetType="Button" BasedOn="{StaticResource ContentButton}"></Style>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
@@ -56,7 +60,7 @@
             <Button Grid.Column="1" Margin="5" VerticalAlignment="Bottom" HorizontalAlignment="Right" Command="{x:Static local:LoadSaveDialog.DeleteSelected}" Visibility="{Binding ShowDeleteButton, Converter={StaticResource BoolToVis}}">
                 <WrapPanel>
                     <wpf:MaterialIcon Kind="Delete" Width="16"/>
-                    <TextBlock VerticalAlignment="Center">Löschen</TextBlock>
+                    <TextBlock VerticalAlignment="Center" Text="{lex:Loc Delete}"></TextBlock>
                 </WrapPanel>
             </Button>
         </Grid>
@@ -66,14 +70,14 @@
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <TextBlock Margin="3">Name:</TextBlock>
+            <TextBlock Margin="3" Text="{lex:Loc PresetName}"></TextBlock>
             <TextBox Grid.Column="1" Margin="2" Text="{Binding SelectedName, UpdateSourceTrigger=PropertyChanged}"/>
         </Grid>
 
         <UniformGrid Grid.Row="2" Columns="2" HorizontalAlignment="Right" Margin="2">
-            <Button Margin="2" Padding="3" IsDefault="True" Click="Open_OnClick" Visibility="{Binding IsSaveDialog, Converter={StaticResource BoolToVisInv}}">Öffnen</Button>
-            <Button Margin="2" Padding="3" IsDefault="True" Click="Open_OnClick" Visibility="{Binding IsSaveDialog, Converter={StaticResource BoolToVis}}">Speichern</Button>
-            <Button Margin="2" Padding="3" IsCancel="True" Click="Cancel_OnClick">Abbrechen</Button>
+            <Button Margin="2" Padding="3" IsDefault="True" Click="Open_OnClick" Visibility="{Binding IsSaveDialog, Converter={StaticResource BoolToVisInv}}" Content="{lex:Loc Load}"></Button>
+            <Button Margin="2" Padding="3" IsDefault="True" Click="Open_OnClick" Visibility="{Binding IsSaveDialog, Converter={StaticResource BoolToVis}}" Content="{lex:Loc Save}"></Button>
+            <Button Margin="2" Padding="3" IsCancel="True" Click="Cancel_OnClick" Content="{lex:Loc Cancel}"></Button>
         </UniformGrid>
     </Grid>
 </Window>

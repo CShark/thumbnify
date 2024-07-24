@@ -66,11 +66,6 @@
 	    <AutoGen>True</AutoGen>
 	    <DependentUpon>Controls.resx</DependentUpon>
 	  </Compile>
-	  <Compile Update="Resources\Messages.Designer.cs">
-	    <DesignTime>True</DesignTime>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>Messages.resx</DependentUpon>
-	  </Compile>
 	  <Compile Update="Resources\Nodes.Designer.cs">
 	    <DesignTime>True</DesignTime>
 	    <AutoGen>True</AutoGen>
@@ -86,10 +81,6 @@
 	    <Generator>ResXFileCodeGenerator</Generator>
 	    <LastGenOutput>Controls.Designer.cs</LastGenOutput>
 	  </EmbeddedResource>
-	  <EmbeddedResource Update="Resources\Messages.resx">
-	    <Generator>ResXFileCodeGenerator</Generator>
-	    <LastGenOutput>Messages.Designer.cs</LastGenOutput>
-	  </EmbeddedResource>
 	  <EmbeddedResource Update="Resources\Nodes.de-DE.resx">
 	    <Generator>ResXFileCodeGenerator</Generator>
 	  </EmbeddedResource>
@@ -101,6 +92,7 @@
 
 	<ItemGroup>
 	  <Folder Include="Data\Processing\Converters\" />
+	  <Folder Include="NewFolder\" />
 	</ItemGroup>
 
 </Project>

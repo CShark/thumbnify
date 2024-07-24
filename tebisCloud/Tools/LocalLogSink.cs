@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using Serilog.Core;
 using Serilog.Events;
 using tebisCloud.Data.Processing;
 
-namespace tebisCloud.Data {
+namespace tebisCloud.Tools {
     public class LogMessage {
         public string Message { get; }
 

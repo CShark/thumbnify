@@ -12,6 +12,9 @@
              xmlns:converter="clr-namespace:tebisCloud.Converter"
              xmlns:parameters="clr-namespace:tebisCloud.Data.Processing.Parameters"
              mc:Ignorable="d"
+             lex:LocalizeDictionary.DesignCulture="de-DE"
+             lex:ResxLocalizationProvider.DefaultAssembly="tebisCloud"
+             lex:ResxLocalizationProvider.DefaultDictionary="Nodes"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <converter:BoolInvert x:Key="BoolInvert" />

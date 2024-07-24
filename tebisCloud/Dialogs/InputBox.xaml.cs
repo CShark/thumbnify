@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using tebisCloud.Tools;
 
 namespace tebisCloud.Dialogs {
     /// <summary>
@@ -46,11 +47,11 @@ namespace tebisCloud.Dialogs {
             Input.Focus();
         }
 
-        public static bool? ShowDialog(Window owner, string title, string message, string value = "") {
+        public static bool? ShowDialog(Window owner, string translationKey, string value = "") {
             var dlg = new InputBox();
             dlg.Owner = owner;
-            dlg.Title = title;
-            dlg.Message = message;
+            dlg.Message = Translate.TranslateMessage($"msg_{translationKey}");
+            dlg.Title = Translate.TranslateMessage($"title_{translationKey}");
             dlg.Value = value;
 
             return dlg.ShowDialog();

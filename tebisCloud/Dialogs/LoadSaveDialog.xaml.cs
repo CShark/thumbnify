@@ -81,8 +81,7 @@ namespace tebisCloud.Dialogs {
             InitializeComponent();
             CommandBindings.Add(new CommandBinding(DeleteSelected, (_, _) => {
                 if (_deleteHandler != null) {
-                    if (MessageBox.ShowDialog(this, "Wollen sie den ausgewählten Eintrag wirklich löschen?",
-                            "Eintrag Löschen", MessageBoxButton.YesNo) == true) {
+                    if (MessageBox.ShowDialog(this, "deletePreset", MessageBoxButton.YesNo) == true) {
                         _deleteHandler(SelectedItem);
                         DialogItems.Remove(SelectedItem);
                         SelectedItem = null;
@@ -132,8 +131,7 @@ namespace tebisCloud.Dialogs {
 
         private void Open_OnClick(object sender, RoutedEventArgs e) {
             if (IsSaveDialog && SelectedItem != null) {
-                if (MessageBox.ShowDialog(this, "Wollen sie den ausgewählten Eintrag überschreiben?", "Speichern",
-                        MessageBoxButton.YesNo) != true) {
+                if (MessageBox.ShowDialog(this, "overwritePreset", MessageBoxButton.YesNo) != true) {
                     return;
                 }
             }

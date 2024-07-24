@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.Xaml.Behaviors.Core;
+using tebisCloud.Tools;
 
 namespace tebisCloud.Dialogs {
     /// <summary>
@@ -85,42 +86,41 @@ namespace tebisCloud.Dialogs {
             InitializeComponent();
         }
 
-        public static bool? ShowDialog(Window owner, string message, string title, MessageBoxButton buttons) {
+        public static bool? ShowDialog(Window owner, string translationKey, MessageBoxButton buttons) {
             var msgBox = new MessageBox();
 
-            msgBox.Message = message;
-            msgBox.Title = title;
+            msgBox.Message = Translate.TranslateMessage($"msg_{translationKey}");
+            msgBox.Title = Translate.TranslateMessage($"title_{translationKey}");
             msgBox.Owner = owner;
 
             switch (buttons) {
                 case MessageBoxButton.OK:
-                    msgBox.Button1Text = "Ok";
+                    msgBox.Button1Text = Translate.TranslateControl("Ok");
                     msgBox.Button2Visible = false;
                     msgBox.Button3Visible = false;
                     break;
                 case MessageBoxButton.YesNo:
-                    msgBox.Button1Text = "Ja";
-                    msgBox.Button2Text = "Nein";
+                    msgBox.Button1Text = Translate.TranslateControl("Yes");
+                    msgBox.Button2Text = Translate.TranslateControl("No");
                     msgBox.Button2Visible = true;
                     msgBox.Button3Visible = false;
                     break;
                 case MessageBoxButton.OKCancel:
-                    msgBox.Button1Text = "Ok";
-                    msgBox.Button2Text = "Abbrechen";
+                    msgBox.Button1Text = Translate.TranslateControl("Ok");
+                    msgBox.Button2Text = Translate.TranslateControl("Cancel");
                     msgBox.Button2Visible = true;
                     msgBox.Button3Visible = false;
                     break;
                 case MessageBoxButton.YesNoCancel:
-                    msgBox.Button1Text = "Ja";
-                    msgBox.Button2Text = "Nein";
-                    msgBox.Button3Text = "Abbrechen";
+                    msgBox.Button1Text = Translate.TranslateControl("Yes");
+                    msgBox.Button2Text = Translate.TranslateControl("No");
+                    msgBox.Button3Text = Translate.TranslateControl("Cancel");
                     msgBox.Button2Visible = true;
                     msgBox.Button3Visible = true;
                     break;
             }
 
             return msgBox.ShowDialog();
-            
         }
 
         private void Button1_OnClick(object sender, RoutedEventArgs e) {

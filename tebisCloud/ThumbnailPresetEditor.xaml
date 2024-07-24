@@ -9,12 +9,16 @@
         xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
         xmlns:converter="clr-namespace:tebisCloud.Converter"
         xmlns:colorPicker="clr-namespace:ColorPicker;assembly=ColorPicker"
+        xmlns:lex="http://wpflocalizeextension.codeplex.com"
         WindowStartupLocation="CenterOwner"
         WindowState="Maximized"
         mc:Ignorable="d"
+        lex:LocalizeDictionary.DesignCulture="de-DE"
+        lex:ResxLocalizationProvider.DefaultAssembly="tebisCloud"
+        lex:ResxLocalizationProvider.DefaultDictionary="Controls"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Style="{StaticResource Dark}"
-        Title="Thumbnail Bearbeiten" Height="450" Width="1270">
+        Title="{lex:Loc ThumbnailEditor}" Height="450" Width="1270">
     <Window.CommandBindings>
         <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.NewThumbnail}"
                         Executed="NewThumbnail_OnExecuted" />
@@ -40,9 +44,13 @@
                         CanExecute="ControlSelected_OnCanExecute" Executed="DeleteControl_OnExecuted">
         </CommandBinding>
 
-        <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.LoadThumbnail}" Executed="LoadThumbnail_OnExecuted"></CommandBinding>
+        <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.LoadThumbnail}"
+                        Executed="LoadThumbnail_OnExecuted">
+        </CommandBinding>
 
-        <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.SaveThumbnail}" Executed="SaveThumbnail_OnExecuted"></CommandBinding>
+        <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.SaveThumbnail}"
+                        Executed="SaveThumbnail_OnExecuted">
+        </CommandBinding>
     </Window.CommandBindings>
     <Window.Resources>
         <converter:PercentConverter x:Key="PercentConverter" />
@@ -107,7 +115,7 @@
                 <ToggleButton IsChecked="{Binding ThumbnailPreview}">
                     <WrapPanel>
                         <wpf:MaterialIcon Kind="ImageArea"></wpf:MaterialIcon>
-                        <TextBlock>Vorschau</TextBlock>
+                        <TextBlock Text="{lex:Loc Preview}"></TextBlock>
                     </WrapPanel>
                 </ToggleButton>
             </ToolBar>
@@ -183,8 +191,8 @@
                                    SelectedControl="{Binding SelectedControl, Mode=TwoWay}" EditMode="True" />
 
         <StackPanel Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-            <Border  Width="210" Height="118"  Margin="10" HorizontalAlignment="Right"
-                     Visibility="{Binding ThumbnailPreview, Converter={StaticResource BoolToVis}}">
+            <Border Width="210" Height="118" Margin="10" HorizontalAlignment="Right"
+                    Visibility="{Binding ThumbnailPreview, Converter={StaticResource BoolToVis}}">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="Black" Opacity="1" Direction="0"></DropShadowEffect>
                 </Border.Effect>
@@ -195,8 +203,8 @@
                 </controls:ThumbnailPreview>
             </Border>
 
-            <Border  Width="362" Height="203"  Margin="10"
-                     Visibility="{Binding ThumbnailPreview, Converter={StaticResource BoolToVis}}">
+            <Border Width="362" Height="203" Margin="10"
+                    Visibility="{Binding ThumbnailPreview, Converter={StaticResource BoolToVis}}">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="Black" Opacity="1" Direction="0"></DropShadowEffect>
                 </Border.Effect>
@@ -207,7 +215,7 @@
                 </controls:ThumbnailPreview>
             </Border>
         </StackPanel>
-        
+
 
     </Grid>
 </Window>

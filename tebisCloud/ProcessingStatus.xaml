@@ -6,13 +6,17 @@
         xmlns:local="clr-namespace:tebisCloud"
         xmlns:data="clr-namespace:tebisCloud.Data"
         xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+        xmlns:lex="http://wpflocalizeextension.codeplex.com"
+        lex:LocalizeDictionary.DesignCulture="de-DE"
+        lex:ResxLocalizationProvider.DefaultAssembly="tebisCloud"
+        lex:ResxLocalizationProvider.DefaultDictionary="Controls"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False"
         Closed="ProcessingStatus_OnClosed"
         Style="{StaticResource Dark}"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="ProcessingStatus" Height="450" Width="800">
+        Title="{lex:Loc ProcessingStatus}" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="15"></RowDefinition>
@@ -64,6 +68,6 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <Button Grid.Row="3" HorizontalAlignment="Center" Margin="5">Schließen</Button>
+        <Button Grid.Row="3" HorizontalAlignment="Center" Margin="5" Content="{lex:Loc Close}"></Button>
     </Grid>
 </Window>

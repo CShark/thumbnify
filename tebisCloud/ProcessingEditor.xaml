@@ -25,7 +25,7 @@
         WindowStartupLocation="CenterOwner"
         WindowState="Maximized"
         Style="{StaticResource Dark}"
-        Title="{lex:Loc Processing_Title}" Height="450" Width="800">
+        Title="{lex:Loc GraphEditor}" Height="450" Width="800">
     <Window.CommandBindings>
         <CommandBinding Command="{x:Static local:ProcessingEditor.DeleteParameter}"
                         Executed="DeleteParameter_OnExecuted" CanExecute="DeleteParameter_OnCanExecute">
@@ -47,7 +47,7 @@
             <Setter Property="BorderBrush" Value="{StaticResource ControlForegroundDark}" />
         </Style>
     </Window.Resources>
-    <Grid lex:ResxLocalizationProvider.DefaultDictionary="Nodes">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="200"></ColumnDefinition>
@@ -185,13 +185,7 @@
         </WrapPanel>
 
         <StackPanel Grid.Column="1">
-            <Expander Header="Einstellungen" Foreground="{StaticResource ControlForegroundDark}" IsExpanded="True"
-                      ExpandDirection="Down">
-                <StackPanel>
-
-                </StackPanel>
-            </Expander>
-            <Expander Header="Parameter" Foreground="{StaticResource ControlForegroundDark}" IsExpanded="True"
+            <Expander Header="{lex:Loc Parameter}" Foreground="{StaticResource ControlForegroundDark}" IsExpanded="True"
                       ExpandDirection="Down">
                 <StackPanel Margin="3">
                     <Grid>
