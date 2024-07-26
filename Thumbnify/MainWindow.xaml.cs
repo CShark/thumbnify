@@ -1,26 +1,20 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using FlyleafLib.MediaPlayer;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Config = FlyleafLib.Config;
 using Path = System.IO.Path;
-using FlyleafLib;
-using NAudio.CoreAudioApi;
 using Newtonsoft.Json;
+using Thumbnify.Controls;
 using Thumbnify.Data;
 using Thumbnify.Dialogs;
 using Thumbnify.NAudio;
+using Thumbnify.Tools;
 using MessageBox = Thumbnify.Dialogs.MessageBox;
 
 namespace Thumbnify {
@@ -28,8 +22,35 @@ namespace Thumbnify {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
+        private const long MaxZoom = 8000000;
+        private const long MinZoom = 400000;
+        private readonly long MediaPartBorder = TimeSpan.FromSeconds(15).Ticks;
+
         public static RoutedUICommand EditMediaPart { get; } = new();
         public static RoutedUICommand DeleteMediaPart { get; } = new();
+        public static RoutedUICommand AddToQueue { get; } = new();
+        public static RoutedUICommand DelFromQueue { get; } = new();
+        public static RoutedUICommand SelectMediaPart { get; } = new();
+        public static RoutedUICommand PlayPauseMedia { get; } = new();
+
+        public static RoutedUICommand SetIn { get; } = new();
+        public static RoutedUICommand SetOut { get; } = new();
+        public static RoutedUICommand ClearIn { get; } = new();
+        public static RoutedUICommand ClearOut { get; } = new();
+        public static RoutedUICommand ClearInOut { get; } = new();
+
+        public static RoutedUICommand CreateMediaPart { get; } = new();
+
+        public static RoutedUICommand NextMediaPart { get; } = new();
+        public static RoutedUICommand NextMediaItem { get; } = new();
+        public static RoutedUICommand PrevMediaPart { get; } = new();
+        public static RoutedUICommand PrevMediaItem { get; } = new();
+
+        public static RoutedUICommand MovePartForward { get; } = new();
+        public static RoutedUICommand MovePartForwardFine { get; } = new();
+        public static RoutedUICommand MovePartBackward { get; } = new();
+        public static RoutedUICommand MovePartBackwardFine { get; } = new();
+
 
         public List<Color> PartColors = new() {
             Colors.DarkOrchid,
@@ -39,6 +60,10 @@ namespace Thumbnify {
 
         public Player Player { get; set; }
         public Config Config { get; set; }
+        public Player InPlayer { get; set; }
+        public Player OutPlayer { get; set; }
+
+        private Timer _frameOverlayTimer;
 
         public ICollectionView Media { get; set; }
 
@@ -108,11 +133,31 @@ namespace Thumbnify {
             set { SetValue(UploadQueueProperty, value); }
         }
 
-        public static RoutedUICommand AddToQueue { get; } = new();
-        public static RoutedUICommand DelFromQueue { get; } = new();
+        public static readonly DependencyProperty SelectedMediaPartProperty = DependencyProperty.Register(
+            nameof(SelectedMediaPart), typeof(MediaPart), typeof(MainWindow),
+            new FrameworkPropertyMetadata(default(MediaPart?), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-        private const long MaxZoom = 2000000;
-        private const long MinZoom = 400000;
+        public MediaPart? SelectedMediaPart {
+            get { return (MediaPart?)GetValue(SelectedMediaPartProperty); }
+            set { SetValue(SelectedMediaPartProperty, value); }
+        }
+
+        public static readonly DependencyProperty PartSelectionModeProperty = DependencyProperty.Register(
+            nameof(PartSelectionMode), typeof(PartSelectionMode), typeof(MainWindow),
+            new PropertyMetadata(default(PartSelectionMode)));
+
+        public PartSelectionMode PartSelectionMode {
+            get { return (PartSelectionMode)GetValue(PartSelectionModeProperty); }
+            set { SetValue(PartSelectionModeProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowInOutOverlayProperty = DependencyProperty.Register(
+            nameof(ShowInOutOverlay), typeof(bool), typeof(MainWindow), new PropertyMetadata(default(bool)));
+
+        public bool ShowInOutOverlay {
+            get { return (bool)GetValue(ShowInOutOverlayProperty); }
+            set { SetValue(ShowInOutOverlayProperty, value); }
+        }
 
         public MainWindow() {
             Config = new Config();
@@ -120,46 +165,32 @@ namespace Thumbnify {
             Config.Player.AutoPlay = false;
             Config.Player.SeekAccurate = true;
             Config.Player.UICurTimePerFrame = true;
-            Config.Player.VolumeMax = 200;
+            Config.Player.VolumeMax = 300;
+            Config.Player.SeekOffset = TimeSpan.FromSeconds(.5).Ticks;
+            Config.Player.SeekOffset2 = TimeSpan.FromSeconds(5).Ticks;
+            Config.Player.SeekOffset3 = TimeSpan.FromMinutes(1).Ticks;
 
             Player = new Player(Config);
+            InPlayer = new Player(new Config {
+                Player = { SeekAccurate = true, AutoPlay = false, UICurTimePerFrame = true },
+                Video = { BackgroundColor = Color.FromRgb(0x31, 0x31, 0x31) }
+            });
+            OutPlayer = new Player(new Config {
+                Player = { SeekAccurate = true, AutoPlay = false, UICurTimePerFrame = true },
+                Video = { BackgroundColor = Color.FromRgb(0x31, 0x31, 0x31) }
+            });
 
             Media = new ListCollectionView(App.Settings.Media);
             Media.SortDescriptions.Add(new SortDescription(nameof(MediaSource.Date), ListSortDirection.Descending));
 
             UploadQueue = new();
 
+            InitializeCommandBindings();
             InitializeComponent();
 
             ScanMedia();
-
+            Media.MoveCurrentToFirst();
             MediaList_OnSelectionChanged(null, null);
-
-            CommandBindings.Add(new CommandBinding(AddToQueue, (_, args) => {
-                if (args.Parameter is MediaPart part) {
-                    UploadQueue.Add(part);
-                }
-            }, (_, args) => {
-                var param = args.Parameter as MediaPart;
-                args.CanExecute = false;
-
-                if (param != null && !UploadQueue.Contains(param)) {
-                    args.CanExecute = true;
-                }
-            }));
-
-            CommandBindings.Add(new(DelFromQueue, (_, args) => {
-                if (args.Parameter is MediaPart part) {
-                    UploadQueue.Remove(part);
-                }
-            }, (_, args) => {
-                var param = args.Parameter as MediaPart;
-                args.CanExecute = false;
-
-                if (param != null && UploadQueue.Contains(param)) {
-                    args.CanExecute = true;
-                }
-            }));
 
             CommandManager.InvalidateRequerySuggested();
 
@@ -172,6 +203,22 @@ namespace Thumbnify {
                         });
                 }
             };
+
+            PartSelectionMode = PartSelectionMode.All;
+
+            Player.PropertyChanged += (sender, args) => {
+                if (args.PropertyName == nameof(Player.CurTime)) {
+                    UpdatePartSelection();
+                }
+            };
+
+            _frameOverlayTimer = new Timer(_ => {
+                try {
+                    Dispatcher.Invoke(() => { ShowInOutOverlay = false; });
+                } catch {
+                    // ignored
+                }
+            });
         }
 
         private void OpenSettings_OnClick(object sender, RoutedEventArgs e) {
@@ -209,9 +256,19 @@ namespace Thumbnify {
                         };
                         App.Settings.Media.Add(media);
                     }
+
+                    if (media.Parts.Any() && media.Parts.All(x => x.ProcessingCompleted)) {
+                        media.SlatedForCleanup = true;
+                    } else {
+                        media.SlatedForCleanup = false;
+                    }
+                }
+
+                var toDelete = App.Settings.Media.Where(x => !x.FileExists).ToList();
+                foreach (var media in toDelete) {
+                    App.Settings.Media.Remove(media);
                 }
             }
-
 
             App.SaveSettings();
         }
@@ -225,12 +282,21 @@ namespace Thumbnify {
 
             if (item != null) {
                 if (item.UiData.FileStream == null) {
-                    item.UiData.FileStream = new FileStream(item.FileName, FileMode.Open, FileAccess.Read);
+                    item.UiData.FileStream = new FileStream(item.FileName, FileMode.Open,
+                        FileAccess.Read, FileShare.Read);
+                    item.UiData.FileStreamIn = new FileStream(item.FileName, FileMode.Open,
+                        FileAccess.Read, FileShare.Read);
+                    item.UiData.FileStreamOut = new FileStream(item.FileName, FileMode.Open,
+                        FileAccess.Read, FileShare.Read);
                 }
 
 
                 Player.Open(item.UiData.FileStream);
+                InPlayer.Open(item.UiData.FileStreamIn);
+                OutPlayer.Open(item.UiData.FileStreamOut);
                 Player.ShowFrame(0);
+                InPlayer.ShowFrame(0);
+                OutPlayer.ShowFrame(0);
 
                 if (item.UiData.AudioEngine == null) {
                     item.UiData.AudioEngine = new();
@@ -244,6 +310,10 @@ namespace Thumbnify {
                 waveformOverview?.RegisterSoundPlayer(tmp);
                 waveformDetail?.RegisterSoundPlayer(tmp);
             }
+
+            SelectionVisible = false;
+            SelectionStart = 0;
+            SelectionEnd = 0;
 
             if (waveformOverview != null) {
                 var brush = waveformOverview.LeftLevelBrush;
@@ -263,27 +333,24 @@ namespace Thumbnify {
             IsPlaying = !IsPlaying;
         }
 
+        private void VolumeSlider_OnMouseDoubleClick(object sender, MouseButtonEventArgs e) {
+            Player.Audio.Volume = 100;
+        }
+
         #region Waveform dragging
 
         private bool _isWaveformDragging = false;
-        private MediaPart? _draggedMediaPart = null;
         private Point _waveformDragStart = new();
+        private bool _dragMediaPart = false;
 
         private void DragWaveform_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
             _isWaveformDragging = true;
             _waveformDragStart = e.GetPosition(this);
-            _draggedMediaPart = null;
+            _dragMediaPart = e.LeftButton == MouseButtonState.Pressed;
 
-            VisualTreeHelper.HitTest(this, null, x => {
-                if (x.VisualHit is FrameworkElement elem) {
-                    if (elem.DataContext is MediaPart media) {
-                        _draggedMediaPart = media;
-                        return HitTestResultBehavior.Stop;
-                    }
-                }
-
-                return HitTestResultBehavior.Continue;
-            }, new PointHitTestParameters(e.GetPosition(this)));
+            if (_dragMediaPart) {
+                MoveMediaPart(0);
+            }
         }
 
         private void DragWaveform_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
@@ -295,21 +362,46 @@ namespace Thumbnify {
                 var offset = (long)((_waveformDragStart.X - e.GetPosition(this).X) * DetailWaveformZoom);
 
                 if (offset != 0) {
-                    if (_draggedMediaPart != null) {
-                        _draggedMediaPart.Start -= offset;
-                        _draggedMediaPart.End -= offset;
-
-                        _draggedMediaPart.Start = Math.Clamp(_draggedMediaPart.Start, 0,
-                            Player.Duration - _draggedMediaPart.Duration);
-
-                        _draggedMediaPart.End =
-                            Math.Clamp(_draggedMediaPart.End, _draggedMediaPart.Start, Player.Duration);
+                    if (_dragMediaPart) {
+                        MoveMediaPart(offset);
                     } else {
                         Player.CurTime = Math.Clamp(Player.CurTime + offset, 0, Player.Duration);
                     }
                 }
 
                 _waveformDragStart = e.GetPosition(this);
+            } else {
+                FrameworkElement? element = null;
+
+                VisualTreeHelper.HitTest(this, null, x => {
+                    if (x.VisualHit is FrameworkElement elem) {
+                        if (elem.DataContext is MediaPart media &&
+                            VisualTreeExtensions.HasParentOfType<Viewbox>(elem)) {
+                            SelectedMediaPart = media;
+                            element = elem;
+                            PartSelectionMode = PartSelectionMode.All;
+                            return HitTestResultBehavior.Stop;
+                        }
+                    }
+
+                    return HitTestResultBehavior.Continue;
+                }, new PointHitTestParameters(e.GetPosition(this)));
+
+                if (element != null) {
+                    var transform = element.TransformToAncestor(this);
+                    var pos = e.GetPosition(this);
+
+                    var start = transform.Transform(new Point(MediaPartBorder, 0));
+                    var end = transform.Transform(new Point(SelectedMediaPart.Duration - MediaPartBorder, 0));
+
+                    if (start.X > pos.X) {
+                        PartSelectionMode = PartSelectionMode.Start;
+                    } else if (end.X < pos.X) {
+                        PartSelectionMode = PartSelectionMode.End;
+                    }
+                } else {
+                    SelectedMediaPart = null;
+                }
             }
         }
 
@@ -335,41 +427,275 @@ namespace Thumbnify {
             }
         }
 
-        #region Selection
-
-        private void SelStart_OnClick(object sender, RoutedEventArgs e) {
-            if (SelectedMedia == null) return;
-
-            SelectionStart = Player.CurTime;
-            SelectionVisible = true;
-
-            if (SelectionEnd < SelectionStart) {
-                SelectionEnd = Player.Duration;
-            }
-
-            SelectionLength = SelectionEnd - SelectionStart;
+        private void PartAreaOverlay_OnPartClicked(MediaPart obj) {
+            Player.CurTime = obj.Start;
         }
 
-        private void SelEnd_OnClick(object sender, RoutedEventArgs e) {
-            if (SelectedMedia == null) return;
+        private void MediaSelected_CanExecetute(object sender, CanExecuteRoutedEventArgs e) {
+            e.CanExecute = SelectedMedia != null;
+        }
 
-            SelectionEnd = Player.CurTime;
-            SelectionVisible = true;
+        private void EditMediaPart_OnCanExecute(object sender, CanExecuteRoutedEventArgs e) {
+            e.CanExecute = e.Parameter is MediaPart;
+        }
 
-            if (SelectionEnd < SelectionStart) {
+        private void EditMediaPart_OnExecuted(object sender, ExecutedRoutedEventArgs e) {
+            if (e.Parameter is MediaPart part) {
+                var json = JsonConvert.SerializeObject(part);
+
+                var dlg = new EditPartMetadata();
+                dlg.PartMetadata = part.Metadata;
+                dlg.Owner = this;
+
+                if (dlg.ShowDialog() != true) {
+                    part.Metadata = null;
+                    JsonConvert.PopulateObject(json, part);
+                } else {
+                    App.SaveSettings();
+                }
+            }
+        }
+
+        private void DeleteMediaPart_OnExecuted(object sender, ExecutedRoutedEventArgs e) {
+            if (e.Parameter is MediaPart part) {
+                if (MessageBox.ShowDialog(this, "deleteMediaPart", MessageBoxButton.YesNo) == true) {
+                    part.Parent.Parts.Remove(part);
+                    UploadQueue.Remove(part);
+                }
+            }
+        }
+
+        private void EditThumbnails_OnClick(object sender, RoutedEventArgs e) {
+            var dlg = new ThumbnailPresetEditor();
+            dlg.Owner = this;
+            dlg.ShowDialog();
+        }
+
+        private void EditPostprocessing_OnClick(object sender, RoutedEventArgs e) {
+            var dlg = new ProcessingEditor();
+            dlg.Owner = this;
+            dlg.ShowDialog();
+        }
+
+        private void StartProcessing_OnClick(object sender, RoutedEventArgs e) {
+            var dlg = new ProcessingStatus();
+            dlg.Owner = this;
+            dlg.StartProcessing(UploadQueue);
+            dlg.ShowDialog();
+        }
+
+        private void InitializeCommandBindings() {
+            #region Queue Commands
+
+            CommandBindings.Add(new CommandBinding(AddToQueue, (_, args) => {
+                if (args.Parameter is MediaPart part) {
+                    UploadQueue.Add(part);
+                }
+            }, (_, args) => {
+                var param = args.Parameter as MediaPart;
+                args.CanExecute = false;
+
+                if (param != null && !UploadQueue.Contains(param)) {
+                    args.CanExecute = true;
+                }
+            }));
+
+            CommandBindings.Add(new(DelFromQueue, (_, args) => {
+                if (args.Parameter is MediaPart part) {
+                    UploadQueue.Remove(part);
+                }
+            }, (_, args) => {
+                var param = args.Parameter as MediaPart;
+                args.CanExecute = false;
+
+                if (param != null && UploadQueue.Contains(param)) {
+                    args.CanExecute = true;
+                }
+            }));
+
+            #endregion
+
+            #region Selection Commands
+
+            CommandBindings.Add(new(SelectMediaPart, (_, args) => {
+                if (args.Parameter is MediaPart part) {
+                    SelectedMedia = part.Parent;
+                    Player.CurTime = part.Start;
+                }
+            }, MediaSelected_CanExecetute));
+
+            CommandBindings.Add(new(SetIn, (_, _) => {
+                if (SelectedMedia == null) return;
+
+                SelectionStart = Player.CurTime;
+                if (!SelectionVisible) {
+                    SelectionEnd = Player.Duration;
+                }
+
+                SelectionVisible = true;
+
+                if (SelectionEnd < SelectionStart) {
+                    (SelectionStart, SelectionEnd) = (SelectionEnd, SelectionStart);
+                }
+
+                SelectionLength = SelectionEnd - SelectionStart;
+            }, MediaSelected_CanExecetute));
+
+            CommandBindings.Add(new(SetOut, (_, _) => {
+                if (SelectedMedia == null) return;
+
+                SelectionEnd = Player.CurTime;
+                if (!SelectionVisible) {
+                    SelectionStart = 0;
+                }
+
+                SelectionVisible = true;
+
+                if (SelectionEnd < SelectionStart) {
+                    (SelectionStart, SelectionEnd) = (SelectionEnd, SelectionStart);
+                }
+
+                SelectionLength = SelectionEnd - SelectionStart;
+            }, MediaSelected_CanExecetute));
+
+            CommandBindings.Add(new(ClearIn, (_, _) => {
+                if (SelectedMedia == null) return;
+
                 SelectionStart = 0;
+
+                if (SelectionStart == 0 && SelectionEnd == Player.Duration) {
+                    SelectionVisible = false;
+                }
+
+                SelectionLength = SelectionEnd - SelectionStart;
+            }, MediaSelected_CanExecetute));
+
+            CommandBindings.Add(new(ClearOut, (_, _) => {
+                if (SelectedMedia == null) return;
+
+                SelectionEnd = Player.Duration;
+
+                if (SelectionStart == 0 && SelectionEnd == Player.Duration) {
+                    SelectionVisible = false;
+                }
+
+                SelectionLength = SelectionEnd - SelectionStart;
+            }, MediaSelected_CanExecetute));
+
+            CommandBindings.Add(new(ClearInOut, (_, _) => {
+                if (SelectedMedia == null) return;
+
+                SelectionStart = 0;
+                SelectionEnd = Player.Duration;
+                SelectionVisible = false;
+                SelectionLength = Player.Duration;
+            }, MediaSelected_CanExecetute));
+
+            CommandBindings.Add(new(CreateMediaPart, (_, _) => { CreateMediaPartFromSelection(); },
+                (_, args) => args.CanExecute = SelectionVisible));
+
+            #endregion
+
+            #region Media Navigation
+
+            CommandBindings.Add(new(NextMediaItem, (_, _) => { Media.MoveCurrentToNext(); }));
+
+            CommandBindings.Add(new(PrevMediaItem, (_, _) => { Media.MoveCurrentToPrevious(); }));
+
+            CommandBindings.Add(new(NextMediaPart, (_, _) => {
+                var next = GetPartPositions().OrderBy(x => x.Position).FirstOrDefault(x => x.Position > Player.CurTime);
+
+                if (next.Part != null) {
+                    Player.CurTime = next.Position;
+                } else {
+                    Player.CurTime = Player.Duration;
+                }
+            }));
+
+            CommandBindings.Add(new(PrevMediaPart, (_, _) => {
+                var prev = GetPartPositions().OrderByDescending(x => x.Position)
+                    .FirstOrDefault(x => x.Position < Player.CurTime);
+
+                if (prev.Part != null) {
+                    Player.CurTime = prev.Position;
+                } else {
+                    Player.CurTime = 0;
+                }
+            }));
+
+            #endregion
+
+            #region Part Movement
+
+            CommandBindings.Add(new(MovePartForward, (_, _) => { MoveMediaPart(Config.Player.SeekOffset2); },
+                (_, args) => { args.CanExecute = SelectedMediaPart != null; }));
+
+            CommandBindings.Add(new(MovePartForwardFine, (_, _) => { MoveMediaPart(Config.Player.SeekOffset); },
+                (_, args) => { args.CanExecute = SelectedMediaPart != null; }));
+
+            CommandBindings.Add(new(MovePartBackward, (_, _) => { MoveMediaPart(-Config.Player.SeekOffset2); },
+                (_, args) => { args.CanExecute = SelectedMediaPart != null; }));
+
+            CommandBindings.Add(new(MovePartBackwardFine, (_, _) => { MoveMediaPart(-Config.Player.SeekOffset); },
+                (_, args) => { args.CanExecute = SelectedMediaPart != null; }));
+
+            #endregion
+
+            CommandBindings.Add(new(PlayPauseMedia, (_, _) => { PlayButton_OnClick(null, null); },
+                (_, args) => args.CanExecute = SelectedMedia != null));
+
+            IEnumerable<(long Position, MediaPart Part)> GetPartPositions() =>
+                SelectedMedia?.Parts.Select(x => (x.Start, x))?.Concat(SelectedMedia.Parts.Select(x => (x.End, x))) ??
+                Array.Empty<(long, MediaPart)>();
+        }
+
+        private void MoveMediaPart(long offset) {
+            if (SelectedMediaPart == null) return;
+
+            if (PartSelectionMode == PartSelectionMode.Start) {
+                Player.CurTime = SelectedMediaPart.Start;
+            } else if (PartSelectionMode == PartSelectionMode.End) {
+                Player.CurTime = SelectedMediaPart.End;
+            } else if (PartSelectionMode == PartSelectionMode.All) {
+                if (Player.CurTime < SelectedMediaPart.Start || Player.CurTime > SelectedMediaPart.End) {
+                    Player.CurTime = SelectedMediaPart.Start + SelectedMediaPart.Duration / 2;
+                }
             }
 
-            SelectionLength = SelectionEnd - SelectionStart;
+            var newTime = Math.Clamp(Player.CurTime + offset, 0, Player.Duration);
+            offset = newTime - Player.CurTime;
+            Player.CurTime = newTime;
+
+            switch (PartSelectionMode) {
+                case PartSelectionMode.Start:
+                    if (offset < 0 || SelectedMediaPart.Duration > Math.Min(offset, TimeSpan.FromSeconds(5).Ticks)) {
+                        SelectedMediaPart.Start = Player.CurTime;
+                        SelectedMediaPart.Duration = SelectedMediaPart.End - SelectedMediaPart.Start;
+                    }
+
+                    break;
+                case PartSelectionMode.End:
+                    if (offset > 0 || SelectedMediaPart.Duration > -Math.Min(offset, TimeSpan.FromSeconds(5).Ticks)) {
+                        SelectedMediaPart.End = Player.CurTime;
+                        SelectedMediaPart.Duration = SelectedMediaPart.End - SelectedMediaPart.Start;
+                    }
+
+                    break;
+                case PartSelectionMode.All:
+                    SelectedMediaPart.Start = Math.Clamp(SelectedMediaPart.Start + offset, 0,
+                        Player.Duration - SelectedMediaPart.Duration);
+                    SelectedMediaPart.End = SelectedMediaPart.Start + SelectedMediaPart.Duration;
+
+                    InPlayer.CurTime = SelectedMediaPart.Start;
+                    OutPlayer.CurTime = SelectedMediaPart.End;
+                    ShowInOutOverlay = true;
+                    _frameOverlayTimer.Change(TimeSpan.FromSeconds(3), Timeout.InfiniteTimeSpan);
+
+                    break;
+            }
         }
 
-        private void SelClear_OnClick(object sender, RoutedEventArgs e) {
-            SelectionVisible = false;
-            SelectionStart = 0;
-            SelectionEnd = 0;
-        }
-
-        private void SelAdd_OnClick(object sender, RoutedEventArgs e) {
+        private void CreateMediaPartFromSelection() {
             if (!SelectionVisible) return;
 
             SelectionVisible = false;
@@ -412,60 +738,66 @@ namespace Thumbnify {
             SelectionEnd = 0;
         }
 
-        #endregion
+        private void UpdatePartSelection() {
+            if (Player.IsPlaying) return;
+            if (SelectedMedia == null) return;
+            if (!SelectedMedia.Parts.Any()) return;
+            if (_isWaveformDragging && _dragMediaPart) return;
+            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) return;
 
-        private void PartAreaOverlay_OnPartClicked(MediaPart obj) {
-            Player.CurTime = obj.Start;
-        }
+            var inside = SelectedMedia.Parts.LastOrDefault(x => x.Start < Player.CurTime && x.End > Player.CurTime);
+            var closestStart = SelectedMedia.Parts.MinBy(x => Math.Abs(Player.CurTime - x.Start));
+            var closestEnd = SelectedMedia.Parts.MinBy(x => Math.Abs(Player.CurTime - x.End));
 
-        private void EditMediaPart_OnCanExecute(object sender, CanExecuteRoutedEventArgs e) {
-            e.CanExecute = e.Parameter is MediaPart;
-        }
+            var distStart = Math.Abs(closestStart.Start - Player.CurTime);
+            var distEnd = Math.Abs(closestEnd.End - Player.CurTime);
 
-        private void EditMediaPart_OnExecuted(object sender, ExecutedRoutedEventArgs e) {
-            if (e.Parameter is MediaPart part) {
-                var json = JsonConvert.SerializeObject(part);
-
-                var dlg = new EditPartMetadata();
-                dlg.PartMetadata = part.Metadata;
-                dlg.Owner = this;
-
-                if (dlg.ShowDialog() != true) {
-                    part.Thumbnail = null;
-                    part.Metadata = null;
-                    JsonConvert.PopulateObject(json, part);
-                } else {
-                    App.SaveSettings();
+            if (distStart < distEnd) {
+                if (distStart < MediaPartBorder) {
+                    SelectedMediaPart = closestStart;
+                    PartSelectionMode = PartSelectionMode.Start;
+                    return;
                 }
+            } else {
+                if (distEnd < MediaPartBorder) {
+                    SelectedMediaPart = closestEnd;
+                    PartSelectionMode = PartSelectionMode.End;
+                    return;
+                }
+            }
+
+            if (inside != null) {
+                SelectedMediaPart = inside;
+                PartSelectionMode = PartSelectionMode.All;
+            } else {
+                SelectedMediaPart = null;
+                PartSelectionMode = PartSelectionMode.All;
             }
         }
 
-        private void DeleteMediaPart_OnExecuted(object sender, ExecutedRoutedEventArgs e) {
-            if (e.Parameter is MediaPart part) {
-                if (MessageBox.ShowDialog(this, "deleteMediaPart", MessageBoxButton.YesNo) == true) {
-                    part.Parent.Parts.Remove(part);
-                    UploadQueue.Remove(part);
+        private void MainWindow_OnClosed(object? sender, EventArgs e) {
+            App.SaveSettings();
+        }
+
+        private void Cleanup_OnClick(object sender, RoutedEventArgs e) {
+            if (MessageBox.ShowDialog(this, "cleanup", MessageBoxButton.YesNo) == true) {
+                var files = App.Settings.Media.Where(x => x.SlatedForCleanup).ToList();
+
+                foreach (var file in files) {
+                    try {
+                        File.Delete(file.FileName);
+                        File.Delete(file.FileName + ".peaks");
+                    } catch (Exception ex) {
+                        // ignored
+                    }
+
+                    if (!File.Exists(file.FileName) && !File.Exists(file.FileName + ".peaks")) {
+                        App.Settings.Media.Remove(file);
+                    }
                 }
+
+                App.SaveSettings();
             }
-        }
-
-        private void EditThumbnails_OnClick(object sender, RoutedEventArgs e) {
-            var dlg = new ThumbnailPresetEditor();
-            dlg.Owner = this;
-            dlg.ShowDialog();
-        }
-
-        private void EditPostprocessing_OnClick(object sender, RoutedEventArgs e) {
-            var dlg = new ProcessingEditor();
-            dlg.Owner = this;
-            dlg.ShowDialog();
-        }
-
-        private void StartProcessing_OnClick(object sender, RoutedEventArgs e) {
-            var dlg = new ProcessingStatus();
-            dlg.Owner = this;
-            dlg.StartProcessing(UploadQueue);
-            dlg.ShowDialog();
         }
     }
 }

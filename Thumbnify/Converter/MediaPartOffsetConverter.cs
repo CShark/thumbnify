@@ -17,7 +17,7 @@ namespace Thumbnify.Converter {
                 return value * (width / totalDuration);
             }
 
-            return 0;
+            return 0d;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {

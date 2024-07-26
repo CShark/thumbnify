@@ -17,10 +17,12 @@
         lex:LocalizeDictionary.DesignCulture="de-DE"
         lex:ResxLocalizationProvider.DefaultAssembly="Thumbnify"
         lex:ResxLocalizationProvider.DefaultDictionary="Controls"
+        Closed="MainWindow_OnClosed"
         mc:Ignorable="d"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         WindowState="Maximized"
-        Title="{lex:Loc AppName}" Height="450" Width="800">
+        Focusable="True"
+        Title="{lex:Loc AppName}" Height="600" Width="1000">
     <Window.Resources>
         <converter:WaveformLengthConverter x:Key="WaveformLengthConverter" />
         <converter:PlaybackMarginConverter x:Key="PlaybackMarginConverter" />
@@ -44,6 +46,35 @@
                         Executed="DeleteMediaPart_OnExecuted">
         </CommandBinding>
     </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Key="Space" Command="{Binding PlayPauseMedia}" />
+        <KeyBinding Key="Left" Command="{Binding Player.Commands.SeekBackward2}" />
+        <KeyBinding Key="Left" Modifiers="Shift" Command="{Binding Player.Commands.SeekBackward}" />
+        <KeyBinding Key="Left" Modifiers="Control+Shift" Command="{Binding Player.Commands.SeekBackward3}" />
+        <KeyBinding Key="Right" Command="{Binding Player.Commands.SeekForward2}" />
+        <KeyBinding Key="Right" Modifiers="Shift" Command="{Binding Player.Commands.SeekForward}" />
+        <KeyBinding Key="Right" Modifiers="Control+Shift" Command="{Binding Player.Commands.SeekForward3}" />
+        <KeyBinding Key="OemPeriod" Command="{Binding Player.Commands.ShowFrameNext}" />
+        <KeyBinding Key="OemComma" Command="{Binding Player.Commands.ShowFramePrev}" />
+
+        <KeyBinding Key="Left" Modifiers="Alt" Command="{x:Static local:MainWindow.MovePartBackward}" />
+        <KeyBinding Key="Left" Modifiers="Alt+Shift" Command="{x:Static local:MainWindow.MovePartBackwardFine}" />
+        <KeyBinding Key="Right" Modifiers="Alt" Command="{x:Static local:MainWindow.MovePartForward}" />
+        <KeyBinding Key="Right" Modifiers="Alt+Shift" Command="{x:Static local:MainWindow.MovePartForwardFine}" />
+
+        <KeyBinding Key="I" Command="{x:Static local:MainWindow.SetIn}" />
+        <KeyBinding Key="I" Modifiers="Alt" Command="{x:Static local:MainWindow.ClearIn}" />
+        <KeyBinding Key="O" Command="{x:Static local:MainWindow.SetOut}" />
+        <KeyBinding Key="O" Modifiers="Alt" Command="{x:Static local:MainWindow.ClearOut}" />
+        <KeyBinding Key="Enter" Command="{x:Static local:MainWindow.CreateMediaPart}" />
+
+        <KeyBinding Key="M" Command="{Binding Player.Commands.ToggleMute}" />
+
+        <KeyBinding Key="Up" Command="{x:Static local:MainWindow.PrevMediaPart}" />
+        <KeyBinding Key="Up" Modifiers="Control+Shift" Command="{x:Static local:MainWindow.PrevMediaItem}" />
+        <KeyBinding Key="Down" Command="{x:Static local:MainWindow.NextMediaPart}" />
+        <KeyBinding Key="Down" Modifiers="Control+Shift" Command="{x:Static local:MainWindow.NextMediaItem}" />
+    </Window.InputBindings>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -63,72 +94,124 @@
                 <TextBlock Foreground="{StaticResource ControlForeground}" FontSize="20" Text="{lex:Loc MediaList}"></TextBlock>
             </StackPanel>
 
-            <WrapPanel Margin="4" Grid.Row="2">
-                <WrapPanel.Resources>
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.Resources>
                     <Style TargetType="Button" BasedOn="{StaticResource SingleButton}">
                         <Setter Property="Margin" Value="3,0"></Setter>
                     </Style>
-                </WrapPanel.Resources>
+                </Grid.Resources>
 
-                <Button Click="OpenSettings_OnClick">
-                    <mi:MaterialIcon Kind="Settings" />
-                </Button>
-                <Button Click="EditThumbnails_OnClick" ToolTip="Thumbnail-Vorlagen bearbeiten">
-                    <mi:MaterialIcon Kind="ImageEdit" />
-                </Button>
-                <Button Click="EditPostprocessing_OnClick" ToolTip="Nachbearbeitung-Vorlagen bearbeiten">
-                    <mi:MaterialIcon Kind="Graph" />
-                </Button>
-            </WrapPanel>
+                <WrapPanel Margin="4">
+                    <Button Click="OpenSettings_OnClick" ToolTip="{lex:Loc Settings}">
+                        <mi:MaterialIcon Kind="Settings" />
+                    </Button>
+                    <Button Click="EditThumbnails_OnClick" ToolTip="{lex:Loc ThumbnailEditor}">
+                        <mi:MaterialIcon Kind="ImageEdit" />
+                    </Button>
+                    <Button Click="EditPostprocessing_OnClick" ToolTip="{lex:Loc GraphEditor}">
+                        <mi:MaterialIcon Kind="Graph" />
+                    </Button>
+                </WrapPanel>
 
-            <ListBox Grid.Row="1" ItemsSource="{Binding Media}"
-                     SelectionChanged="MediaList_OnSelectionChanged"
-                     IsSynchronizedWithCurrentItem="True"
-                     SelectedItem="{Binding SelectedMedia}" d:ItemsSource="{d:SampleData ItemCount=2}">
+                <WrapPanel Margin="4" Grid.Column="1">
+                    <Button Click="Cleanup_OnClick">
+                        <mi:MaterialIcon Kind="Broom"></mi:MaterialIcon>
+                    </Button>
+                </WrapPanel>
+            </Grid>
+
+            <controls:ListBoxNoNav Grid.Row="1" ItemsSource="{Binding Media}"
+                                   SelectionChanged="MediaList_OnSelectionChanged"
+                                   IsSynchronizedWithCurrentItem="True" Focusable="False"
+                                   SelectedItem="{Binding SelectedMedia}" d:ItemsSource="{d:SampleData ItemCount=2}">
+
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type data:MediaSource}">
-                        <StackPanel>
-                            <TextBlock Text="{Binding Name}" />
-                            <TextBlock Text="{Binding Date, StringFormat={}{0:dddd, dd.MM.yyyy HH:mm}}"></TextBlock>
-                            <ItemsControl ItemsSource="{Binding Parts}" Margin="20,0,0,0">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate DataType="{x:Type data:MediaPart}">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="7"></ColumnDefinition>
-                                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                            </Grid.ColumnDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="7"></ColumnDefinition>
+                                <ColumnDefinition Width="2"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
 
-                                            <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                                <Border.Background>
-                                                    <SolidColorBrush Color="{Binding Color}"></SolidColorBrush>
-                                                </Border.Background>
-                                            </Border>
-                                            <Border Grid.ColumnSpan="3" Opacity=".3">
-                                                <Border.Background>
-                                                    <SolidColorBrush Color="{Binding Color}"></SolidColorBrush>
-                                                </Border.Background>
-                                            </Border>
+                            <Border Background="LimeGreen" Visibility="{Binding SlatedForCleanup, Converter={StaticResource BoolToVis}}"/>
 
-                                            <StackPanel Grid.Column="1" Margin="5,0">
-                                                <TextBlock Text="{Binding Name}"></TextBlock>
-                                                <TextBlock Text="{Binding Metadata.Name}"></TextBlock>
-                                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="{Binding Name}" />
+                                <TextBlock Text="{Binding Date, StringFormat={}{0:dddd, dd.MM.yyyy HH:mm}}"></TextBlock>
+                                <ItemsControl ItemsSource="{Binding Parts}" Margin="20,0,0,0">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type data:MediaPart}">
+                                            <Grid>
+                                                <Grid.InputBindings>
+                                                    <MouseBinding MouseAction="LeftClick"
+                                                                  Command="{x:Static local:MainWindow.SelectMediaPart}"
+                                                                  CommandParameter="{Binding}" />
+                                                </Grid.InputBindings>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="7"></ColumnDefinition>
+                                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                </Grid.ColumnDefinitions>
 
-                                            <Grid.ContextMenu>
-                                                <ContextMenu>
+                                                <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                    <Border.Background>
+                                                        <SolidColorBrush Color="{Binding Color}"></SolidColorBrush>
+                                                    </Border.Background>
+                                                </Border>
+                                                <Border Grid.ColumnSpan="3" Opacity=".3">
+                                                    <Border.Background>
+                                                        <SolidColorBrush Color="{Binding Color}"></SolidColorBrush>
+                                                    </Border.Background>
+                                                </Border>
 
-                                                </ContextMenu>
-                                            </Grid.ContextMenu>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </StackPanel>
+                                                <mi:MaterialIcon Kind="CheckCircle" Grid.Column="2" Width="16"
+                                                                 Foreground="LimeGreen"
+                                                                 Visibility="{Binding ProcessingCompleted, Converter={StaticResource BoolToVis}}" />
+
+                                                <StackPanel Grid.Column="1" Margin="5,0">
+                                                    <TextBlock Text="{Binding Name}"></TextBlock>
+                                                    <TextBlock Text="{Binding Metadata.Name}"></TextBlock>
+                                                </StackPanel>
+
+                                                <Grid.ContextMenu>
+                                                    <ContextMenu>
+                                                        <MenuItem Header="{lex:Loc EditMediaPart}"
+                                                                  Command="{x:Static local:MainWindow.EditMediaPart}"
+                                                                  CommandParameter="{Binding}">
+                                                            <MenuItem.Icon>
+                                                                <mi:MaterialIcon Kind="Edit" />
+                                                            </MenuItem.Icon>
+                                                        </MenuItem>
+                                                        <MenuItem Header="{lex:Loc QueueAdd}"
+                                                                  Command="{x:Static local:MainWindow.AddToQueue}"
+                                                                  CommandParameter="{Binding}">
+                                                            <MenuItem.Icon>
+                                                                <mi:MaterialIcon Kind="TrayPlus" />
+                                                            </MenuItem.Icon>
+                                                        </MenuItem>
+                                                        <MenuItem Header="{lex:Loc DeleteMediaPart}"
+                                                                  Command="{x:Static local:MainWindow.DeleteMediaPart}"
+                                                                  CommandParameter="{Binding}">
+                                                            <MenuItem.Icon>
+                                                                <mi:MaterialIcon Kind="Delete" />
+                                                            </MenuItem.Icon>
+                                                        </MenuItem>
+                                                    </ContextMenu>
+                                                </Grid.ContextMenu>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
-            </ListBox>
+            </controls:ListBoxNoNav>
         </Grid>
         <GridSplitter Width="3"></GridSplitter>
 
@@ -146,9 +229,26 @@
                     <ColumnDefinition Width="250" MinWidth="250"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <wpf:FlyleafHost Player="{Binding Player}" AttachedDragMove="Both" KeyBindings="Both"
+                <wpf:FlyleafHost Player="{Binding Player}" AttachedDragMove="None" KeyBindings="None"
                                  ToggleFullScreenOnDoubleClick="None" OpenOnDrop="None" MouseBindings="None">
                 </wpf:FlyleafHost>
+
+                <Grid Background="{StaticResource WindowBackground}"
+                      Visibility="{Binding ShowInOutOverlay, Converter={StaticResource BoolToVis}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <wpf:FlyleafHost AttachedDragMove="None" KeyBindings="None" ToggleFullScreenOnDoubleClick="None"
+                                     Player="{Binding InPlayer}"
+                                     OpenOnDrop="None" MouseBindings="None">
+                    </wpf:FlyleafHost>
+                    <wpf:FlyleafHost AttachedDragMove="None" KeyBindings="None" ToggleFullScreenOnDoubleClick="None"
+                                     Player="{Binding OutPlayer}"
+                                     OpenOnDrop="None" MouseBindings="None" Grid.Column="1">
+                    </wpf:FlyleafHost>
+                </Grid>
 
                 <Grid Grid.Column="1">
                     <Grid.RowDefinitions>
@@ -159,11 +259,14 @@
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <mi:MaterialIcon Foreground="{StaticResource ControlForeground}" Kind="TrayFull"></mi:MaterialIcon>
-                        <TextBlock Foreground="{StaticResource ControlForeground}" FontSize="20" Text="{lex:Loc QueueList}"></TextBlock>
+                        <TextBlock Foreground="{StaticResource ControlForeground}" FontSize="20"
+                                   Text="{lex:Loc QueueList}">
+                        </TextBlock>
                     </StackPanel>
 
-                    <ListBox Grid.Row="1" SelectedIndex="0"
-                             ItemsSource="{Binding UploadQueue}" d:ItemsSource="{d:SampleData ItemCount=2}">
+                    <controls:ListBoxNoNav Grid.Row="1" Focusable="False"
+                                           ItemsSource="{Binding UploadQueue}"
+                                           d:ItemsSource="{d:SampleData ItemCount=2}">
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="{x:Type data:MediaPart}">
                                 <StackPanel>
@@ -194,7 +297,7 @@
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
-                    </ListBox>
+                    </controls:ListBoxNoNav>
 
                     <WrapPanel Grid.Row="2" Margin="4" HorizontalAlignment="Center">
                         <WrapPanel.Resources>
@@ -222,16 +325,16 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Orientation="Horizontal">
-                    <Button Style="{StaticResource FirstButton}" Click="SelStart_OnClick">
+                    <Button Style="{StaticResource FirstButton}" Command="{x:Static local:MainWindow.SetIn}">
                         <mi:MaterialIcon Kind="ArrowExpandRight" Margin="4"></mi:MaterialIcon>
                     </Button>
-                    <Button Style="{StaticResource MiddleButton}" Click="SelAdd_OnClick">
+                    <Button Style="{StaticResource MiddleButton}" Command="{x:Static local:MainWindow.CreateMediaPart}">
                         <mi:MaterialIcon Kind="BookmarkAddOutline" Margin="2"></mi:MaterialIcon>
                     </Button>
-                    <Button Style="{StaticResource MiddleButton}" Click="SelClear_OnClick">
+                    <Button Style="{StaticResource MiddleButton}" Command="{x:Static local:MainWindow.ClearInOut}">
                         <mi:MaterialIcon Kind="Cancel" Margin="2"></mi:MaterialIcon>
                     </Button>
-                    <Button Style="{StaticResource LastButton}" Click="SelEnd_OnClick">
+                    <Button Style="{StaticResource LastButton}" Command="{x:Static local:MainWindow.SetOut}">
                         <mi:MaterialIcon Kind="ArrowExpandLeft" Margin="4"></mi:MaterialIcon>
                     </Button>
 
@@ -275,6 +378,7 @@
                         </Grid>
                     </Button>
                     <Slider Width="100" VerticalAlignment="Center" Margin="5"
+                            MouseDoubleClick="VolumeSlider_OnMouseDoubleClick"
                             Maximum="{Binding Config.Player.VolumeMax}" Value="{Binding Player.Audio.Volume}">
                         <Slider.Template>
                             <ControlTemplate>
@@ -318,6 +422,7 @@
 
                     <controls:PartAreaOverlay MediaDuration="{Binding Player.Duration}"
                                               MediaParts="{Binding SelectedMedia.Parts}"
+                                              SelectedMediaPart="{Binding SelectedMediaPart}"
                                               PartClicked="PartAreaOverlay_OnPartClicked" />
 
                     <wpfsvl:WaveformTimeline x:Name="waveformOverview" Grid.Row="1">
@@ -345,13 +450,15 @@
                                               SelectionStart="{Binding SelectionStart}"
                                               SelectionLength="{Binding SelectionLength}"
                                               SelectionVisible="{Binding SelectionVisible}"
+                                              SelectedMediaPart="{Binding SelectedMediaPart}"
+                                              PartSelectionMode="{Binding PartSelectionMode}"
                                               Grid.Row="1"
                                               ShowLabels="True"
                                               OverlayOpacity=".5" />
 
                     <Slider Maximum="{Binding Player.Duration}" Value="{Binding Player.CurTime}" Grid.Row="1"
                             IsMoveToPointEnabled="True" SmallChange="{Binding Config.Player.SeekOffset}"
-                            LargeChange="{Binding Config.Player.SeekOffset2}" x:Name="VideoSeekSlider">
+                            LargeChange="{Binding Config.Player.SeekOffset2}" x:Name="VideoSeekSlider" Focusable="False">
                         <Slider.Template>
                             <ControlTemplate>
                                 <Grid>
@@ -377,7 +484,8 @@
                 </Grid>
             </Grid>
 
-            <Grid Grid.Row="3" HorizontalAlignment="Stretch" ClipToBounds="True" Background="{StaticResource ControlBackgroundLight}">
+            <Grid Grid.Row="3" HorizontalAlignment="Stretch" ClipToBounds="True"
+                  Background="{StaticResource ControlBackgroundLight}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
@@ -429,6 +537,8 @@
                                               SelectionStart="{Binding SelectionStart}"
                                               SelectionLength="{Binding SelectionLength}"
                                               SelectionVisible="{Binding SelectionVisible}"
+                                              SelectedMediaPart="{Binding SelectedMediaPart}"
+                                              PartSelectionMode="{Binding PartSelectionMode}"
                                               ShowLabels="True"
                                               OverlayOpacity=".3" Margin="0,20,0,0" />
                 </Grid>
@@ -441,7 +551,10 @@
 
                 <Border HorizontalAlignment="Stretch" Background="#01000000" Grid.ColumnSpan="2" Cursor="SizeWE"
                         MouseLeftButtonDown="DragWaveform_OnMouseLeftButtonDown"
-                        MouseLeftButtonUp="DragWaveform_OnMouseLeftButtonUp" MouseMove="DragWaveform_OnMouseMove"
+                        MouseLeftButtonUp="DragWaveform_OnMouseLeftButtonUp"
+                        MouseRightButtonDown="DragWaveform_OnMouseLeftButtonDown"
+                        MouseRightButtonUp="DragWaveform_OnMouseLeftButtonUp"
+                        MouseMove="DragWaveform_OnMouseMove"
                         MouseLeave="DragWaveform_OnMouseLeave" x:Name="DragWaveform" />
             </Grid>
         </Grid>

@@ -10,6 +10,10 @@ namespace Thumbnify.Data {
     public class MediaUIData {
         public Stream? FileStream { get; set; }
 
+        public Stream? FileStreamIn { get; set; }
+
+        public Stream? FileStreamOut { get; set; }
+
         public NAudioEngine? AudioEngine { get; set; }
     }
 }

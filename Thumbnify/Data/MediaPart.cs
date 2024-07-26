@@ -19,6 +19,8 @@ namespace Thumbnify.Data {
         private string _title;
         private ThumbnailData _thumbnail;
         private PartMetadata _metadata = new();
+        private bool _processingCompleted;
+        private DateTime? _processingCompletedDate;
 
         public long Start {
             get => _start;
@@ -39,12 +41,7 @@ namespace Thumbnify.Data {
             get => _metadata;
             set => SetField(ref _metadata, value);
         }
-
-        public ThumbnailData Thumbnail {
-            get => _thumbnail;
-            set => SetField(ref _thumbnail, value);
-        }
-
+        
         public long Duration {
             get => _duration;
             set => SetField(ref _duration, value);
@@ -54,6 +51,17 @@ namespace Thumbnify.Data {
             get => _color;
             set => SetField(ref _color, value);
         }
+
+        public bool ProcessingCompleted {
+            get => _processingCompleted;
+            set => SetField(ref _processingCompleted, value);
+        }
+
+        public DateTime? ProcessingCompletedDate {
+            get => _processingCompletedDate;
+            set => SetField(ref _processingCompletedDate, value);
+        }
+
 
         public string Id { get; set; } = Guid.NewGuid().ToString();
 

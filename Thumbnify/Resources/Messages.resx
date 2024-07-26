@@ -121,4 +121,10 @@
   <data name="title_overwritePreset" xml:space="preserve">
     <value>Overwrite Preset</value>
   </data>
+  <data name="msg_cleanup" xml:space="preserve">
+    <value>Delete all media files that are already completely processed?</value>
+  </data>
+  <data name="title_cleanup" xml:space="preserve">
+    <value>Media Cleanup</value>
+  </data>
 </root>

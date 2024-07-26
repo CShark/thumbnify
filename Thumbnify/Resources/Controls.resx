@@ -190,4 +190,13 @@
   <data name="No" xml:space="preserve">
     <value>No</value>
   </data>
+  <data name="QueueAdd" xml:space="preserve">
+    <value>Add to Queue</value>
+  </data>
+  <data name="DeleteMediaPart" xml:space="preserve">
+    <value>Remove Media Part</value>
+  </data>
+  <data name="DeleteMedia" xml:space="preserve">
+    <value>Delete Media File</value>
+  </data>
 </root>

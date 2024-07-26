@@ -61,6 +61,15 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Delete all media files that are already completely processed? ähnelt.
+        /// </summary>
+        internal static string msg_cleanup {
+            get {
+                return ResourceManager.GetString("msg_cleanup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Delete all selected actions? ähnelt.
         /// </summary>
         internal static string msg_deleteActions {
@@ -93,6 +102,15 @@ namespace Thumbnify.Resources {
         internal static string msg_overwritePreset {
             get {
                 return ResourceManager.GetString("msg_overwritePreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Media Cleanup ähnelt.
+        /// </summary>
+        internal static string title_cleanup {
+            get {
+                return ResourceManager.GetString("title_cleanup", resourceCulture);
             }
         }
         

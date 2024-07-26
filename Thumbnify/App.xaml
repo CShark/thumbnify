@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:Thumbnify"
              xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
              xmlns:processing="clr-namespace:Thumbnify.Data.Processing"
+             xmlns:controls="clr-namespace:Thumbnify.Controls"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
@@ -34,6 +35,8 @@
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 <Setter Property="Foreground" Value="{StaticResource ControlForeground}" />
             </Style>
+
+            <Style TargetType="controls:ListBoxNoNav" BasedOn="{StaticResource {x:Type ListBox}}" />
 
             <Style TargetType="{x:Type ContextMenu}">
                 <Setter Property="SnapsToDevicePixels"

@@ -8,11 +8,16 @@
              xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
              xmlns:thumbnify="clr-namespace:Thumbnify"
              xmlns:converter="clr-namespace:Thumbnify.Converter"
+             xmlns:lex="http://wpflocalizeextension.codeplex.com"
+             lex:LocalizeDictionary.DesignCulture="de-DE"
+             lex:ResxLocalizationProvider.DefaultAssembly="Thumbnify"
+             lex:ResxLocalizationProvider.DefaultDictionary="Controls"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
         <converter:MediaPartOffsetConverter x:Key="ViewboxConv" />
+        <converter:EqualsVisibility x:Key="EnumToVis" />
     </UserControl.Resources>
 
     <Grid DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:PartAreaOverlay}}">
@@ -33,6 +38,9 @@
                                                   Command="{x:Static local:PartAreaOverlay.ClickPart}"
                                                   CommandParameter="{Binding}">
                                     </MouseBinding>
+                                    <MouseBinding MouseAction="RightClick"
+                                                  Command="{x:Static local:PartAreaOverlay.RightClickPart}"
+                                                  CommandParameter="{Binding}" />
                                 </Border.InputBindings>
 
                                 <Border.Background>
@@ -54,7 +62,78 @@
                 </Canvas>
             </Grid>
         </Viewbox>
-        <ItemsControl VerticalAlignment="Bottom" Height="16" ItemsSource="{Binding MediaParts}" IsHitTestVisible="False" Visibility="{Binding ShowLabels, Converter={StaticResource BoolToVis}}">
+
+        <Canvas Opacity=".75" IsHitTestVisible="False">
+            <Grid DataContext="{Binding SelectedMediaPart}"
+                  Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Canvas}, Path=ActualHeight}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition MaxWidth="15"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition MaxWidth="15"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Canvas.Left>
+                    <MultiBinding Converter="{StaticResource ViewboxConv}">
+                        <Binding ElementName="ViewBox" Path="ActualWidth" />
+                        <Binding
+                            RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:PartAreaOverlay}}"
+                            Path="MediaDuration" />
+                        <Binding Path="Start" />
+                    </MultiBinding>
+                </Canvas.Left>
+                <Grid.Width>
+                    <MultiBinding Converter="{StaticResource ViewboxConv}">
+                        <Binding ElementName="ViewBox" Path="ActualWidth" />
+                        <Binding
+                            RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:PartAreaOverlay}}"
+                            Path="MediaDuration" />
+                        <Binding Path="Duration" />
+                    </MultiBinding>
+                </Grid.Width>
+
+                <Border Grid.ColumnSpan="3"
+                        BorderThickness="5"
+                        BorderBrush="LimeGreen"
+                        CornerRadius="1"
+                        Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:PartAreaOverlay},
+                                                Path=PartSelectionMode,
+                                                ConverterParameter={x:Static local:PartSelectionMode.All},
+                                                Converter={StaticResource EnumToVis}}">
+                </Border>
+
+                <Border Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:PartAreaOverlay},
+                        Path=PartSelectionMode,
+                        ConverterParameter={x:Static local:PartSelectionMode.Start},
+                        Converter={StaticResource EnumToVis}}">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Color="LimeGreen" Offset="0" />
+                            <GradientStop Color="#0032CD32" Offset="1" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
+
+                <Border Grid.Column="2"
+                        Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:PartAreaOverlay},
+                        Path=PartSelectionMode,
+                        ConverterParameter={x:Static local:PartSelectionMode.End},
+                        Converter={StaticResource EnumToVis}}">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="1,0" EndPoint="0,0">
+                            <GradientStop Color="LimeGreen" Offset="0" />
+                            <GradientStop Color="#0032CD32" Offset="1" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
+            </Grid>
+        </Canvas>
+
+        <ItemsControl VerticalAlignment="Bottom" Height="16" ItemsSource="{Binding MediaParts}"
+                      IsHitTestVisible="False" Visibility="{Binding ShowLabels, Converter={StaticResource BoolToVis}}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Canvas />
@@ -104,14 +183,17 @@
                VerticalOffset="-100" Closed="PopupControls_OnClosed" PreviewMouseUp="PopupControls_OnPreviewMouseUp">
             <StackPanel Orientation="Horizontal">
                 <Button Style="{StaticResource FirstButton}" Command="{x:Static thumbnify:MainWindow.EditMediaPart}"
+                        ToolTip="{lex:Loc EditMediaPart}"
                         CommandParameter="{Binding}">
                     <wpf:MaterialIcon Kind="Edit" />
                 </Button>
                 <Button Style="{StaticResource MiddleButton}" Command="{x:Static thumbnify:MainWindow.AddToQueue}"
+                        ToolTip="{lex:Loc QueueAdd}"
                         CommandParameter="{Binding}">
                     <wpf:MaterialIcon Kind="TrayPlus" />
                 </Button>
                 <Button Style="{StaticResource LastButton}" Command="{x:Static thumbnify:MainWindow.DeleteMediaPart}"
+                        ToolTip="{lex:Loc DeleteMediaPart}"
                         CommandParameter="{Binding}">
                     <wpf:MaterialIcon Kind="Delete" />
                 </Button>

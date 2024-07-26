@@ -18,17 +18,26 @@ using Thumbnify.Data;
 using Vortice.MediaFoundation;
 
 namespace Thumbnify.Controls {
+    public enum PartSelectionMode {
+        None,
+        Start,
+        End,
+        All,
+    }
+
     /// <summary>
     /// Interaktionslogik für PartAreaOverlay.xaml
     /// </summary>
     public partial class PartAreaOverlay : UserControl {
-        public static RoutedUICommand ClickPart = new RoutedUICommand("Select", "selectPart", typeof(PartAreaOverlay));
+        public static RoutedUICommand ClickPart = new();
+        public static RoutedUICommand RightClickPart = new();
 
         public event Action<MediaPart> PartClicked;
 
         public static readonly DependencyProperty MediaPartsProperty = DependencyProperty.Register(
             nameof(MediaParts), typeof(ObservableCollection<MediaPart>), typeof(PartAreaOverlay),
-            new PropertyMetadata(default(ObservableCollection<MediaPart>)));
+            new PropertyMetadata(default(ObservableCollection<MediaPart>),
+                (o, args) => ((PartAreaOverlay)o).SelectedMediaPart = null));
 
         public ObservableCollection<MediaPart> MediaParts {
             get { return (ObservableCollection<MediaPart>)GetValue(MediaPartsProperty); }
@@ -91,23 +100,51 @@ namespace Thumbnify.Controls {
             set { SetValue(ShowLabelsProperty, value); }
         }
 
+        public static readonly DependencyProperty SelectedMediaPartProperty = DependencyProperty.Register(
+            nameof(SelectedMediaPart), typeof(MediaPart), typeof(PartAreaOverlay),
+            new FrameworkPropertyMetadata(default(MediaPart?), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public MediaPart? SelectedMediaPart {
+            get { return (MediaPart?)GetValue(SelectedMediaPartProperty); }
+            set { SetValue(SelectedMediaPartProperty, value); }
+        }
+        
+        public static readonly DependencyProperty PartSelectionModeProperty = DependencyProperty.Register(
+            nameof(PartSelectionMode), typeof(PartSelectionMode), typeof(PartAreaOverlay), new PropertyMetadata(PartSelectionMode.None));
+
+        public PartSelectionMode PartSelectionMode {
+            get { return (PartSelectionMode)GetValue(PartSelectionModeProperty); }
+            set { SetValue(PartSelectionModeProperty, value); }
+        }
+
         public PartAreaOverlay() {
             InitializeComponent();
 
             CommandBindings.Add(new(ClickPart, (_, e) => {
                 if (e.Parameter is MediaPart p) {
                     OnPartClicked(p);
-
-                    PopupControls.PlacementTarget = e.OriginalSource as UIElement;
-                    PopupControls.IsOpen = true;
-                    PopupControls.StaysOpen = true;
-                    PopupControls.DataContext = p;
-                    CommandManager.InvalidateRequerySuggested();
-
-                    Window.GetWindow(this).PreviewMouseLeftButtonUp += Window_OnMouseLeftButtonUp;
-                    Window.GetWindow(this).MouseLeave += Window_OnMouseLeave;
+                    ShowPopup(e.OriginalSource as UIElement, p);
                 }
             }));
+
+            CommandBindings.Add(new(RightClickPart, (_, e) => {
+                if (e.Parameter is MediaPart p) {
+                    ShowPopup(e.OriginalSource as UIElement, p);
+                }
+            }));
+        }
+
+        private void ShowPopup(UIElement? target, MediaPart part) {
+            if (target == null) return;
+
+            PopupControls.PlacementTarget = target;
+            PopupControls.IsOpen = true;
+            PopupControls.StaysOpen = true;
+            PopupControls.DataContext = part;
+            CommandManager.InvalidateRequerySuggested();
+
+            Window.GetWindow(this).PreviewMouseLeftButtonUp += Window_OnMouseLeftButtonUp;
+            Window.GetWindow(this).MouseLeave += Window_OnMouseLeave;
         }
 
         private void Window_OnMouseLeave(object sender, MouseEventArgs e) {
@@ -123,6 +160,7 @@ namespace Thumbnify.Controls {
 
 
         protected virtual void OnPartClicked(MediaPart obj) {
+            SelectedMediaPart = obj;
             PartClicked?.Invoke(obj);
         }
 

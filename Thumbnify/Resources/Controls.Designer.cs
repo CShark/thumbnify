@@ -133,6 +133,24 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Delete Media File ähnelt.
+        /// </summary>
+        internal static string DeleteMedia {
+            get {
+                return ResourceManager.GetString("DeleteMedia", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Remove Media Part ähnelt.
+        /// </summary>
+        internal static string DeleteMediaPart {
+            get {
+                return ResourceManager.GetString("DeleteMediaPart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Name ähnelt.
         /// </summary>
         internal static string DisplayName {
@@ -282,6 +300,15 @@ namespace Thumbnify.Resources {
         internal static string ProcessingStatus {
             get {
                 return ResourceManager.GetString("ProcessingStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Add to Queue ähnelt.
+        /// </summary>
+        internal static string QueueAdd {
+            get {
+                return ResourceManager.GetString("QueueAdd", resourceCulture);
             }
         }
         

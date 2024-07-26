@@ -190,4 +190,13 @@
   <data name="No" xml:space="preserve">
     <value>Nein</value>
   </data>
+  <data name="QueueAdd" xml:space="preserve">
+    <value>Zur Warteschlange hinzufügen</value>
+  </data>
+  <data name="DeleteMediaPart" xml:space="preserve">
+    <value>Ausschnitt entfernen</value>
+  </data>
+  <data name="DeleteMedia" xml:space="preserve">
+    <value>Mediendatei Löschen</value>
+  </data>
 </root>
