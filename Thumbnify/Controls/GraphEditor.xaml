@@ -263,6 +263,7 @@
                                  Background="{StaticResource SmallGridLinesDrawingBrush}"
                                  DisconnectConnectorCommand="{Binding DisconnectCommand}"
                                  EnableRealtimeSelection="True"
+                                 BringIntoViewSpeed="5000"
                                  SelectedItems="{Binding SelectedNodes}"
                                  PendingConnection="{Binding PendingConnection}" ItemsSource="{Binding Nodes}">
                 <nodify:NodifyEditor.Resources>
@@ -364,6 +365,7 @@
                                             Header="{Binding Parameter, Converter={StaticResource NodeNameConverter}}"
                                             IsConnected="true"
                                             Margin="0,5,0,0"
+                                            IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:GraphEditor}, Path = IsReadOnly, Converter={StaticResource BoolInvert}}"
                                             ConnectorTemplate="{Binding Type, Converter={StaticResource ParamTypeToConnector}}"
                                             Anchor="{Binding Anchor,Mode=OneWayToSource}">
                                             <nodify:NodeInput.BorderBrush>
@@ -374,6 +376,7 @@
                                         <Grid IsEnabled="{Binding IsConnected, Converter={StaticResource BoolInvert}}"
                                               Visibility="{Binding Parent.SourceNode.IsExpanded, Converter={StaticResource BoolToVis}}">
                                             <Grid
+                                                IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:GraphEditor}, Path = IsReadOnly, Converter={StaticResource BoolInvert}}"
                                                 Visibility="{Binding IsConnected, Converter={StaticResource BoolToInvVis}}">
                                                 <ContentPresenter Margin="10,0,10,0"
                                                                   Content="{Binding Parameter.DefaultValueObj}" />
@@ -386,6 +389,7 @@
                                 <DataTemplate DataType="{x:Type postprocessing:Connector}">
                                     <nodify:NodeOutput IsConnected="true" Margin="0,5,0,0"
                                                        Header="{Binding Result, Converter={StaticResource NodeNameConverter}}"
+                                                       IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:GraphEditor}, Path = IsReadOnly, Converter={StaticResource BoolInvert}}"
                                                        ConnectorTemplate="{Binding Type, Converter={StaticResource ParamTypeToConnector}}"
                                                        Anchor="{Binding Anchor,Mode=OneWayToSource}">
                                         <nodify:NodeOutput.BorderBrush>
@@ -397,6 +401,7 @@
                             </nodify:Node.OutputConnectorTemplate>
 
                             <ItemsControl ItemsSource="{Binding StaticParameters}"
+                                          IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:GraphEditor}, Path = IsReadOnly, Converter={StaticResource BoolInvert}}"
                                           Visibility="{Binding SourceNode.IsExpanded, Converter={StaticResource BoolToVis}}"
                                           Margin="0,3">
                                 <ItemsControl.ItemTemplate>

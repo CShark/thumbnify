@@ -15,7 +15,6 @@ namespace Thumbnify.Data {
         private long _end;
         private string _name;
         private long _duration;
-        private Color _color;
         private string _title;
         private ThumbnailData _thumbnail;
         private PartMetadata _metadata = new();
@@ -45,11 +44,6 @@ namespace Thumbnify.Data {
         public long Duration {
             get => _duration;
             set => SetField(ref _duration, value);
-        }
-
-        public Color Color {
-            get => _color;
-            set => SetField(ref _color, value);
         }
 
         public bool ProcessingCompleted {

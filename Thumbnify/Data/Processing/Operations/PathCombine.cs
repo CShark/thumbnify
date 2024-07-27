@@ -22,7 +22,7 @@ namespace Thumbnify.Data.Processing.Operations {
         }
 
         protected override ENodeType NodeType => ENodeType.Parameter;
-        protected override string NodeId => Id;
+        public override string NodeTypeId => Id;
 
         public static string Id = "op_pathcombine";
 

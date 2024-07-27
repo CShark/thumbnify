@@ -41,10 +41,11 @@
                                     <MouseBinding MouseAction="RightClick"
                                                   Command="{x:Static local:PartAreaOverlay.RightClickPart}"
                                                   CommandParameter="{Binding}" />
+                                    <MouseBinding MouseAction="LeftDoubleClick" Command="{x:Static thumbnify:MainWindow.EditMediaPart}" CommandParameter="{Binding}" />
                                 </Border.InputBindings>
 
                                 <Border.Background>
-                                    <SolidColorBrush Color="{Binding Color}"></SolidColorBrush>
+                                    <SolidColorBrush Color="{Binding Metadata.Color}"></SolidColorBrush>
                                 </Border.Background>
                             </Border>
                         </DataTemplate>

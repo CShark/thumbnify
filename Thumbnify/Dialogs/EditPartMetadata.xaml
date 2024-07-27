@@ -9,6 +9,7 @@
         xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
         xmlns:paramStore="clr-namespace:Thumbnify.Data.ParamStore"
         xmlns:lex="http://wpflocalizeextension.codeplex.com"
+        xmlns:colorPicker="clr-namespace:ColorPicker;assembly=ColorPicker"
         lex:LocalizeDictionary.DesignCulture="de-DE"
         lex:ResxLocalizationProvider.DefaultAssembly="Thumbnify"
         lex:ResxLocalizationProvider.DefaultDictionary="Controls"
@@ -27,9 +28,21 @@
 
         <StackPanel Margin="5">
             <TextBlock Text="{lex:Loc DisplayName}"></TextBlock>
-            <TextBox Text="{Binding PartMetadata.Name}" Margin="5"></TextBox>
+            <TextBox Text="{Binding PartMetadata.Name}" Margin="5" x:Name="txtName"></TextBox>
 
-            <TextBlock Text="{lex:Loc ProcessingGraph}"></TextBlock>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="{lex:Loc Color}"/>
+
+                <colorPicker:PortableColorPicker Grid.Column="1" SelectedColor="{Binding PartMetadata.Color, Mode=TwoWay}" Margin="5,0" ShowAlpha="False" Style="{StaticResource DefaultColorPickerStyle}"/>
+            </Grid>
+
+
+            <TextBlock Text="{lex:Loc ProcessingGraph}" Margin="0,5,0,0"></TextBlock>
             <Grid Margin="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
@@ -37,7 +50,7 @@
                     <ColumnDefinition Width="32"></ColumnDefinition>
                     <ColumnDefinition Width="32"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <TextBox Text="{Binding PartMetadata.ProcessingGraph.Name}" IsReadOnly="True" />
+                <TextBox Text="{Binding PartMetadata.ProcessingGraph.Name}" IsReadOnly="True" IsTabStop="False" />
                 <Button Grid.Column="2" Style="{StaticResource FirstButton}" Click="OpenPreset_OnClick">
                     <WrapPanel>
                         <wpf:MaterialIcon Kind="FolderOpen" Height="16" />
@@ -51,8 +64,8 @@
             </Grid>
         </StackPanel>
 
-        <ScrollViewer HorizontalScrollBarVisibility="Disabled" Grid.Row="1" Margin="0,5">
-            <ItemsControl ItemsSource="{Binding PartMetadata.Parameters}">
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled" Grid.Row="1" Margin="0,5" >
+            <ItemsControl ItemsSource="{Binding PartMetadata.Parameters}" IsTabStop="False">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type paramStore:ParamDefinition}">
                         <StackPanel Margin="5">

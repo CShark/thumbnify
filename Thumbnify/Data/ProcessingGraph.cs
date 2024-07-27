@@ -45,13 +45,13 @@ namespace Thumbnify.Data {
         [JsonIgnore]
         public double Progress {
             get => _progress;
-            private set => SetField(ref _progress, value);
+            set => SetField(ref _progress, value);
         }
 
         [JsonIgnore]
         public ENodeStatus GraphState {
             get => _graphState;
-            private set => SetField(ref _graphState, value);
+            set => SetField(ref _graphState, value);
         }
 
         [JsonIgnore]

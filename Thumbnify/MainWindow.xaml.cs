@@ -346,7 +346,7 @@ namespace Thumbnify {
         private void DragWaveform_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
             _isWaveformDragging = true;
             _waveformDragStart = e.GetPosition(this);
-            _dragMediaPart = e.LeftButton == MouseButtonState.Pressed;
+            _dragMediaPart = e.RightButton == MouseButtonState.Pressed;
 
             if (_dragMediaPart) {
                 MoveMediaPart(0);
@@ -443,8 +443,7 @@ namespace Thumbnify {
             if (e.Parameter is MediaPart part) {
                 var json = JsonConvert.SerializeObject(part);
 
-                var dlg = new EditPartMetadata();
-                dlg.PartMetadata = part.Metadata;
+                var dlg = new EditPartMetadata(part.Metadata);
                 dlg.Owner = this;
 
                 if (dlg.ShowDialog() != true) {
@@ -482,6 +481,11 @@ namespace Thumbnify {
             dlg.Owner = this;
             dlg.StartProcessing(UploadQueue);
             dlg.ShowDialog();
+
+            var done = UploadQueue.Where(x => x.ProcessingCompleted).ToList();
+            foreach (var item in done) {
+                UploadQueue.Remove(item);
+            }
         }
 
         private void InitializeCommandBindings() {
@@ -713,18 +717,17 @@ namespace Thumbnify {
                     Start = SelectionStart,
                     End = SelectionEnd,
                     Duration = SelectionLength,
-                    Color = PartColors[SelectedMedia.Parts.Count % PartColors.Count],
                     Name = $"#{SelectedMedia.Parts.Count}",
                     Metadata = new PartMetadata {
-                        ProcessingGraph = graph
+                        ProcessingGraph = graph,
+                        Color = PartColors[SelectedMedia.Parts.Count % PartColors.Count],
                     },
                     Parent = SelectedMedia
                 };
 
                 part.Metadata.UpdateParameters();
 
-                var dlg = new EditPartMetadata();
-                dlg.PartMetadata = part.Metadata;
+                var dlg = new EditPartMetadata(part.Metadata);
                 dlg.Owner = this;
 
                 if (dlg.ShowDialog() == true) {
@@ -798,6 +801,12 @@ namespace Thumbnify {
 
                 App.SaveSettings();
             }
+        }
+
+        private void LogViewer_OnClick(object sender, RoutedEventArgs e) {
+            var dlg = new GraphViewer();
+            dlg.Owner = this;
+            dlg.Show();
         }
     }
 }

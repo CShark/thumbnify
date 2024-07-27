@@ -20,7 +20,7 @@ namespace Thumbnify.Data.Processing.Input {
         }
 
         protected override ENodeType NodeType => ENodeType.Parameter;
-        protected override string NodeId => Id;
+        public override string NodeTypeId => Id;
         public static string Id => "input_text";
 
         protected override bool Execute(CancellationToken cancelToken) {

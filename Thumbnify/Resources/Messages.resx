@@ -127,4 +127,16 @@
   <data name="title_cleanup" xml:space="preserve">
     <value>Media Cleanup</value>
   </data>
+  <data name="msg_createNew" xml:space="preserve">
+    <value>Create new preset? You will lose all unsaved changes.</value>
+  </data>
+  <data name="title_createNew" xml:space="preserve">
+    <value>Create New preset</value>
+  </data>
+  <data name="title_cancelGraphs" xml:space="preserve">
+    <value>Cancel Processing</value>
+  </data>
+  <data name="msg_cancelGraphs" xml:space="preserve">
+    <value>Some media parts have not yet finished processing. Do you want to cancel them?</value>
+  </data>
 </root>

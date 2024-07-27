@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Thumbnify.Data.ParamStore;
 
 namespace Thumbnify.Data {
@@ -13,6 +14,7 @@ namespace Thumbnify.Data {
         private ProcessingGraph? _processingGraph;
         private ObservableCollection<ParamDefinition> _parameters = new();
         private string _name;
+        private Color _color;
 
         public string Name {
             get => _name;
@@ -22,6 +24,11 @@ namespace Thumbnify.Data {
         public ProcessingGraph? ProcessingGraph {
             get => _processingGraph;
             set => SetField(ref _processingGraph, value);
+        }
+
+        public Color Color {
+            get => _color;
+            set => SetField(ref _color, value);
         }
 
 

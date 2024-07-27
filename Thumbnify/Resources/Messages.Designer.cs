@@ -61,11 +61,29 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Some media parts have not yet finished processing. Do you want to cancel them? ähnelt.
+        /// </summary>
+        internal static string msg_cancelGraphs {
+            get {
+                return ResourceManager.GetString("msg_cancelGraphs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Delete all media files that are already completely processed? ähnelt.
         /// </summary>
         internal static string msg_cleanup {
             get {
                 return ResourceManager.GetString("msg_cleanup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Create new preset? You will lose all unsaved changes. ähnelt.
+        /// </summary>
+        internal static string msg_createNew {
+            get {
+                return ResourceManager.GetString("msg_createNew", resourceCulture);
             }
         }
         
@@ -106,11 +124,29 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Cancel Processing ähnelt.
+        /// </summary>
+        internal static string title_cancelGraphs {
+            get {
+                return ResourceManager.GetString("title_cancelGraphs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Media Cleanup ähnelt.
         /// </summary>
         internal static string title_cleanup {
             get {
                 return ResourceManager.GetString("title_cleanup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Create New preset ähnelt.
+        /// </summary>
+        internal static string title_createNew {
+            get {
+                return ResourceManager.GetString("title_createNew", resourceCulture);
             }
         }
         

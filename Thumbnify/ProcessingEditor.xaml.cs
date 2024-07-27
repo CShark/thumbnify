@@ -126,5 +126,15 @@ namespace Thumbnify {
                 Editor.FitAll();
             }
         }
+
+        private void NewGraph_OnClick(object sender, RoutedEventArgs e) {
+            if (Graph.Nodes.Any()) {
+                if (MessageBox.ShowDialog(this, "createNew", MessageBoxButton.YesNo) != true) {
+                    return;
+                }
+            }
+
+            Graph = new ProcessingGraph();
+        }
     }
 }

@@ -79,5 +79,7 @@
             <Button Margin="2" Padding="3" IsDefault="True" Click="Open_OnClick" Visibility="{Binding IsSaveDialog, Converter={StaticResource BoolToVis}}" Content="{lex:Loc Save}"></Button>
             <Button Margin="2" Padding="3" IsCancel="True" Click="Cancel_OnClick" Content="{lex:Loc Cancel}"></Button>
         </UniformGrid>
+
+        <Button Grid.Row="2" HorizontalAlignment="Left" Margin="4" Content="{lex:Loc CreateNew}" Click="New_OnClick" />
     </Grid>
 </Window>

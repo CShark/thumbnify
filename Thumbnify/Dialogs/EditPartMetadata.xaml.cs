@@ -20,19 +20,41 @@ namespace Thumbnify.Dialogs {
     /// </summary>
     public partial class EditPartMetadata : Window {
         public static readonly DependencyProperty PartMetadataProperty = DependencyProperty.Register(
-            nameof(PartMetadata), typeof(PartMetadata), typeof(EditPartMetadata), new PropertyMetadata(default(PartMetadata)));
+            nameof(PartMetadata), typeof(PartMetadata), typeof(EditPartMetadata),
+            new PropertyMetadata(default(PartMetadata)));
 
         public PartMetadata PartMetadata {
             get { return (PartMetadata)GetValue(PartMetadataProperty); }
             set { SetValue(PartMetadataProperty, value); }
         }
 
+        public EditPartMetadata(PartMetadata metadata) {
+            PartMetadata = metadata;
+            InitializeComponent();
+
+            txtName.SelectAll();
+            txtName.Focus();
+        }
+
         public EditPartMetadata() {
             InitializeComponent();
+
+            txtName.Focus();
         }
 
         private void OpenPreset_OnClick(object sender, RoutedEventArgs e) {
-            var result = LoadSaveDialog.ShowOpenDialog(this, App.Settings.Processing);
+            ProcessingGraph? result2 = null;
+
+            var result = LoadSaveDialog.ShowOpenDialog(this, App.Settings.Processing, null, () => {
+                var dlg = new ProcessingEditor();
+                dlg.Owner = this;
+                dlg.ShowDialog();
+
+                result2 = dlg.Graph;
+                result2.Name = "<Custom>";
+            });
+
+            if (result2 != null) result = result2;
 
             if (result != null) {
                 var json = JsonConvert.SerializeObject(result);
@@ -47,7 +69,7 @@ namespace Thumbnify.Dialogs {
             var dlg = new ProcessingEditor();
             dlg.Owner = this;
             dlg.Graph = PartMetadata.ProcessingGraph ?? new();
-            
+
             dlg.ShowDialog();
 
             PartMetadata.ProcessingGraph = dlg.Graph;

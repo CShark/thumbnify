@@ -199,4 +199,25 @@
   <data name="DeleteMedia" xml:space="preserve">
     <value>Delete Media File</value>
   </data>
+  <data name="Color" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="CreateNew" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="LogMessages" xml:space="preserve">
+    <value>Log</value>
+  </data>
+  <data name="LogImport" xml:space="preserve">
+    <value>Import Log</value>
+  </data>
+  <data name="LogExport" xml:space="preserve">
+    <value>Export Log</value>
+  </data>
+  <data name="Cleanup" xml:space="preserve">
+    <value>Delete completed media files</value>
+  </data>
+  <data name="LogViewer" xml:space="preserve">
+    <value>View Logfile</value>
+  </data>
 </root>

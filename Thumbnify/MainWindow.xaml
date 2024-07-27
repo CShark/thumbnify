@@ -118,7 +118,10 @@
                 </WrapPanel>
 
                 <WrapPanel Margin="4" Grid.Column="1">
-                    <Button Click="Cleanup_OnClick">
+                    <Button Click="LogViewer_OnClick" ToolTip="{lex:Loc LogViewer}">
+                        <mi:MaterialIcon Kind="InvoiceTextOutline"></mi:MaterialIcon>
+                    </Button>
+                    <Button Click="Cleanup_OnClick" ToolTip="{lex:Loc Cleanup}">
                         <mi:MaterialIcon Kind="Broom"></mi:MaterialIcon>
                     </Button>
                 </WrapPanel>
@@ -127,6 +130,7 @@
             <controls:ListBoxNoNav Grid.Row="1" ItemsSource="{Binding Media}"
                                    SelectionChanged="MediaList_OnSelectionChanged"
                                    IsSynchronizedWithCurrentItem="True" Focusable="False"
+                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                    SelectedItem="{Binding SelectedMedia}" d:ItemsSource="{d:SampleData ItemCount=2}">
 
                 <ListBox.ItemTemplate>
@@ -141,7 +145,7 @@
                             <Border Background="LimeGreen" Visibility="{Binding SlatedForCleanup, Converter={StaticResource BoolToVis}}"/>
 
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="{Binding Name}" />
+                                <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis"/>
                                 <TextBlock Text="{Binding Date, StringFormat={}{0:dddd, dd.MM.yyyy HH:mm}}"></TextBlock>
                                 <ItemsControl ItemsSource="{Binding Parts}" Margin="20,0,0,0">
                                     <ItemsControl.ItemTemplate>
@@ -160,12 +164,12 @@
 
                                                 <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                                     <Border.Background>
-                                                        <SolidColorBrush Color="{Binding Color}"></SolidColorBrush>
+                                                        <SolidColorBrush Color="{Binding Metadata.Color}"></SolidColorBrush>
                                                     </Border.Background>
                                                 </Border>
                                                 <Border Grid.ColumnSpan="3" Opacity=".3">
                                                     <Border.Background>
-                                                        <SolidColorBrush Color="{Binding Color}"></SolidColorBrush>
+                                                        <SolidColorBrush Color="{Binding Metadata.Color}"></SolidColorBrush>
                                                     </Border.Background>
                                                 </Border>
 

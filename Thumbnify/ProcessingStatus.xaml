@@ -24,7 +24,7 @@
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <ProgressBar></ProgressBar>
+        <ProgressBar Minimum="0" Maximum="1" Value="{Binding Progress}" />
 
         <ListBox Grid.Row="1" ItemsSource="{Binding MediaParts}" d:ItemsSource="{d:SampleData ItemCount=2}">
             <ListBox.ItemTemplate>
@@ -68,6 +68,9 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <Button Grid.Row="3" HorizontalAlignment="Center" Margin="5" Content="{lex:Loc Close}"></Button>
+        <UniformGrid Grid.Row="2" HorizontalAlignment="Center" Margin="2" Columns="2">
+            <Button Margin="2" Content="{lex:Loc Cancel}" Click="Cancel_OnClick" Style="{StaticResource FirstButton}" Padding="6,0"></Button>
+            <Button Margin="2" Content="{lex:Loc Close}" Click="Close_OnClick" Style="{StaticResource LastButton}" Padding="6,0"></Button>
+        </UniformGrid>
     </Grid>
 </Window>

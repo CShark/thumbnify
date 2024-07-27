@@ -25,7 +25,7 @@ namespace Thumbnify.Data.Processing.Audio {
         }
 
         protected override ENodeType NodeType => ENodeType.Audio;
-        protected override string NodeId => Id;
+        public override string NodeTypeId => Id;
         public static string Id => "audio_load";
 
         protected override bool Execute(CancellationToken cancelToken) {

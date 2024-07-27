@@ -32,6 +32,8 @@ namespace Thumbnify.Data.Processing {
 
         public string Uid { get; set; }
 
+        public string? Name { get; set; }
+
         [JsonIgnore]
         public IReadOnlyDictionary<string, Parameter> Parameters => _parameters;
 
@@ -42,12 +44,12 @@ namespace Thumbnify.Data.Processing {
         protected abstract ENodeType NodeType { get; }
 
         [JsonIgnore]
-        protected abstract string NodeId { get; }
+        public abstract string NodeTypeId { get; }
 
         [JsonIgnore]
         public ENodeStatus NodeStatus {
             get => _nodeStatus;
-            private set => SetField(ref _nodeStatus, value);
+            set => SetField(ref _nodeStatus, value);
         }
 
         [JsonIgnore]
@@ -67,7 +69,7 @@ namespace Thumbnify.Data.Processing {
         [JsonIgnore]
         public double Progress {
             get => _progress;
-            private set => SetField(ref _progress, value);
+            set => SetField(ref _progress, value);
         }
 
         public Point NodeLocation {
@@ -105,8 +107,9 @@ namespace Thumbnify.Data.Processing {
                         Task.Run(() => {
                             NodeStatus = ENodeStatus.Running;
                             try {
-                                NodeStatus = Execute(CancelToken) ? ENodeStatus.Completed : ENodeStatus.Error;
+                                var status = Execute(CancelToken) ? ENodeStatus.Completed : ENodeStatus.Error;
                                 Logger.Information("Node completed");
+                                NodeStatus = status;
 
                                 foreach (var param in Parameters.Values) {
                                     param.Clear();
@@ -157,7 +160,7 @@ namespace Thumbnify.Data.Processing {
         }
 
         public EditorNode GenerateNode() {
-            return new EditorNode(NodeId, NodeType, this);
+            return new EditorNode(NodeTypeId, NodeType, this);
         }
 
 

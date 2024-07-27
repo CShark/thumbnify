@@ -173,7 +173,7 @@
                     <Setter Property="Margin" Value="3"></Setter>
                 </Style>
             </WrapPanel.Resources>
-            <Button>
+            <Button Click="NewGraph_OnClick">
                 <wpf:MaterialIcon Kind="FilePlus"></wpf:MaterialIcon>
             </Button>
             <Button Click="GraphLoad_OnClick">
@@ -185,7 +185,7 @@
         </WrapPanel>
 
         <StackPanel Grid.Column="1">
-            <Expander Header="{lex:Loc Parameter}" Foreground="{StaticResource ControlForegroundDark}" IsExpanded="True"
+            <Expander Header="{lex:Loc Parameter}" IsExpanded="True"
                       ExpandDirection="Down">
                 <StackPanel Margin="3">
                     <Grid>

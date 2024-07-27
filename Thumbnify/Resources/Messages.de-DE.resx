@@ -127,4 +127,16 @@
   <data name="msg_cleanup" xml:space="preserve">
     <value>Alle Mediendateien löschen, die bereits vollständig verarbeitet wurden?</value>
   </data>
+  <data name="msg_createNew" xml:space="preserve">
+    <value>Neues Preset erstellen? Alle ungespeicherten Änderungen gehen verloren.</value>
+  </data>
+  <data name="title_createNew" xml:space="preserve">
+    <value>Neues Preset erstellen</value>
+  </data>
+  <data name="title_cancelGraphs" xml:space="preserve">
+    <value>Verarbeitung Abbrechen</value>
+  </data>
+  <data name="msg_cancelGraphs" xml:space="preserve">
+    <value>Eine Medienausschnitte wurden noch nicht fertig verarbeitet. Sollen diese abgebrochen werden?</value>
+  </data>
 </root>

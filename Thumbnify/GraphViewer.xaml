@@ -9,6 +9,8 @@
         xmlns:events="clr-namespace:Serilog.Events;assembly=Serilog"
         xmlns:lex="http://wpflocalizeextension.codeplex.com"
         xmlns:tools="clr-namespace:Thumbnify.Tools"
+        xmlns:converter="clr-namespace:Thumbnify.Converter"
+        xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
         lex:LocalizeDictionary.DesignCulture="de-DE"
         lex:ResxLocalizationProvider.DefaultAssembly="Thumbnify"
         lex:ResxLocalizationProvider.DefaultDictionary="Controls"
@@ -16,43 +18,93 @@
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         WindowStartupLocation="CenterOwner"
         WindowState="Maximized"
+        Style="{StaticResource Dark}"
         Title="{lex:Loc GraphViewer}" Height="450" Width="800">
+    <Window.Resources>
+        <converter:HideWhenNull x:Key="HideWhenNull" />
+        <converter:NodeNameConverter x:Key="NodeNameConv" />
+    </Window.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="250"></RowDefinition>
         </Grid.RowDefinitions>
-        <controls:GraphEditor Graph="{Binding Graph}" SelectedNodes="{Binding SelectedNodes}" />
+        <controls:GraphEditor x:Name="GraphControl" Graph="{Binding Graph}" SelectedNodes="{Binding SelectedNodes}"
+                              IsReadOnly="True" />
 
-        <Expander Grid.Row="1" IsExpanded="True" ExpandDirection="Up">
-            <ListBox ItemsSource="{Binding Graph.LogMessages.MessageList}" d:ItemsSource="{d:SampleData ItemCount=5}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate DataType="{x:Type tools:LogMessage}">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"></ColumnDefinition>
-                                <ColumnDefinition Width="100"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
 
-                            <TextBlock Text="{Binding Timestamp, StringFormat={}{0:HH:mm:ss:fff}}"
-                                       FontFamily="Consolas">
-                            </TextBlock>
-                            <TextBlock Grid.Column="1" Text="{Binding Level, StringFormat={}[{0}]}" x:Name="LogLevel"
-                                       FontFamily="Consolas">
-                            </TextBlock>
-                            <TextBlock Grid.Column="2" Text="{Binding Message}" FontFamily="Consolas"></TextBlock>
-                        </Grid>
+            <StackPanel Margin="3" Orientation="Horizontal" VerticalAlignment="Center">
+                <CheckBox IsChecked="{Binding ShowDebug}">Debug</CheckBox>
+                <CheckBox IsChecked="{Binding ShowInfo}">Information</CheckBox>
+                <CheckBox IsChecked="{Binding ShowWarn}">Warning</CheckBox>
+                <CheckBox IsChecked="{Binding ShowError}">Error</CheckBox>
+            </StackPanel>
 
-                        <DataTemplate.Triggers>
-                            <DataTrigger Binding="{Binding Level}" Value="{x:Static events:LogEventLevel.Information}">
-                                <Setter TargetName="LogLevel" Property="Foreground" Value="LightSkyBlue"></Setter>
-                            </DataTrigger>
-                        </DataTemplate.Triggers>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </Expander>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="3">
+                <Button Style="{StaticResource SingleButton}" Margin="2,0" ToolTip="{lex:Loc LogImport}"
+                        Click="ImportLog_OnClick">
+                    <wpf:MaterialIcon Kind="FolderOpen" Width="16" />
+                </Button>
+                <Button Style="{StaticResource SingleButton}" Margin="2,0" ToolTip="{lex:Loc LogExport}"
+                        Click="ExportLog_OnClick">
+                    <wpf:MaterialIcon Kind="ContentSave" Width="16" />
+                </Button>
+            </StackPanel>
+
+            <DataGrid Grid.Row="1" ItemsSource="{Binding LogMessages}" d:ItemsSource="{d:SampleData ItemCount=5}"
+                      SelectedItem="{Binding SelectedLogMessage}"
+                      IsReadOnly="True" AutoGenerateColumns="False" SelectionUnit="FullRow"
+                      SelectionChanged="LogMessages_OnSelectionChanged" CanUserSortColumns="False"
+                      CanUserReorderColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Timestamp" FontFamily="Consolas" CanUserResize="False"
+                                        Binding="{Binding Timestamp, StringFormat={}{0:HH:mm:ss:fff}}" />
+                    <DataGridTemplateColumn Header="Log Level" CanUserResize="False">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type tools:LogMessage}">
+                                <TextBlock Text="{Binding Level, StringFormat={}[{0}]}" Margin="5,0"
+                                           x:Name="LogLevel"
+                                           FontFamily="Consolas">
+                                </TextBlock>
+
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding Level}"
+                                                 Value="{x:Static events:LogEventLevel.Information}">
+                                        <Setter TargetName="LogLevel" Property="Foreground" Value="LightSkyBlue"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Level}"
+                                                 Value="{x:Static events:LogEventLevel.Warning}">
+                                        <Setter TargetName="LogLevel" Property="Foreground" Value="Gold"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Level}"
+                                                 Value="{x:Static events:LogEventLevel.Error}">
+                                        <Setter TargetName="LogLevel" Property="Foreground" Value="#FF4E4E"></Setter>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Source" Binding="{Binding Converter={StaticResource NodeNameConv}}" />
+                    <DataGridTemplateColumn Header="Message" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type tools:LogMessage}">
+                                <StackPanel Margin="5,0">
+                                    <TextBlock FontFamily="Consolas" Text="{Binding Message}" />
+                                    <TextBlock FontFamily="Consolas" Text="{Binding Exception}"
+                                               Visibility="{Binding Exception, Converter={StaticResource HideWhenNull}}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
 
         <GridSplitter Grid.Row="0" Height="5" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" />
     </Grid>

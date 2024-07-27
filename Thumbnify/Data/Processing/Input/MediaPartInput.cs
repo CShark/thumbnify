@@ -56,7 +56,7 @@ namespace Thumbnify.Data.Processing.Input {
         }
 
         protected override ENodeType NodeType => ENodeType.Parameter;
-        protected override string NodeId => Id;
+        public override string NodeTypeId => Id;
 
         public static string Id = "input_part";
 
@@ -90,9 +90,26 @@ namespace Thumbnify.Data.Processing.Input {
             Task.WaitAll(task);
             
             // Load Audio
-            Audio.Value = new AudioStream {
-                WaveStream = new MediaFoundationReader(path)
-            };
+            try {
+                Audio.Value = new AudioStream {
+                    WaveStream = new MediaFoundationReader(path)
+                };
+            } catch (Exception ex) {
+                Logger.Warning(ex, "Failed to load audio from video stream, trying to convert audio");
+
+                ffmpeg.Progress -= FfmpegOnProgress;
+                opt = new ConversionOptions();
+                input = new InputFile(path);
+                output = new OutputFile(Path.ChangeExtension(path, "mp3"));
+
+                ffmpeg.ConvertAsync(input, output, opt, cancelToken).Wait(cancelToken);
+
+                Audio.Value = new AudioStream {
+                    WaveStream = new MediaFoundationReader(Path.ChangeExtension(path,"mp3"))
+                };
+
+                Logger.Information("Audio converted to mp3");
+            }
 
             Video.Value = new VideoFile {
                 VideoFileName = path

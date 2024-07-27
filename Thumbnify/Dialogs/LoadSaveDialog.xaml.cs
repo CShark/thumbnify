@@ -65,9 +65,18 @@ namespace Thumbnify.Dialogs {
             set { SetValue(SelectedNameProperty, value); }
         }
 
+        public static readonly DependencyProperty ShowNewButtonProperty = DependencyProperty.Register(
+            nameof(ShowNewButton), typeof(bool), typeof(LoadSaveDialog), new PropertyMetadata(default(bool)));
+
+        public bool ShowNewButton {
+            get { return (bool)GetValue(ShowNewButtonProperty); }
+            set { SetValue(ShowNewButtonProperty, value); }
+        }
+
         public static RoutedUICommand DeleteSelected { get; } = new();
 
         private Action<IDialogItem>? _deleteHandler;
+        private Action? _newHandler;
 
         public static readonly DependencyProperty ShowDeleteButtonProperty = DependencyProperty.Register(
             nameof(ShowDeleteButton), typeof(bool), typeof(LoadSaveDialog), new PropertyMetadata(default(bool)));
@@ -91,14 +100,20 @@ namespace Thumbnify.Dialogs {
             }, (_, e) => { e.CanExecute = _deleteHandler != null && SelectedItem != null; }));
         }
 
-        public static T? ShowOpenDialog<T>(Window owner, IEnumerable<T> items, Action<T>? onDelete = null)
+        public static T? ShowOpenDialog<T>(Window owner, IEnumerable<T> items, Action<T>? onDelete = null, Action? onNew = null)
             where T : class, IDialogItem {
             var dlg = new LoadSaveDialog();
             dlg.Owner = owner;
             dlg.DialogItems = new ObservableCollection<IDialogItem>(items);
+            
             if (onDelete != null) {
                 dlg._deleteHandler = x => onDelete((T)x);
                 dlg.ShowDeleteButton = true;
+            }
+
+            if (onNew != null) {
+                dlg._newHandler = onNew;
+                dlg.ShowNewButton = true;
             }
 
             dlg.IsSaveDialog = false;
@@ -110,14 +125,20 @@ namespace Thumbnify.Dialogs {
             }
         }
 
-        public static string? ShowSaveDialog<T>(Window owner, IEnumerable<T> items, Action<T>? onDelete = null)
+        public static string? ShowSaveDialog<T>(Window owner, IEnumerable<T> items, Action<T>? onDelete = null, Action? onNew = null)
             where T : class, IDialogItem {
             var dlg = new LoadSaveDialog();
             dlg.Owner = owner;
             dlg.DialogItems = new ObservableCollection<IDialogItem>(items);
+            
             if (onDelete != null) {
                 dlg._deleteHandler = x => onDelete((T)x);
                 dlg.ShowDeleteButton = true;
+            }
+
+            if (onNew != null) {
+                dlg._newHandler = onNew;
+                dlg.ShowNewButton = true;
             }
 
             dlg.IsSaveDialog = true;
@@ -148,6 +169,14 @@ namespace Thumbnify.Dialogs {
         private void ItemList_OnMouseDoubleClick(object sender, MouseButtonEventArgs e) {
             if (SelectedItem != null) {
                 Open_OnClick(null, null);
+            }
+        }
+
+        private void New_OnClick(object sender, RoutedEventArgs e) {
+            if (_newHandler != null) {
+                DialogResult = null;
+                Close();
+                _newHandler();
             }
         }
     }

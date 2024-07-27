@@ -24,9 +24,22 @@
 
             <SolidColorBrush x:Key="WindowBackground" Color="#313131" />
 
+            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="#D5D5D5" />
+
             <Style TargetType="Window" x:Key="Dark">
-                <Setter Property="Background" Value="{StaticResource WindowBackground}"></Setter>
-                <Setter Property="Foreground" Value="{StaticResource ControlForeground}"></Setter>
+                <Setter Property="Background" Value="{StaticResource WindowBackground}" />
+                <Setter Property="Foreground" Value="{StaticResource ControlForeground}" />
+            </Style>
+
+            <Style TargetType="Window" BasedOn="{StaticResource Dark}" />
+
+            <Style TargetType="Expander">
+                <Setter Property="Foreground" Value="{StaticResource ControlForegroundDark}" />
+            </Style>
+
+            <Style TargetType="CheckBox">
+                <Setter Property="Foreground" Value="{StaticResource ControlForeground}" />
+                <Setter Property="Margin" Value="2" />
             </Style>
 
             <Style TargetType="ListBox">
@@ -34,6 +47,24 @@
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 <Setter Property="Foreground" Value="{StaticResource ControlForeground}" />
+            </Style>
+
+            <Style TargetType="DataGrid">
+                <Setter Property="Background" Value="{StaticResource ControlBackgroundLight}" />
+                <Setter Property="Foreground" Value="{StaticResource ControlForeground}" />
+                <Setter Property="GridLinesVisibility" Value="Horizontal" />
+                <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource ControlForegroundDark}" />
+                <Setter Property="RowHeaderWidth" Value="0" />
+            </Style>
+
+            <Style TargetType="DataGridCell">
+                <Setter Property="Background" Value="{StaticResource ControlBackgroundLight}" />
+                <Setter Property="BorderThickness" Value="0" />
+            </Style>
+
+            <Style TargetType="DataGridColumnHeader">
+                <Setter Property="Background" Value="{StaticResource ControlBackground}"></Setter>
+                <Setter Property="Padding" Value="3"></Setter>
             </Style>
 
             <Style TargetType="controls:ListBoxNoNav" BasedOn="{StaticResource {x:Type ListBox}}" />
@@ -346,7 +377,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-            
+
             <Style TargetType="ContentControl" x:Key="ContentButton">
                 <Setter Property="Height" Value="24"></Setter>
                 <Setter Property="MinWidth" Value="24"></Setter>
@@ -423,6 +454,17 @@
                                             </Storyboard>
                                         </VisualState>
                                     </VisualStateGroup>
+                                    <VisualStateGroup Name="FocusStates">
+                                        <VisualState Name="Unfocused" />
+                                        <VisualState Name="Focused">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.2" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
+                                    </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                             </Grid>
                         </ControlTemplate>
@@ -466,6 +508,17 @@
                                         </VisualState>
                                         <VisualState Name="Pressed" />
                                         <VisualState Name="Disabled" />
+                                    </VisualStateGroup>
+                                    <VisualStateGroup Name="FocusStates">
+                                        <VisualState Name="Unfocused" />
+                                        <VisualState Name="Focused">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.2" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                             </Grid>
@@ -526,6 +579,17 @@
                                         </VisualState>
                                         <VisualState Name="Pressed" />
                                         <VisualState Name="Disabled" />
+                                    </VisualStateGroup>
+                                    <VisualStateGroup Name="FocusStates">
+                                        <VisualState Name="Unfocused" />
+                                        <VisualState Name="Focused">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.2" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                             </Grid>
@@ -588,6 +652,17 @@
                                         <VisualState Name="Pressed" />
                                         <VisualState Name="Disabled" />
                                     </VisualStateGroup>
+                                    <VisualStateGroup Name="FocusStates">
+                                        <VisualState Name="Unfocused" />
+                                        <VisualState Name="Focused">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.2" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
+                                    </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                             </Grid>
                         </ControlTemplate>
@@ -614,7 +689,7 @@
                                 <Rectangle Fill="Gray" Opacity="0" x:Name="Highlight"></Rectangle>
 
                                 <ContentPresenter Content="{TemplateBinding Content}" VerticalAlignment="Center"
-                                                  HorizontalAlignment="Center" />
+                                                  HorizontalAlignment="Center" Margin="{TemplateBinding Padding}" />
 
 
                                 <VisualStateManager.VisualStateGroups>
@@ -631,6 +706,17 @@
                                         <VisualState Name="Pressed" />
                                         <VisualState Name="Disabled" />
                                     </VisualStateGroup>
+                                    <VisualStateGroup Name="FocusStates">
+                                        <VisualState Name="Unfocused" />
+                                        <VisualState Name="Focused">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.2" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
+                                    </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                             </Grid>
                         </ControlTemplate>
@@ -641,7 +727,7 @@
             <Style x:Key="FirstButton" TargetType="ContentControl">
                 <Setter Property="MinWidth" Value="30"></Setter>
                 <Setter Property="Height" Value="24"></Setter>
-                <Setter Property="FontSize" Value="14"></Setter>
+                <Setter Property="FontSize" Value="12"></Setter>
                 <Setter Property="Foreground" Value="{StaticResource ControlForeground}"></Setter>
                 <Setter Property="Margin" Value="1,0"></Setter>
 
@@ -649,7 +735,8 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="ContentControl">
                             <Grid>
-                                <Ellipse Width="24" Height="24" Stroke="{StaticResource ControlBorder}" HorizontalAlignment="Left"
+                                <Ellipse Width="24" Height="24" Stroke="{StaticResource ControlBorder}"
+                                         HorizontalAlignment="Left"
                                          Fill="{StaticResource ControlBackground}">
                                     <Ellipse.Clip>
                                         <RectangleGeometry Rect="0,0,12,24"></RectangleGeometry>
@@ -671,8 +758,10 @@
                                     </Border>
                                 </Grid>
 
-                                <ContentPresenter Content="{TemplateBinding Content}" VerticalAlignment="Center"
-                                                  HorizontalAlignment="Center" Margin="6,0,0,0" />
+                                <Grid Margin="{TemplateBinding Padding}">
+                                    <ContentPresenter Content="{TemplateBinding Content}" VerticalAlignment="Center"
+                                                      HorizontalAlignment="Center" Margin="6,0,0,0" />
+                                </Grid>
 
                                 <VisualStateManager.VisualStateGroups>
                                     <VisualStateGroup Name="CommonStates">
@@ -688,6 +777,17 @@
                                         <VisualState Name="Pressed" />
                                         <VisualState Name="Disabled" />
                                     </VisualStateGroup>
+                                    <VisualStateGroup Name="FocusStates">
+                                        <VisualState Name="Unfocused" />
+                                        <VisualState Name="Focused">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.2" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
+                                    </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                             </Grid>
                         </ControlTemplate>
@@ -698,7 +798,7 @@
             <Style x:Key="LastButton" TargetType="ContentControl">
                 <Setter Property="MinWidth" Value="30"></Setter>
                 <Setter Property="Height" Value="24"></Setter>
-                <Setter Property="FontSize" Value="14"></Setter>
+                <Setter Property="FontSize" Value="12"></Setter>
                 <Setter Property="Foreground" Value="{StaticResource ControlForeground}"></Setter>
                 <Setter Property="Margin" Value="1,0"></Setter>
 
@@ -722,8 +822,10 @@
                                     </Border>
                                 </Grid>
 
-                                <ContentPresenter Content="{TemplateBinding Content}" VerticalAlignment="Center"
-                                                  HorizontalAlignment="Center" Grid.ColumnSpan="2" Margin="0,0,6,0" />
+                                <Grid Margin="{TemplateBinding Padding}">
+                                    <ContentPresenter Content="{TemplateBinding Content}" VerticalAlignment="Center"
+                                                      HorizontalAlignment="Center" Grid.ColumnSpan="2" Margin="0,0,6,0" />
+                                </Grid>
 
                                 <VisualStateManager.VisualStateGroups>
                                     <VisualStateGroup Name="CommonStates">
@@ -738,6 +840,17 @@
                                         </VisualState>
                                         <VisualState Name="Pressed" />
                                         <VisualState Name="Disabled" />
+                                    </VisualStateGroup>
+                                    <VisualStateGroup Name="FocusStates">
+                                        <VisualState Name="Unfocused" />
+                                        <VisualState Name="Focused">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.2" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                             </Grid>
@@ -789,6 +902,17 @@
                                         </VisualState>
                                         <VisualState Name="Pressed" />
                                         <VisualState Name="Disabled" />
+                                    </VisualStateGroup>
+                                    <VisualStateGroup Name="FocusStates">
+                                        <VisualState Name="Unfocused" />
+                                        <VisualState Name="Focused">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.2" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                             </Grid>
@@ -846,7 +970,7 @@
                                         <VisualState Name="Normal" />
                                         <VisualState Name="MouseOver">
                                             <Storyboard>
-                                                <DoubleAnimation To="0.1" Duration="0:0:0.1"
+                                                <DoubleAnimation To="0.3" Duration="0:0:0.1"
                                                                  Storyboard.TargetName="Highlight"
                                                                  Storyboard.TargetProperty="Opacity">
                                                 </DoubleAnimation>
@@ -886,6 +1010,17 @@
                                                 <DoubleAnimation To="1" Storyboard.TargetName="BlackLight"
                                                                  Duration="0:0:0.1"
                                                                  Storyboard.TargetProperty="Opacity" />
+                                            </Storyboard>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                    <VisualStateGroup Name="FocusStates">
+                                        <VisualState Name="Unfocused" />
+                                        <VisualState Name="Focused">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.2" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
                                             </Storyboard>
                                         </VisualState>
                                     </VisualStateGroup>
@@ -932,6 +1067,17 @@
                                         </VisualState>
                                         <VisualState Name="Pressed" />
                                         <VisualState Name="Disabled" />
+                                    </VisualStateGroup>
+                                    <VisualStateGroup Name="FocusStates">
+                                        <VisualState Name="Unfocused" />
+                                        <VisualState Name="Focused">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.2" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                             </Grid>

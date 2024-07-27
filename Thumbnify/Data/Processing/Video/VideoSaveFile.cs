@@ -16,7 +16,7 @@ namespace Thumbnify.Data.Processing.Video {
             new("path", true, new FilePath(FilePath.EPathMode.SaveFile, "MP4-Videos|*.mp4"));
 
         protected override ENodeType NodeType => ENodeType.Video;
-        protected override string NodeId => Id;
+        public override string NodeTypeId => Id;
 
         public static string Id => "video_save";
 

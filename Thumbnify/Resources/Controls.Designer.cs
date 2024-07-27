@@ -88,6 +88,15 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Delete completed media files ähnelt.
+        /// </summary>
+        internal static string Cleanup {
+            get {
+                return ResourceManager.GetString("Cleanup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Close ähnelt.
         /// </summary>
         internal static string Close {
@@ -97,11 +106,29 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Color ähnelt.
+        /// </summary>
+        internal static string Color {
+            get {
+                return ResourceManager.GetString("Color", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Create ähnelt.
         /// </summary>
         internal static string Create {
             get {
                 return ResourceManager.GetString("Create", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die New ähnelt.
+        /// </summary>
+        internal static string CreateNew {
+            get {
+                return ResourceManager.GetString("CreateNew", resourceCulture);
             }
         }
         
@@ -201,6 +228,42 @@ namespace Thumbnify.Resources {
         internal static string LoadSaveDialog {
             get {
                 return ResourceManager.GetString("LoadSaveDialog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Export Log ähnelt.
+        /// </summary>
+        internal static string LogExport {
+            get {
+                return ResourceManager.GetString("LogExport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Import Log ähnelt.
+        /// </summary>
+        internal static string LogImport {
+            get {
+                return ResourceManager.GetString("LogImport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Log ähnelt.
+        /// </summary>
+        internal static string LogMessages {
+            get {
+                return ResourceManager.GetString("LogMessages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die View Logfile ähnelt.
+        /// </summary>
+        internal static string LogViewer {
+            get {
+                return ResourceManager.GetString("LogViewer", resourceCulture);
             }
         }
         

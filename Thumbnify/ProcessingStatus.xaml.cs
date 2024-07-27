@@ -14,6 +14,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Thumbnify.Data;
+using Thumbnify.Data.Processing;
+using MessageBox = Thumbnify.Dialogs.MessageBox;
 
 namespace Thumbnify {
     /// <summary>
@@ -28,6 +30,14 @@ namespace Thumbnify {
         public ObservableCollection<QueueItemStatus> MediaParts {
             get { return (ObservableCollection<QueueItemStatus>)GetValue(MediaPartsProperty); }
             set { SetValue(MediaPartsProperty, value); }
+        }
+
+        public static readonly DependencyProperty ProgressProperty = DependencyProperty.Register(
+            nameof(Progress), typeof(double), typeof(ProcessingStatus), new PropertyMetadata(default(double)));
+
+        public double Progress {
+            get { return (double)GetValue(ProgressProperty); }
+            set { SetValue(ProgressProperty, value); }
         }
 
         public ProcessingStatus() {
@@ -50,6 +60,14 @@ namespace Thumbnify {
 
             foreach (var part in parts) {
                 var queueItem = new QueueItemStatus(part);
+                queueItem.Graph.PropertyChanged += (_, args) => {
+                    if (args.PropertyName == nameof(ProcessingGraph.Progress)) {
+                        Dispatcher.Invoke(() => {
+                            Progress = MediaParts.Sum(x => x.Graph.Progress) / MediaParts.Count;
+                        });
+                    }
+                };
+
                 MediaParts.Add(queueItem);
                 queueItem.Graph.RunGraph(part);
             }
@@ -57,8 +75,39 @@ namespace Thumbnify {
 
         private void ProcessingStatus_OnClosed(object? sender, EventArgs e) {
             foreach (var item in MediaParts) {
+                if (item.Graph.GraphState == ENodeStatus.Completed) {
+                    item.MediaPart.ProcessingCompleted = true;
+                    item.MediaPart.ProcessingCompletedDate = DateTime.Now;
+                }
+
                 var tempDir = item.MediaPart.GetTempDir();
                 Directory.Delete(tempDir, true);
+            }
+        }
+
+        private void Close_OnClick(object sender, RoutedEventArgs e) {
+            if (MediaParts.Any(x => x.Graph.IsGraphRunning())) {
+                if (MessageBox.ShowDialog(this, "cancelGraphs", MessageBoxButton.YesNo) != true) {
+                    return;
+                }
+            }
+
+            foreach (var item in MediaParts) {
+                item.Graph.CancelGraph();
+            }
+
+            Close();
+        }
+
+        private void Cancel_OnClick(object sender, RoutedEventArgs e) {
+            if (MediaParts.Any(x => x.Graph.IsGraphRunning())) {
+                if (MessageBox.ShowDialog(this, "cancelGraphs", MessageBoxButton.YesNo) != true) {
+                    return;
+                }
+            }
+
+            foreach (var item in MediaParts) {
+                item.Graph.CancelGraph();
             }
         }
     }

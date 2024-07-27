@@ -15,10 +15,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Nodify;
 using Thumbnify.Data;
 using Thumbnify.Data.Processing;
 using Thumbnify.Postprocessing;
+using Thumbnify.Tools;
+using Connection = Thumbnify.Postprocessing.Connection;
+using Connector = Thumbnify.Postprocessing.Connector;
 using MessageBox = Thumbnify.Dialogs.MessageBox;
+using Node = Thumbnify.Data.Processing.Node;
+using PendingConnection = Thumbnify.Postprocessing.PendingConnection;
 
 namespace Thumbnify.Controls {
     /// <summary>
@@ -75,11 +81,20 @@ namespace Thumbnify.Controls {
         }
 
         public static readonly DependencyProperty SelectedNodesProperty = DependencyProperty.Register(
-            nameof(SelectedNodes), typeof(ObservableCollection<EditorNode>), typeof(GraphEditor), new PropertyMetadata(default(ObservableCollection<EditorNode>)));
+            nameof(SelectedNodes), typeof(ObservableCollection<EditorNode>), typeof(GraphEditor),
+            new PropertyMetadata(default(ObservableCollection<EditorNode>)));
 
         public ObservableCollection<EditorNode> SelectedNodes {
             get { return (ObservableCollection<EditorNode>)GetValue(SelectedNodesProperty); }
             set { SetValue(SelectedNodesProperty, value); }
+        }
+
+        public static readonly DependencyProperty IsReadOnlyProperty = DependencyProperty.Register(
+            nameof(IsReadOnly), typeof(bool), typeof(GraphEditor), new PropertyMetadata(default(bool)));
+
+        public bool IsReadOnly {
+            get { return (bool)GetValue(IsReadOnlyProperty); }
+            set { SetValue(IsReadOnlyProperty, value); }
         }
 
         public static RoutedUICommand DisconnectNodes { get; } = new();
@@ -133,7 +148,8 @@ namespace Thumbnify.Controls {
 
             CommandBindings.Add(new CommandBinding(DeleteNode, (_, _) => {
                 if (((MultiSelector)Editor).SelectedItems.Count > 0) {
-                    if (Dialogs.MessageBox.ShowDialog(Window.GetWindow(this), "deleteActions", MessageBoxButton.YesNo) == true) {
+                    if (Dialogs.MessageBox.ShowDialog(Window.GetWindow(this), "deleteActions",
+                            MessageBoxButton.YesNo) == true) {
                         var selection = new List<EditorNode>();
 
                         foreach (EditorNode node in ((MultiSelector)Editor).SelectedItems) {
@@ -224,9 +240,7 @@ namespace Thumbnify.Controls {
                 }
             };
 
-            Loaded += (sender, args) => {
-                FitAll();
-            };
+            Loaded += (sender, args) => { FitAll(); };
         }
 
         private bool IsCyclic(Connection? pending = null) {
@@ -328,6 +342,16 @@ namespace Thumbnify.Controls {
         public void FitAll() {
             Editor.UpdateLayout();
             Editor.FitToScreen();
+        }
+
+        public void BringIntoView(EditorNode node) {
+            Editor.UpdateLayout();
+
+            var nodeContainer = Editor.Template.FindName("PART_ItemsHost", Editor) as NodifyCanvas;
+            var nodeHost = nodeContainer.Children.OfType<ItemContainer>().FirstOrDefault(x => x.DataContext == node);
+
+            Editor.BringIntoView(new Point(nodeHost.Location.X + nodeHost.RenderSize.Width / 2,
+                nodeHost.Location.Y + nodeHost.RenderSize.Height / 2));
         }
     }
 }

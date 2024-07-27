@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using Thumbnify.Data.Processing;
 using Thumbnify.Postprocessing;
+using Thumbnify.Tools;
 using WPFLocalizeExtension.Engine;
 
 namespace Thumbnify.Converter {
@@ -21,7 +22,13 @@ namespace Thumbnify.Converter {
                     return Translate($"param_{res.Id}", Thread.CurrentThread.CurrentUICulture);
                 }
             } else if (value is EditorNode node) {
-                return Translate(node.TitleId,Thread.CurrentThread.CurrentUICulture);
+                return Translate(node.TitleId, Thread.CurrentThread.CurrentUICulture);
+            } else if (value is LogMessage log) {
+                if (log.NodeName != null) {
+                    return log.NodeName;
+                } else {
+                    return Translate(log.NodeType, Thread.CurrentThread.CurrentUICulture) ?? "Graph";
+                }
             }
 
             return null;
