@@ -105,6 +105,7 @@ namespace Thumbnify.Data.Processing {
                 if (NodeStatus == ENodeStatus.Pending) {
                     if (Parameters.Values.All(x => x.HasValue)) {
                         Task.Run(() => {
+                            Logger.Information("Node started");
                             NodeStatus = ENodeStatus.Running;
                             try {
                                 var status = Execute(CancelToken) ? ENodeStatus.Completed : ENodeStatus.Error;
@@ -122,6 +123,9 @@ namespace Thumbnify.Data.Processing {
                             Progress = 1;
                             OnNodeCompleted();
                         }, CancelToken);
+                    } else {
+                        Logger.Debug("Parameters changed. The following parameters are still missing: " +
+                                     string.Join(',', Parameters.Values.Where(x => !x.HasValue).Select(x => x.Id)));
                     }
                 }
             }
@@ -150,7 +154,7 @@ namespace Thumbnify.Data.Processing {
         }
 
         protected abstract bool Execute(CancellationToken cancelToken);
-        
+
         protected void ReportProgress(double progress) {
             Progress = progress;
         }

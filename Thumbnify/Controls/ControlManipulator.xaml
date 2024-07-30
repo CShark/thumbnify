@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="Thumbnify.Controls.ControlManipulator"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Thumbnify.Controls"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+
+        <Style TargetType="Thumb">
+            <Setter Property="Margin" Value="-6"></Setter>
+            <Setter Property="Width" Value="12"></Setter>
+            <Setter Property="Height" Value="12"></Setter>
+            <Setter Property="Background" Value="Black"></Setter>
+            <Setter Property="BorderThickness" Value="0"></Setter>
+            <EventSetter Event="DragStarted" Handler="ThumbDragStart_OnHandler" />
+            <EventSetter Event="DragDelta" Handler="ThumbDragMove_OnHandler" />
+            <EventSetter Event="DragCompleted" Handler="ThumbDragEnd_OnHandler"></EventSetter>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Thumb">
+                        <Border Background="{StaticResource ControlBackgroundLight}" BorderThickness="1" BorderBrush="{StaticResource ControlForeground}" CornerRadius="10" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:ControlManipulator}, Path=TargetControl}" Visibility="{Binding IsSelected, Converter={StaticResource BoolToVis}}">
+        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="3" BorderBrush="DarkOrange"/>
+        <Grid>
+            <Thumb HorizontalAlignment="Left" VerticalAlignment="Top"></Thumb>
+            <Thumb HorizontalAlignment="Center" VerticalAlignment="Top"></Thumb>
+            <Thumb HorizontalAlignment="Right" VerticalAlignment="Top"></Thumb>
+
+            <Thumb HorizontalAlignment="Center" VerticalAlignment="Top"></Thumb>
+            <Thumb HorizontalAlignment="Center" VerticalAlignment="Bottom"></Thumb>
+            <Thumb HorizontalAlignment="Right" VerticalAlignment="Center"></Thumb>
+            <Thumb HorizontalAlignment="Left" VerticalAlignment="Center"></Thumb>
+
+            <Thumb HorizontalAlignment="Left" VerticalAlignment="Bottom"></Thumb>
+            <Thumb HorizontalAlignment="Center" VerticalAlignment="Bottom"></Thumb>
+            <Thumb HorizontalAlignment="Right" VerticalAlignment="Bottom"></Thumb>
+        </Grid>
+    </Grid>
+</UserControl>

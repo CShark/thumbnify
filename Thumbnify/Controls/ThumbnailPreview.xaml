@@ -11,6 +11,7 @@
              mc:Ignorable="d"
              MouseLeftButtonUp="Ctrl_OnMouseLeftButtonUp" MouseMove="Ctrl_OnMouseMove"
              MouseLeftButtonDown="ThumbnailPreview_OnMouseLeftButtonDown"
+             x:Name="ThumbnailPreviewControl"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
@@ -28,16 +29,6 @@
             <ItemsControl ItemsSource="{Binding Thumbnail.Controls}" Width="1920" Height="1080" Background="White"
                           x:Name="ControlContainer">
                 <ItemsControl.Resources>
-                    <Style TargetType="Thumb">
-                        <Setter Property="Margin" Value="-5"></Setter>
-                        <Setter Property="Width" Value="10"></Setter>
-                        <Setter Property="Height" Value="10"></Setter>
-                        <Setter Property="Background" Value="Black"></Setter>
-                        <Setter Property="BorderThickness" Value="0"></Setter>
-                        <EventSetter Event="DragStarted" Handler="ThumbDragStart_OnHandler" />
-                        <EventSetter Event="DragDelta" Handler="ThumbDragMove_OnHandler" />
-                        <EventSetter Event="DragCompleted" Handler="ThumbDragEnd_OnHandler"></EventSetter>
-                    </Style>
                     <DataTemplate DataType="{x:Type thumbnail:ImagePart}">
                         <Grid MouseLeftButtonDown="Ctrl_OnMouseLeftButtonDown">
                             <Image Source="{Binding ImageSource}" Width="{Binding Width}" Height="{Binding Height}"
@@ -45,75 +36,8 @@
                             </Image>
                             <Grid
                                 Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:ThumbnailPreview}, Path=EditMode, Converter={StaticResource BoolToVis}}">
-                                <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White"
-                                        Opacity=".3"
-                                        Visibility="{Binding IsSelected, Converter={StaticResource BoolToVis}}">
-                                </Border>
-                                <Grid Visibility="{Binding IsSelected, Converter={StaticResource BoolToVis}}">
-                                    <Thumb HorizontalAlignment="Left" VerticalAlignment="Top"></Thumb>
-                                    <Thumb HorizontalAlignment="Center" VerticalAlignment="Top"></Thumb>
-                                    <Thumb HorizontalAlignment="Right" VerticalAlignment="Top"></Thumb>
-
-                                    <Thumb HorizontalAlignment="Center" VerticalAlignment="Top"></Thumb>
-                                    <Thumb HorizontalAlignment="Center" VerticalAlignment="Bottom"></Thumb>
-                                    <Thumb HorizontalAlignment="Right" VerticalAlignment="Center"></Thumb>
-                                    <Thumb HorizontalAlignment="Left" VerticalAlignment="Center"></Thumb>
-
-                                    <Thumb HorizontalAlignment="Left" VerticalAlignment="Bottom"></Thumb>
-                                    <Thumb HorizontalAlignment="Center" VerticalAlignment="Bottom"></Thumb>
-                                    <Thumb HorizontalAlignment="Right" VerticalAlignment="Bottom"></Thumb>
-                                </Grid>
+                                <local:ControlManipulator TargetControl="{Binding}" />
                             </Grid>
-
-                            <Grid.ContextMenu>
-                                <ContextMenu
-                                    Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:ThumbnailPreview}, Path=EditMode, Converter={StaticResource BoolToVis}}">
-                                    <MenuItem Header="Maximieren"
-                                              Command="{x:Static thumbnify:ThumbnailPresetEditor.MaximizeControl}"
-                                              CommandParameter="{Binding}">
-                                        <MenuItem.Icon>
-                                            <wpf:MaterialIcon Kind="StretchToPageOutline"></wpf:MaterialIcon>
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                    <Separator />
-                                    <MenuItem Header="Vordergrund"
-                                              Command="{x:Static thumbnify:ThumbnailPresetEditor.OrderFirst}"
-                                              CommandParameter="{Binding}">
-                                        <MenuItem.Icon>
-                                            <wpf:MaterialIcon Kind="ChevronDoubleUp"></wpf:MaterialIcon>
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                    <MenuItem Header="Nach Oben"
-                                              Command="{x:Static thumbnify:ThumbnailPresetEditor.OrderUp}"
-                                              CommandParameter="{Binding}">
-                                        <MenuItem.Icon>
-                                            <wpf:MaterialIcon Kind="ChevronUp"></wpf:MaterialIcon>
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                    <MenuItem Header="Nach Unten"
-                                              Command="{x:Static thumbnify:ThumbnailPresetEditor.OrderDown}"
-                                              CommandParameter="{Binding}">
-                                        <MenuItem.Icon>
-                                            <wpf:MaterialIcon Kind="ChevronDown"></wpf:MaterialIcon>
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                    <MenuItem Header="Hintergrund"
-                                              Command="{x:Static thumbnify:ThumbnailPresetEditor.OrderLast}"
-                                              CommandParameter="{Binding}">
-                                        <MenuItem.Icon>
-                                            <wpf:MaterialIcon Kind="ChevronDoubleDown"></wpf:MaterialIcon>
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                    <Separator />
-                                    <MenuItem Header="Löschen"
-                                              Command="{x:Static thumbnify:ThumbnailPresetEditor.DeleteControl}"
-                                              CommandParameter="{Binding}">
-                                        <MenuItem.Icon>
-                                            <wpf:MaterialIcon Kind="DeleteOutline"></wpf:MaterialIcon>
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                </ContextMenu>
-                            </Grid.ContextMenu>
                         </Grid>
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type thumbnail:TextBoxPart}">
@@ -147,34 +71,18 @@
 
                             <Grid
                                 Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:ThumbnailPreview}, Path=EditMode, Converter={StaticResource BoolToVis}}">
-                                <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White"
-                                        Opacity=".3"
-                                        Visibility="{Binding IsSelected, Converter={StaticResource BoolToVis}}">
-                                </Border>
-                                <Grid Visibility="{Binding IsSelected, Converter={StaticResource BoolToVis}}">
-                                    <Thumb HorizontalAlignment="Left" VerticalAlignment="Top"></Thumb>
-                                    <Thumb HorizontalAlignment="Center" VerticalAlignment="Top"></Thumb>
-                                    <Thumb HorizontalAlignment="Right" VerticalAlignment="Top"></Thumb>
-
-                                    <Thumb HorizontalAlignment="Center" VerticalAlignment="Top"></Thumb>
-                                    <Thumb HorizontalAlignment="Center" VerticalAlignment="Bottom"></Thumb>
-                                    <Thumb HorizontalAlignment="Right" VerticalAlignment="Center"></Thumb>
-                                    <Thumb HorizontalAlignment="Left" VerticalAlignment="Center"></Thumb>
-
-                                    <Thumb HorizontalAlignment="Left" VerticalAlignment="Bottom"></Thumb>
-                                    <Thumb HorizontalAlignment="Center" VerticalAlignment="Bottom"></Thumb>
-                                    <Thumb HorizontalAlignment="Right" VerticalAlignment="Bottom"></Thumb>
-                                </Grid>
+                                <local:ControlManipulator TargetControl="{Binding}" />
                             </Grid>
-
-                            <TextBox VerticalAlignment="Stretch" HorizontalAlignment="Stretch" AcceptsReturn="True"
-                                     Text="{Binding Placeholder}"
-                                     Visibility="{Binding TextEditMode, Converter={StaticResource BoolToVis}}">
-                            </TextBox>
-
-                            <Grid.ContextMenu>
-                                <ContextMenu
-                                    Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:ThumbnailPreview}, Path=EditMode, Converter={StaticResource BoolToVis}}">
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.Resources>
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="Canvas.Left" Value="{Binding Left}"></Setter>
+                        <Setter Property="Canvas.Top" Value="{Binding Top}"></Setter>
+                        <Setter Property="ContextMenu">
+                            <Setter.Value>
+                                <ContextMenu>
                                     <MenuItem Header="Vordergrund"
                                               Command="{x:Static thumbnify:ThumbnailPresetEditor.OrderFirst}"
                                               CommandParameter="{Binding}">
@@ -204,10 +112,6 @@
                                         </MenuItem.Icon>
                                     </MenuItem>
                                     <Separator />
-                                    <MenuItem IsCheckable="True" IsChecked="{Binding TextEditMode}"
-                                              Header="Text bearbeiten">
-                                    </MenuItem>
-                                    <Separator />
                                     <MenuItem Header="Löschen"
                                               Command="{x:Static thumbnify:ThumbnailPresetEditor.DeleteControl}"
                                               CommandParameter="{Binding}">
@@ -216,14 +120,13 @@
                                         </MenuItem.Icon>
                                     </MenuItem>
                                 </ContextMenu>
-                            </Grid.ContextMenu>
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.Resources>
-                <ItemsControl.ItemContainerStyle>
-                    <Style TargetType="ContentPresenter">
-                        <Setter Property="Canvas.Left" Value="{Binding Left}"></Setter>
-                        <Setter Property="Canvas.Top" Value="{Binding Top}"></Setter>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=ThumbnailPreviewControl, Path=EditMode}" Value="False">
+                                <Setter Property="ContextMenu" Value="{x:Null}"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
                     </Style>
                 </ItemsControl.ItemContainerStyle>
                 <ItemsControl.ItemsPanel>

@@ -17,6 +17,7 @@ namespace Thumbnify.Data.Thumbnail {
         private double _height;
         private double _width;
         private bool _isSelected;
+        private int _order;
 
         public double Width {
             get => _width;
@@ -48,9 +49,12 @@ namespace Thumbnify.Data.Thumbnail {
             get => _isSelected;
             set => SetField(ref _isSelected, value);
         }
-
+        
         [JsonIgnore]
-        public abstract bool FormatingSupport { get; }
+        public int Order {
+            get => _order;
+            set => SetField(ref _order, value);
+        }
 
 
         public event PropertyChangedEventHandler? PropertyChanged;

@@ -10,6 +10,9 @@
         xmlns:converter="clr-namespace:Thumbnify.Converter"
         xmlns:colorPicker="clr-namespace:ColorPicker;assembly=ColorPicker"
         xmlns:lex="http://wpflocalizeextension.codeplex.com"
+        xmlns:thumbnail="clr-namespace:Thumbnify.Data.Thumbnail"
+        xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+        xmlns:system="clr-namespace:System;assembly=System.Runtime"
         WindowStartupLocation="CenterOwner"
         WindowState="Maximized"
         mc:Ignorable="d"
@@ -18,7 +21,7 @@
         lex:ResxLocalizationProvider.DefaultDictionary="Controls"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Style="{StaticResource Dark}"
-        Title="{lex:Loc ThumbnailEditor}" Height="450" Width="1270">
+        Title="{lex:Loc ThumbnailEditor}" Height="650" Width="1270">
     <Window.CommandBindings>
         <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.NewThumbnail}"
                         Executed="NewThumbnail_OnExecuted" />
@@ -26,20 +29,20 @@
         <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.AddTextbox}" Executed="AddTextbox_OnExecuted" />
 
         <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.OrderFirst}"
-                        CanExecute="ControlSelected_OnCanExecute" Executed="OrderFirst_OnExecuted" />
+                        CanExecute="OrderUp_CanExecute" Executed="OrderFirst_OnExecuted" />
         <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.OrderUp}"
-                        CanExecute="ControlSelected_OnCanExecute" Executed="OrderUp_OnExecuted" />
+                        CanExecute="OrderUp_CanExecute" Executed="OrderUp_OnExecuted" />
         <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.OrderDown}"
-                        CanExecute="ControlSelected_OnCanExecute" Executed="OrderDown_OnExecuted" />
+                        CanExecute="OrderDown_CanExecute" Executed="OrderDown_OnExecuted" />
         <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.OrderLast}"
-                        CanExecute="ControlSelected_OnCanExecute" Executed="OrderLast_OnExecuted" />
+                        CanExecute="OrderDown_CanExecute" Executed="OrderLast_OnExecuted" />
 
         <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.MaximizeControl}"
                         CanExecute="ControlSelected_OnCanExecute" Executed="MaximizeControl_OnExecuted" />
         <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.FontSizeInc}"
-                        CanExecute="SupportsFormatting_OnCanExecute" Executed="FontSizeInc_OnExecuted" />
+                        CanExecute="ControlSelected_OnCanExecute" Executed="FontSizeInc_OnExecuted" />
         <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.FontSizeDec}"
-                        CanExecute="SupportsFormatting_OnCanExecute" Executed="FontSizeDec_OnExecuted" />
+                        CanExecute="ControlSelected_OnCanExecute" Executed="FontSizeDec_OnExecuted" />
         <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.DeleteControl}"
                         CanExecute="ControlSelected_OnCanExecute" Executed="DeleteControl_OnExecuted">
         </CommandBinding>
@@ -51,6 +54,8 @@
         <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.SaveThumbnail}"
                         Executed="SaveThumbnail_OnExecuted">
         </CommandBinding>
+
+        <CommandBinding Command="{x:Static local:ThumbnailPresetEditor.BrowseImage}" Executed="BrowseImage_OnExecuted"></CommandBinding>
     </Window.CommandBindings>
     <Window.Resources>
         <converter:PercentConverter x:Key="PercentConverter" />
@@ -58,21 +63,29 @@
     </Window.Resources>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-        </Grid.RowDefinitions>
-        <StackPanel>
-            <StackPanel.Resources>
-                <Style TargetType="wpf:MaterialIcon">
-                    <Setter Property="Width" Value="16"></Setter>
-                    <Setter Property="Margin" Value="0"></Setter>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="250"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <controls:ThumbnailPreview Grid.Row="1" Thumbnail="{Binding Thumbnail}" Margin="16"
+                                   SelectedControl="{Binding SelectedControl, Mode=TwoWay}" EditMode="True" />
+
+        <GridSplitter HorizontalAlignment="Right" VerticalAlignment="Stretch" Width="3"></GridSplitter>
+
+        <Border Grid.Row="1" HorizontalAlignment="Left" CornerRadius="0,10,10,0" VerticalAlignment="Center"
+                Background="{StaticResource ControlBorder}" Padding="2,5">
+            <Border.Resources>
+                <Style TargetType="Button" BasedOn="{StaticResource SquareButton}">
+                    <Setter Property="Width" Value="32" />
+                    <Setter Property="Height" Value="32" />
                 </Style>
-                <Style TargetType="Slider">
-                    <Setter Property="VerticalAlignment" Value="Center"></Setter>
+                <Style TargetType="ToggleButton" BasedOn="{StaticResource SquareButton}">
+                    <Setter Property="Width" Value="32" />
+                    <Setter Property="Height" Value="32" />
                 </Style>
-            </StackPanel.Resources>
-            <ToolBar Header="">
+            </Border.Resources>
+            <StackPanel>
                 <Button Command="{x:Static local:ThumbnailPresetEditor.NewThumbnail}">
                     <wpf:MaterialIcon Kind="FilePlusOutline" />
                 </Button>
@@ -90,105 +103,11 @@
                     <wpf:MaterialIcon Kind="TextBoxPlusOutline" />
                 </Button>
                 <Separator />
-                <Button Command="{x:Static local:ThumbnailPresetEditor.OrderFirst}"
-                        CommandParameter="{Binding SelectedControl}">
-                    <wpf:MaterialIcon Kind="ChevronDoubleUp" />
-                </Button>
-                <Button Command="{x:Static local:ThumbnailPresetEditor.OrderUp}"
-                        CommandParameter="{Binding SelectedControl}">
-                    <wpf:MaterialIcon Kind="ChevronUp" />
-                </Button>
-                <Button Command="{x:Static local:ThumbnailPresetEditor.OrderDown}"
-                        CommandParameter="{Binding SelectedControl}">
-                    <wpf:MaterialIcon Kind="ChevronDown" />
-                </Button>
-                <Button Command="{x:Static local:ThumbnailPresetEditor.OrderLast}"
-                        CommandParameter="{Binding SelectedControl}">
-                    <wpf:MaterialIcon Kind="ChevronDoubleDown" />
-                </Button>
-                <Separator />
-                <Button Command="{x:Static local:ThumbnailPresetEditor.DeleteControl}"
-                        CommandParameter="{Binding SelectedControl}">
-                    <wpf:MaterialIcon Kind="DeleteOutline"></wpf:MaterialIcon>
-                </Button>
-                <Separator />
                 <ToggleButton IsChecked="{Binding ThumbnailPreview}">
-                    <WrapPanel>
-                        <wpf:MaterialIcon Kind="ImageArea"></wpf:MaterialIcon>
-                        <TextBlock Text="{lex:Loc Preview}"></TextBlock>
-                    </WrapPanel>
+                    <wpf:MaterialIcon Kind="Eye"></wpf:MaterialIcon>
                 </ToggleButton>
-            </ToolBar>
-            <ToolBar>
-                <Grid IsEnabled="{Binding SelectedControl.FormatingSupport, FallbackValue=False}">
-                    <StackPanel Orientation="Horizontal" DataContext="{Binding SelectedControl}">
-                        <wpf:MaterialIcon Kind="FormatColorFill" Foreground="Black" />
-                        <colorPicker:PortableColorPicker Width="32" SelectedColor="{Binding Foreground, Mode=TwoWay}"></colorPicker:PortableColorPicker>
-                    </StackPanel>
-                </Grid>
-                <wpf:MaterialIcon Kind="FormatFont" Foreground="Black"></wpf:MaterialIcon>
-                <ComboBox Width="200" x:Name="FontFamilies"
-                          IsEnabled="{Binding SelectedControl.FormatingSupport,FallbackValue=False}"
-                          SelectedItem="{Binding SelectedControl.FontFace}">
-                    <ComboBox.ItemTemplateSelector>
-                        <converter:ComboBoxTemplateSelector>
-                            <converter:ComboBoxTemplateSelector.DropdownItemsTemplate>
-                                <DataTemplate DataType="{x:Type FontFamily}">
-                                    <TextBlock Text="{Binding Source}" FontFamily="{Binding}" FontSize="16"></TextBlock>
-                                </DataTemplate>
-                            </converter:ComboBoxTemplateSelector.DropdownItemsTemplate>
-                            <converter:ComboBoxTemplateSelector.SelectedItemTemplate>
-                                <DataTemplate DataType="{x:Type FontFamily}">
-                                    <TextBlock Text="{Binding Source}" />
-                                </DataTemplate>
-                            </converter:ComboBoxTemplateSelector.SelectedItemTemplate>
-                        </converter:ComboBoxTemplateSelector>
-                    </ComboBox.ItemTemplateSelector>
-                </ComboBox>
-                <wpf:MaterialIcon Kind="FontSize" Foreground="Black"></wpf:MaterialIcon>
-                <ComboBox Width="50" x:Name="FontSizes" Text="{Binding SelectedControl.FontSize}"
-                          IsEnabled="{Binding SelectedControl.FormatingSupport, FallbackValue=False}" IsEditable="True">
-                </ComboBox>
-                <Button Command="{x:Static local:ThumbnailPresetEditor.FontSizeInc}"
-                        CommandParameter="{Binding SelectedControl}">
-                    <wpf:MaterialIcon Kind="FormatFontSizeIncrease"></wpf:MaterialIcon>
-                </Button>
-                <Button Command="{x:Static local:ThumbnailPresetEditor.FontSizeDec}"
-                        CommandParameter="{Binding SelectedControl}">
-                    <wpf:MaterialIcon Kind="FormatFontSizeDecrease"></wpf:MaterialIcon>
-                </Button>
-
-                <Separator />
-                <wpf:MaterialIcon Kind="TextShadow" Foreground="Black"></wpf:MaterialIcon>
-                <Grid IsEnabled="{Binding SelectedControl.FormatingSupport, FallbackValue=False}">
-                    <StackPanel Orientation="Horizontal" DataContext="{Binding SelectedControl}" Margin="5,0">
-                        <wpf:MaterialIcon Kind="FormatColorFill" Foreground="Black" />
-                        <colorPicker:PortableColorPicker Width="32" SelectedColor="{Binding ShadowColor, Mode=TwoWay}"></colorPicker:PortableColorPicker>
-                    </StackPanel>
-                </Grid>
-                <wpf:MaterialIcon Kind="RadiusOutline" Foreground="Black" />
-                <TextBox IsEnabled="{Binding SelectedControl.FormatingSupport}" Width="50"
-                         Text="{Binding SelectedControl.ShadowBlur, UpdateSourceTrigger=PropertyChanged}" />
-                <wpf:MaterialIcon Kind="Blur" Foreground="Black" />
-                <TextBox IsEnabled="{Binding SelectedControl.FormatingSupport}" Width="50"
-                         Text="{Binding SelectedControl.ShadowRadius, UpdateSourceTrigger=PropertyChanged}" />
-                <wpf:MaterialIcon Kind="Rotate360" Foreground="Black" />
-                <Slider Width="70" Minimum="0" Maximum="360" IsSnapToTickEnabled="False"
-                        Value="{Binding SelectedControl.ShadowDirection, UpdateSourceTrigger=PropertyChanged}"
-                        IsEnabled="{Binding SelectedControl.FormatingSupport, FallbackValue=False}">
-                </Slider>
-                <wpf:MaterialIcon Kind="WaterOpacity" Foreground="Black" />
-                <Slider Width="70" Minimum="0" Maximum="1" IsSnapToTickEnabled="False"
-                        Value="{Binding SelectedControl.ShadowOpacity, UpdateSourceTrigger=PropertyChanged}"
-                        IsEnabled="{Binding SelectedControl.FormatingSupport, FallbackValue=False}">
-                </Slider>
-                <TextBlock Width="50" VerticalAlignment="Center" Foreground="Black" Margin="5,0"
-                           Text="{Binding SelectedControl.ShadowOpacity, Converter={StaticResource PercentConverter}, StringFormat={}{0:0}%}" />
-            </ToolBar>
-        </StackPanel>
-
-        <controls:ThumbnailPreview Grid.Row="1" Thumbnail="{Binding Thumbnail}"
-                                   SelectedControl="{Binding SelectedControl, Mode=TwoWay}" EditMode="True" />
+            </StackPanel>
+        </Border>
 
         <StackPanel Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom">
             <Border Width="210" Height="118" Margin="10" HorizontalAlignment="Right"
@@ -216,6 +135,233 @@
             </Border>
         </StackPanel>
 
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*"></RowDefinition>
+                <RowDefinition Height="2*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <TextBlock>Properties</TextBlock>
 
+                <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" Margin="0,3"
+                              VerticalScrollBarVisibility="Auto">
+                    <ContentPresenter Content="{Binding SelectedControl}" Margin="5,0">
+                        <ContentPresenter.Resources>
+                            <DataTemplate DataType="{x:Type thumbnail:ImagePart}">
+                                <StackPanel>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBox Text="{Binding Name}" IsReadOnly="True">
+                                        </TextBox>
+                                        <Button Grid.Column="1" Margin="4,0"
+                                                Style="{StaticResource SquareButton}"
+                                                Command="{x:Static local:ThumbnailPresetEditor.BrowseImage}"
+                                                CommandParameter="{Binding}">
+                                            <wpf:MaterialIcon Kind="FolderOpen"></wpf:MaterialIcon>
+                                        </Button>
+                                    </Grid>
+                                </StackPanel>
+                            </DataTemplate>
+
+                            <DataTemplate DataType="{x:Type thumbnail:TextBoxPart}">
+                                <StackPanel>
+                                    <colorPicker:StandardColorPicker ShowAlpha="False" ShowFractionalPart="False"
+                                                                     SelectedColor="{Binding Foreground, Mode=TwoWay}"
+                                                                     SecondaryColor="{Binding ShadowColor, Mode=TwoWay}">
+                                        <colorPicker:StandardColorPicker.Style>
+                                            <Style TargetType="colorPicker:StandardColorPicker"
+                                                   BasedOn="{StaticResource DefaultColorPickerStyle}">
+                                                <Style.Resources>
+                                                    <ResourceDictionary>
+                                                        <Style TargetType="Label">
+                                                            <Setter Property="Foreground"
+                                                                    Value="{StaticResource ControlForeground}" />
+                                                        </Style>
+                                                        <Style TargetType="Grid">
+                                                            <Style.Triggers>
+                                                                <Trigger Property="Name" Value="MainGrid">
+                                                                    <Setter Property="Background"
+                                                                            Value="Transparent" />
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </ResourceDictionary>
+                                                </Style.Resources>
+                                            </Style>
+                                        </colorPicker:StandardColorPicker.Style>
+                                    </colorPicker:StandardColorPicker>
+                                    <TextBlock>Font</TextBlock>
+                                    <ComboBox SelectedItem="{Binding FontFace}"
+                                              ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:ThumbnailPresetEditor}, Path=FontFamilies}">
+                                        <ComboBox.ItemTemplateSelector>
+                                            <converter:ComboBoxTemplateSelector>
+                                                <converter:ComboBoxTemplateSelector.DropdownItemsTemplate>
+                                                    <DataTemplate DataType="{x:Type FontFamily}">
+                                                        <TextBlock Text="{Binding Source}" FontFamily="{Binding}"
+                                                                   FontSize="16">
+                                                        </TextBlock>
+                                                    </DataTemplate>
+                                                </converter:ComboBoxTemplateSelector.DropdownItemsTemplate>
+                                                <converter:ComboBoxTemplateSelector.SelectedItemTemplate>
+                                                    <DataTemplate DataType="{x:Type FontFamily}">
+                                                        <TextBlock Text="{Binding Source}" />
+                                                    </DataTemplate>
+                                                </converter:ComboBoxTemplateSelector.SelectedItemTemplate>
+                                            </converter:ComboBoxTemplateSelector>
+                                        </ComboBox.ItemTemplateSelector>
+                                    </ComboBox>
+
+                                    <Grid Margin="0,5">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock VerticalAlignment="Center">Size</TextBlock>
+                                        <ComboBox Grid.Column="1" Margin="5,0"
+                                                  ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=local:ThumbnailPresetEditor}, Path=FontSizes}"
+                                                  Text="{Binding FontSize}" IsEditable="True" />
+                                        <Button Command="{x:Static local:ThumbnailPresetEditor.FontSizeInc}"
+                                                Grid.Column="2"
+                                                CommandParameter="{Binding}" Style="{StaticResource FirstButton}">
+                                            <wpf:MaterialIcon Kind="FormatFontSizeIncrease" Width="16"></wpf:MaterialIcon>
+                                        </Button>
+                                        <Button Command="{x:Static local:ThumbnailPresetEditor.FontSizeDec}"
+                                                Grid.Column="3"
+                                                CommandParameter="{Binding}" Style="{StaticResource LastButton}">
+                                            <wpf:MaterialIcon Kind="FormatFontSizeDecrease" Width="16"></wpf:MaterialIcon>
+                                        </Button>
+                                    </Grid>
+
+                                    <TextBlock>Text</TextBlock>
+                                    <TextBox AcceptsReturn="True" AcceptsTab="True"
+                                             Text="{Binding Placeholder, UpdateSourceTrigger=PropertyChanged}"
+                                             Height="150" />
+
+                                    <StackPanel Margin="0,5">
+                                        <TextBlock>Shadow</TextBlock>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="18"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                <ColumnDefinition Width="18"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+
+                                            <wpf:MaterialIcon Kind="RadiusOutline" />
+                                            <TextBox Text="{Binding ShadowBlur, UpdateSourceTrigger=PropertyChanged}"
+                                                     Grid.Column="1" />
+                                            <wpf:MaterialIcon Kind="Blur" Grid.Column="2" />
+                                            <TextBox Text="{Binding ShadowRadius, UpdateSourceTrigger=PropertyChanged}"
+                                                     Grid.Column="3" />
+                                        </Grid>
+
+                                        <Grid Margin="0,5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="18"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+
+                                            <wpf:MaterialIcon Kind="Rotate360" />
+                                            <Slider Minimum="0" Maximum="360" IsSnapToTickEnabled="False"
+                                                    Value="{Binding ShadowDirection, UpdateSourceTrigger=PropertyChanged}"
+                                                    Grid.Column="1">
+                                            </Slider>
+                                        </Grid>
+
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="18"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                <ColumnDefinition Width="50"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+
+                                            <wpf:MaterialIcon Kind="WaterOpacity" />
+                                            <Slider Minimum="0" Maximum="1" IsSnapToTickEnabled="False" Grid.Column="1"
+                                                    Value="{Binding ShadowOpacity, UpdateSourceTrigger=PropertyChanged}">
+                                            </Slider>
+                                            <TextBlock VerticalAlignment="Center" Margin="5,0" Grid.Column="2"
+                                                       Text="{Binding ShadowOpacity, Converter={StaticResource PercentConverter}, StringFormat={}{0:0}%}" />
+                                        </Grid>
+                                    </StackPanel>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ContentPresenter.Resources>
+                    </ContentPresenter>
+                </ScrollViewer>
+            </Grid>
+
+            <GridSplitter VerticalAlignment="Bottom" Height="3" HorizontalAlignment="Stretch" />
+
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <TextBlock>Elements</TextBlock>
+
+                <ListBox SelectedItem="{Binding SelectedControl}" ItemsSource="{Binding ReversedControls}" Grid.Row="1"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type thumbnail:ControlPart}">
+                            <StackPanel Orientation="Horizontal">
+                                <ContentPresenter Content="{Binding}" Margin="5,0">
+                                    <ContentPresenter.Resources>
+                                        <DataTemplate DataType="{x:Type thumbnail:TextBoxPart}">
+                                            <wpf:MaterialIcon Kind="TextBox" Width="16" />
+                                        </DataTemplate>
+                                        <DataTemplate DataType="{x:Type thumbnail:ImagePart}">
+                                            <wpf:MaterialIcon Kind="Image" Width="16" />
+                                        </DataTemplate>
+                                    </ContentPresenter.Resources>
+                                </ContentPresenter>
+                                <TextBlock Text="{Binding Name}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <StackPanel Grid.Row="2" HorizontalAlignment="Left" Orientation="Horizontal" Margin="5">
+                    <Button Command="{x:Static local:ThumbnailPresetEditor.OrderFirst}"
+                            CommandParameter="{Binding SelectedControl}"
+                            Style="{StaticResource FirstButton}">
+                        <wpf:MaterialIcon Kind="ChevronDoubleUp" />
+                    </Button>
+                    <Button Command="{x:Static local:ThumbnailPresetEditor.OrderUp}"
+                            CommandParameter="{Binding SelectedControl}"
+                            Style="{StaticResource MiddleButton}">
+                        <wpf:MaterialIcon Kind="ChevronUp" />
+                    </Button>
+                    <Button Command="{x:Static local:ThumbnailPresetEditor.OrderDown}"
+                            CommandParameter="{Binding SelectedControl}"
+                            Style="{StaticResource MiddleButton}">
+                        <wpf:MaterialIcon Kind="ChevronDown" />
+                    </Button>
+                    <Button Command="{x:Static local:ThumbnailPresetEditor.OrderLast}"
+                            CommandParameter="{Binding SelectedControl}" Style="{StaticResource LastButton}">
+                        <wpf:MaterialIcon Kind="ChevronDoubleDown" />
+                    </Button>
+                </StackPanel>
+
+
+                <Button Command="{x:Static local:ThumbnailPresetEditor.DeleteControl}"
+                        CommandParameter="{Binding SelectedControl}" Grid.Row="2" HorizontalAlignment="Right"
+                        Margin="5" Style="{StaticResource SingleButton}">
+                    <wpf:MaterialIcon Width="16" Kind="DeleteOutline"></wpf:MaterialIcon>
+                </Button>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>

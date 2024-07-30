@@ -12,7 +12,5 @@ namespace Thumbnify.Data.Thumbnail {
             get => _imageSource;
             set => SetField(ref _imageSource, value);
         }
-
-        public override bool FormatingSupport => false;
     }
 }

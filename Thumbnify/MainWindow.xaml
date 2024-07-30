@@ -184,6 +184,11 @@
 
                                                 <Grid.ContextMenu>
                                                     <ContextMenu>
+                                                        <ContextMenu.Resources>
+                                                            <Style TargetType="mi:MaterialIcon">
+                                                                <Setter Property="Margin" Value="0"></Setter>
+                                                            </Style>
+                                                        </ContextMenu.Resources>
                                                         <MenuItem Header="{lex:Loc EditMediaPart}"
                                                                   Command="{x:Static local:MainWindow.EditMediaPart}"
                                                                   CommandParameter="{Binding}">

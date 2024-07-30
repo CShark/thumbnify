@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System.ComponentModel;
+using System.IO;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -29,11 +31,30 @@ namespace Thumbnify {
         public static RoutedUICommand AddImage { get; } = new();
         public static RoutedUICommand AddTextbox { get; } = new();
 
+        public static RoutedUICommand BrowseImage { get; } = new();
+
         public static RoutedUICommand DeleteControl { get; } = new();
 
         public static readonly DependencyProperty ThumbnailProperty = DependencyProperty.Register(
             nameof(Thumbnail), typeof(ThumbnailData), typeof(ThumbnailPresetEditor),
-            new PropertyMetadata(default(ThumbnailData)));
+            new PropertyMetadata(default(ThumbnailData), (o, e) => {
+                var obj = ((ThumbnailPresetEditor)o);
+                if (e.NewValue != null) {
+                    var data = ((ThumbnailData)e.NewValue);
+
+                    var view = new CollectionViewSource {
+                        Source = data.Controls
+                    };
+                    view.IsLiveSortingRequested = true;
+                    view.SortDescriptions.Add(new SortDescription(nameof(ControlPart.Order),
+                        ListSortDirection.Descending));
+
+                    obj.ReversedControls = view.View;
+                    obj.RebuildControlOrder();
+                } else {
+                    obj.ReversedControls = null;
+                }
+            }));
 
         public ThumbnailData Thumbnail {
             get { return (ThumbnailData)GetValue(ThumbnailProperty); }
@@ -66,13 +87,25 @@ namespace Thumbnify {
             set { SetValue(PreviewMetadataProperty, value); }
         }
 
+        public static readonly DependencyProperty ReversedControlsProperty = DependencyProperty.Register(
+            nameof(ReversedControls), typeof(ICollectionView), typeof(ThumbnailPresetEditor),
+            new PropertyMetadata(default(ICollectionView)));
+
+        public ICollectionView ReversedControls {
+            get { return (ICollectionView)GetValue(ReversedControlsProperty); }
+            set { SetValue(ReversedControlsProperty, value); }
+        }
+
+        public List<FontFamily> FontFamilies { get; }
+
+        public List<int> FontSizes { get; }
+
         public ThumbnailPresetEditor() {
             Thumbnail = new();
+            FontFamilies = Fonts.SystemFontFamilies.OrderBy(f => f.Source).ToList();
+            FontSizes = new[] { 10, 12, 16, 18, 20, 24, 28, 32, 48, 64, 72, 94, 128 }.ToList();
 
             InitializeComponent();
-
-            FontFamilies.ItemsSource = Fonts.SystemFontFamilies.OrderBy(f => f.Source);
-            FontSizes.ItemsSource = new[] { 10, 12, 16, 18, 20, 24, 28, 32, 48, 64, 72, 94, 128 };
         }
 
 
@@ -82,38 +115,35 @@ namespace Thumbnify {
         }
 
         private void AddImage_OnExecuted(object sender, ExecutedRoutedEventArgs e) {
-            var dlg = new Ookii.Dialogs.Wpf.VistaOpenFileDialog();
-            dlg.Filter = "Bild-Dateien|*.jpg;*.jpeg;*.png";
-            dlg.Title = "Bild öffnen";
+            var file = PickImageFile();
 
-            if (dlg.ShowDialog() == true) {
-                if (File.Exists(dlg.FileName)) {
-                    var ctrl = new ImagePart();
+            if (file != null) {
+                var ctrl = new ImagePart();
 
-                    using (var stream = new FileStream(dlg.FileName, FileMode.Open, FileAccess.Read)) {
-                        var frame = BitmapFrame.Create(stream, BitmapCreateOptions.DelayCreation,
-                            BitmapCacheOption.OnDemand);
-                        ctrl.Width = frame.PixelWidth;
-                        ctrl.Height = frame.PixelHeight;
+                using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read)) {
+                    var frame = BitmapFrame.Create(stream, BitmapCreateOptions.DelayCreation,
+                        BitmapCacheOption.OnDemand);
+                    ctrl.Width = frame.PixelWidth;
+                    ctrl.Height = frame.PixelHeight;
 
-                        if (ctrl.Width > 1920) {
-                            ctrl.Height *= 1920 / ctrl.Width;
-                            ctrl.Width = 1920;
-                        }
-
-                        if (ctrl.Height > 1080) {
-                            ctrl.Width *= 1080 / ctrl.Height;
-                            ctrl.Height = 1080;
-                        }
+                    if (ctrl.Width > 1920) {
+                        ctrl.Height *= 1920 / ctrl.Width;
+                        ctrl.Width = 1920;
                     }
 
-                    ctrl.ImageSource = dlg.FileName;
-                    ctrl.Name = Path.GetFileNameWithoutExtension(dlg.FileName);
-
-                    Thumbnail.Controls.Add(ctrl);
+                    if (ctrl.Height > 1080) {
+                        ctrl.Width *= 1080 / ctrl.Height;
+                        ctrl.Height = 1080;
+                    }
                 }
+
+                ctrl.ImageSource = file;
+                ctrl.Name = Path.GetFileName(file);
+
+                Thumbnail.Controls.Add(ctrl);
             }
         }
+
 
         private void AddTextbox_OnExecuted(object sender, ExecutedRoutedEventArgs e) {
             var ctrl = new TextBoxPart();
@@ -136,40 +166,69 @@ namespace Thumbnify {
             e.CanExecute = (e.Parameter as ControlPart) != null;
         }
 
-        private void SupportsFormatting_OnCanExecute(object sender, CanExecuteRoutedEventArgs e) {
-            e.CanExecute = (e.Parameter as ControlPart)?.FormatingSupport == true;
-        }
-
-
         private void OrderFirst_OnExecuted(object sender, ExecutedRoutedEventArgs e) {
             if (e.Parameter is ControlPart ctrl) {
+                var selected = SelectedControl;
                 Thumbnail.Controls.Remove(ctrl);
                 Thumbnail.Controls.Add(ctrl);
+                RebuildControlOrder();
+                SelectedControl = selected;
             }
         }
 
         private void OrderUp_OnExecuted(object sender, ExecutedRoutedEventArgs e) {
             if (e.Parameter is ControlPart ctrl) {
+                var selected = SelectedControl;
                 var idx = Thumbnail.Controls.IndexOf(ctrl);
                 Thumbnail.Controls.Remove(ctrl);
                 idx = Math.Clamp(idx + 1, 0, Thumbnail.Controls.Count);
                 Thumbnail.Controls.Insert(idx, ctrl);
+                RebuildControlOrder();
+                SelectedControl = selected;
+            }
+        }
+
+        private void OrderUp_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
+            e.CanExecute = false;
+
+            if (e.Parameter is ControlPart ctrl) {
+                e.CanExecute = ctrl.Order < Thumbnail.Controls.Count - 1;
             }
         }
 
         private void OrderDown_OnExecuted(object sender, ExecutedRoutedEventArgs e) {
             if (e.Parameter is ControlPart ctrl) {
+                var selected = SelectedControl;
                 var idx = Thumbnail.Controls.IndexOf(ctrl);
                 Thumbnail.Controls.Remove(ctrl);
                 idx = Math.Clamp(idx - 1, 0, Thumbnail.Controls.Count);
                 Thumbnail.Controls.Insert(idx, ctrl);
+                RebuildControlOrder();
+                SelectedControl = selected;
             }
         }
 
         private void OrderLast_OnExecuted(object sender, ExecutedRoutedEventArgs e) {
             if (e.Parameter is ControlPart ctrl) {
+                var selected = SelectedControl;
                 Thumbnail.Controls.Remove(ctrl);
                 Thumbnail.Controls.Insert(0, ctrl);
+                RebuildControlOrder();
+                SelectedControl = selected;
+            }
+        }
+
+        private void OrderDown_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
+            e.CanExecute = false;
+
+            if (e.Parameter is ControlPart ctrl) {
+                e.CanExecute = ctrl.Order > 0;
+            }
+        }
+
+        private void RebuildControlOrder() {
+            for (int i = 0; i < Thumbnail.Controls.Count; i++) {
+                Thumbnail.Controls[i].Order = i;
             }
         }
 
@@ -240,6 +299,32 @@ namespace Thumbnify {
 
                 Thumbnail = copy;
             }
+        }
+
+        private void BrowseImage_OnExecuted(object sender, ExecutedRoutedEventArgs e) {
+            if (e.Parameter is ImagePart img) {
+                var file = PickImageFile(img.ImageSource);
+
+                if (file != null) {
+                    img.ImageSource = file;
+                    img.Name = Path.GetFileName(file);
+                }
+            }
+        }
+
+        private string? PickImageFile(string? file = null) {
+            var dlg = new Ookii.Dialogs.Wpf.VistaOpenFileDialog();
+            dlg.Filter = "Bild-Dateien|*.jpg;*.jpeg;*.png";
+            dlg.Title = "Bild öffnen";
+            dlg.FileName = file;
+
+            if (dlg.ShowDialog() == true) {
+                if (File.Exists(dlg.FileName)) {
+                    return dlg.FileName;
+                }
+            }
+
+            return null;
         }
     }
 }

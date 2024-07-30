@@ -110,6 +110,7 @@ namespace Thumbnify.Data {
 
             LogMessages = new();
             _logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
                 .WriteTo.Sink(LogMessages)
                 .CreateLogger();
             _logger.Information("Starting graph");

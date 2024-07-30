@@ -40,10 +40,6 @@ namespace Thumbnify.Controls {
             new PropertyMetadata(default(ControlPart?), (o, args) => {
                 if (args.OldValue is ControlPart ctrlOld) {
                     ctrlOld.IsSelected = false;
-
-                    if (args.OldValue is TextBoxPart txt) {
-                        txt.TextEditMode = false;
-                    }
                 }
 
 
@@ -99,7 +95,6 @@ namespace Thumbnify.Controls {
 
         private void Ctrl_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
             _ctrlDrag = false;
-            _dragAspect = null;
         }
 
         private void Ctrl_OnMouseMove(object sender, MouseEventArgs e) {
@@ -112,135 +107,12 @@ namespace Thumbnify.Controls {
                 }
             } else {
                 _ctrlDrag = false;
-                _dragAspect = null;
             }
         }
 
         private void ThumbnailPreview_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
             SelectedControl = null;
             _ctrlDrag = false;
-            _dragAspect = null;
         }
-
-        #region Dragging
-
-        private Action<double>? _dragXHandler;
-
-        private Action<double>? _dragYHandler;
-
-        private Action<double>? _aspectXHandler;
-
-        private Action<double>? _aspectYHandler;
-
-        private double? _dragAspect;
-
-        private void ThumbDragStart_OnHandler(object sender, DragStartedEventArgs e) {
-            if (sender is FrameworkElement thumb && EditMode) {
-                _dragXHandler = null;
-                _dragYHandler = null;
-                _aspectXHandler = null;
-                _aspectYHandler = null;
-
-                if (thumb.HorizontalAlignment == HorizontalAlignment.Left) {
-                    _dragXHandler = x => {
-                        var left = SelectedControl.Left + x;
-                        var right = SelectedControl.Left + SelectedControl.Width;
-
-                        SelectedControl.Left = Math.Clamp(left, 0, SelectedControl.Left + SelectedControl.Width - 20);
-
-                        var width = right - SelectedControl.Left;
-                        SelectedControl.Width = Math.Clamp(width, 20, 1920 - SelectedControl.Left);
-                    };
-
-                    _aspectXHandler = aspect => {
-                        var right = SelectedControl.Left + SelectedControl.Width;
-                        var width = SelectedControl.Height / aspect;
-                        var left = right - width;
-
-                        SelectedControl.Left = Math.Clamp(left, 0, right - 20);
-                        SelectedControl.Width = right - SelectedControl.Left;
-                    };
-                } else if (thumb.HorizontalAlignment == HorizontalAlignment.Right) {
-                    _dragXHandler = x => {
-                        SelectedControl.Width += x;
-
-                        SelectedControl.Width = Math.Clamp(SelectedControl.Width, 20, 1920 - SelectedControl.Left);
-                    };
-
-                    _aspectXHandler = aspect => {
-                        var width = SelectedControl.Height / aspect;
-                        SelectedControl.Width = Math.Clamp(width, 20, 1920 - SelectedControl.Left);
-                    };
-                }
-
-                if (thumb.VerticalAlignment == VerticalAlignment.Top) {
-                    _dragYHandler = y => {
-                        var top = SelectedControl.Top + y;
-                        var bottom = SelectedControl.Top + SelectedControl.Height;
-
-                        SelectedControl.Top = Math.Clamp(top, 0, SelectedControl.Top + SelectedControl.Height - 20);
-
-                        var height = bottom - SelectedControl.Top;
-                        SelectedControl.Height = Math.Clamp(height, 20, 1080 - SelectedControl.Top);
-                    };
-
-                    _aspectYHandler = aspect => {
-                        var bottom = SelectedControl.Top + SelectedControl.Height;
-                        var height = SelectedControl.Width * aspect;
-
-                        var top = bottom - height;
-
-                        SelectedControl.Top = Math.Clamp(top, 0, bottom - 20);
-                        SelectedControl.Height = bottom - SelectedControl.Top;
-                    };
-                } else if (thumb.VerticalAlignment == VerticalAlignment.Bottom) {
-                    _dragYHandler = y => {
-                        SelectedControl.Height += y;
-
-                        SelectedControl.Height = Math.Clamp(SelectedControl.Height, 20, 1080 - SelectedControl.Top);
-                    };
-
-                    _aspectYHandler = aspect => {
-                        var height = SelectedControl.Width * aspect;
-                        SelectedControl.Height = Math.Clamp(height, 20, 1080 - SelectedControl.Top);
-                    };
-                }
-            }
-        }
-
-        private void ThumbDragMove_OnHandler(object sender, DragDeltaEventArgs e) {
-            if (!EditMode) return;
-
-            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)) {
-                if (_dragAspect == null) {
-                    _dragAspect = SelectedControl.Height / SelectedControl.Width;
-                }
-
-                if (_dragXHandler != null) {
-                    _dragXHandler?.Invoke(e.HorizontalChange);
-                    _aspectYHandler?.Invoke(_dragAspect.Value);
-                    _aspectXHandler?.Invoke(_dragAspect.Value);
-                } else {
-                    _dragYHandler?.Invoke(e.VerticalChange);
-                    _aspectXHandler?.Invoke(_dragAspect.Value);
-                    _aspectYHandler?.Invoke(_dragAspect.Value);
-                }
-            } else {
-                _dragXHandler?.Invoke(e.HorizontalChange);
-                _dragYHandler?.Invoke(e.VerticalChange);
-
-                _dragAspect = null;
-            }
-        }
-
-        private void ThumbDragEnd_OnHandler(object sender, DragCompletedEventArgs e) {
-            _dragXHandler = null;
-            _dragYHandler = null;
-            _aspectXHandler = null;
-            _aspectYHandler = null;
-            _dragAspect = null;
-        }
-
-        #endregion
     }
 }

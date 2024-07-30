@@ -16,6 +16,7 @@
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         mc:Ignorable="d"
         ResizeMode="NoResize"
+        Style="{StaticResource Dark}"
         Title="{lex:Loc Settings}" Height="450" Width="300">
     <Grid>
         <Grid.ColumnDefinitions>

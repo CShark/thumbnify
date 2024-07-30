@@ -67,18 +67,10 @@ namespace Thumbnify.Data.Thumbnail {
             set => SetField(ref _shadowBlur, value);
         }
 
-        public override bool FormatingSupport => true;
-
         [JsonIgnore]
         public FontFamily FontFace {
             get => new(FontFamily);
             set => FontFamily = value.Source;
-        }
-
-        [JsonIgnore]
-        public bool TextEditMode {
-            get => _textEditMode;
-            set => SetField(ref _textEditMode, value);
         }
     }
 }

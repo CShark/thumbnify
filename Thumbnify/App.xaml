@@ -141,6 +141,7 @@
                         </Border>
                         <ContentPresenter Name="HeaderHost"
                                           Grid.Column="1"
+                                          VerticalAlignment="Center"
                                           ContentSource="Header"
                                           RecognizesAccessKey="True" />
                         <TextBlock x:Name="InputGestureText"
@@ -184,7 +185,7 @@
                     <Trigger Property="IsEnabled"
                              Value="false">
                         <Setter Property="Foreground"
-                                Value="#0f3c5a" />
+                                Value="{StaticResource ControlForegroundDark}" />
                     </Trigger>
                 </ControlTemplate.Triggers>
             </ControlTemplate>
@@ -209,6 +210,7 @@
                                           ContentSource="Icon" />
                         <ContentPresenter Name="HeaderHost"
                                           Grid.Column="1"
+                                          VerticalAlignment="Center"
                                           ContentSource="Header"
                                           RecognizesAccessKey="True" />
                         <TextBlock x:Name="InputGestureText"
@@ -269,7 +271,7 @@
                     <Trigger Property="IsEnabled"
                              Value="false">
                         <Setter Property="Foreground"
-                                Value="#0f3c5a" />
+                                Value="{StaticResource ControlForegroundDark}" />
                     </Trigger>
                 </ControlTemplate.Triggers>
             </ControlTemplate>
@@ -704,7 +706,14 @@
                                             </Storyboard>
                                         </VisualState>
                                         <VisualState Name="Pressed" />
-                                        <VisualState Name="Disabled" />
+                                        <VisualState Name="Disabled">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.3" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
                                     </VisualStateGroup>
                                     <VisualStateGroup Name="FocusStates">
                                         <VisualState Name="Unfocused" />
@@ -727,7 +736,6 @@
             <Style x:Key="FirstButton" TargetType="ContentControl">
                 <Setter Property="MinWidth" Value="30"></Setter>
                 <Setter Property="Height" Value="24"></Setter>
-                <Setter Property="FontSize" Value="12"></Setter>
                 <Setter Property="Foreground" Value="{StaticResource ControlForeground}"></Setter>
                 <Setter Property="Margin" Value="1,0"></Setter>
 
@@ -775,7 +783,14 @@
                                             </Storyboard>
                                         </VisualState>
                                         <VisualState Name="Pressed" />
-                                        <VisualState Name="Disabled" />
+                                        <VisualState Name="Disabled">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.3" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
                                     </VisualStateGroup>
                                     <VisualStateGroup Name="FocusStates">
                                         <VisualState Name="Unfocused" />
@@ -798,7 +813,6 @@
             <Style x:Key="LastButton" TargetType="ContentControl">
                 <Setter Property="MinWidth" Value="30"></Setter>
                 <Setter Property="Height" Value="24"></Setter>
-                <Setter Property="FontSize" Value="12"></Setter>
                 <Setter Property="Foreground" Value="{StaticResource ControlForeground}"></Setter>
                 <Setter Property="Margin" Value="1,0"></Setter>
 
@@ -839,7 +853,14 @@
                                             </Storyboard>
                                         </VisualState>
                                         <VisualState Name="Pressed" />
-                                        <VisualState Name="Disabled" />
+                                        <VisualState Name="Disabled">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.3" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
                                     </VisualStateGroup>
                                     <VisualStateGroup Name="FocusStates">
                                         <VisualState Name="Unfocused" />
@@ -862,7 +883,6 @@
             <Style x:Key="SquareButton" TargetType="ContentControl">
                 <Setter Property="Width" Value="24"></Setter>
                 <Setter Property="Height" Value="24"></Setter>
-                <Setter Property="FontSize" Value="10"></Setter>
                 <Setter Property="Margin" Value="2"></Setter>
                 <Setter Property="Foreground" Value="{StaticResource ControlForeground}" />
                 <Setter Property="Background" Value="{StaticResource ControlBackground}" />
@@ -875,17 +895,9 @@
                                 <Border Background="{TemplateBinding Background}" BorderThickness="1"
                                         BorderBrush="{TemplateBinding BorderBrush}" CornerRadius="4">
                                 </Border>
-                                <Border CornerRadius="4" Opacity=".1" x:Name="Overlay">
-                                    <Border.Background>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                            <GradientStop Color="White" Offset="0"></GradientStop>
-                                            <GradientStop Color="Black" Offset="1"></GradientStop>
-                                        </LinearGradientBrush>
-                                    </Border.Background>
-                                </Border>
 
                                 <ContentPresenter Content="{TemplateBinding Content}" VerticalAlignment="Center"
-                                                  HorizontalAlignment="Center" Margin="2" />
+                                                  HorizontalAlignment="Center" Margin="4" />
 
                                 <Rectangle Fill="Gray" Opacity="0" x:Name="Highlight"></Rectangle>
 
@@ -901,7 +913,14 @@
                                             </Storyboard>
                                         </VisualState>
                                         <VisualState Name="Pressed" />
-                                        <VisualState Name="Disabled" />
+                                        <VisualState Name="Disabled">
+                                            <Storyboard>
+                                                <DoubleAnimation To="0.5" Duration="0:0:0.1"
+                                                                 Storyboard.TargetName="Highlight"
+                                                                 Storyboard.TargetProperty="Opacity">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
                                     </VisualStateGroup>
                                     <VisualStateGroup Name="FocusStates">
                                         <VisualState Name="Unfocused" />
