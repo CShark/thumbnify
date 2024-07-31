@@ -2,7 +2,10 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:Thumbnify.Controls"
                     xmlns:parameters="clr-namespace:Thumbnify.Data.Processing.Parameters"
-                    xmlns:converter="clr-namespace:Thumbnify.Converter">
+                    xmlns:converter="clr-namespace:Thumbnify.Converter"
+                    xmlns:lex="http://wpflocalizeextension.codeplex.com"
+                    xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+                    xmlns:audio="clr-namespace:Thumbnify.Data.Processing.Audio">
 
     <DataTemplate DataType="{x:Type parameters:FilePath}">
         <controls:FilePathControl FilePath="{Binding}" />
@@ -25,6 +28,18 @@
 
     <DataTemplate DataType="{x:Type parameters:FlagParameter}">
         <CheckBox IsChecked="{Binding Value}" />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type parameters:CompressorParam}">
+        <StackPanel>
+            <controls:CompressorPreview Parameters="{Binding}" />
+            <Button Margin="0,5" Command="{x:Static audio:AudioCompressor.OpenParameters}" CommandParameter="{Binding}">
+                <WrapPanel>
+                    <wpf:MaterialIcon Kind="Tune"/>
+                    <TextBlock VerticalAlignment="Center" Text="{lex:Loc Controls:Parameter}"></TextBlock>
+                </WrapPanel>
+            </Button>
+        </StackPanel>
     </DataTemplate>
 
 

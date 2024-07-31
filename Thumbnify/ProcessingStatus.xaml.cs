@@ -80,7 +80,7 @@ namespace Thumbnify {
                     item.MediaPart.ProcessingCompletedDate = DateTime.Now;
                 }
 
-                var tempDir = item.MediaPart.GetTempDir();
+                var tempDir = item.Graph.TempPath;
                 Directory.Delete(tempDir, true);
             }
         }

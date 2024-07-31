@@ -61,6 +61,15 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Compressor ähnelt.
+        /// </summary>
+        internal static string audio_compressor {
+            get {
+                return ResourceManager.GetString("audio_compressor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Load Audio ähnelt.
         /// </summary>
         internal static string audio_load {

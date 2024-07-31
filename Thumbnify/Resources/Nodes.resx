@@ -154,4 +154,7 @@
   <data name="param_copystream" xml:space="preserve">
     <value>Copy Stream</value>
   </data>
+  <data name="audio_compressor" xml:space="preserve">
+    <value>Compressor</value>
+  </data>
 </root>

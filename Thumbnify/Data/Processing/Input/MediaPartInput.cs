@@ -24,8 +24,9 @@ namespace Thumbnify.Data.Processing.Input {
         [JsonIgnore]
         public List<Result> ParamStoreResults { get; } = new();
 
-        public Parameter<FlagParameter> CopyStream { get; } = new("copystream", false, new FlagParameter { Value = true });
-        
+        public Parameter<FlagParameter> CopyStream { get; } =
+            new("copystream", false, new FlagParameter { Value = true });
+
         public MediaPartInput() {
             RegisterResult(Video);
             RegisterResult(Audio);
@@ -66,8 +67,12 @@ namespace Thumbnify.Data.Processing.Input {
                 return false;
             }
 
-            var path = MediaPart.GetTempDir();
+            var path = TempPath;
             path = Path.Combine(path, Path.GetRandomFileName() + ".mp4");
+
+            Logger.Debug("Cutting " + Path.GetFileName(MediaPart.Parent.FileName));
+            Logger.Debug(
+                $"Start Point: {TimeSpan.FromTicks(MediaPart.Start):g}, Duration: {TimeSpan.FromTicks(MediaPart.Duration):g}");
 
             // Cut Video
             var ffmpeg = new Engine(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "FFmpeg\\ffmpeg.exe"));
@@ -79,37 +84,30 @@ namespace Thumbnify.Data.Processing.Input {
             }
 
             opt.CutMedia(new TimeSpan(MediaPart.Start), new TimeSpan(MediaPart.Duration));
-            
+
             var input = new InputFile(MediaPart.Parent.FileName);
             var output = new OutputFile(path);
 
 
             if (cancelToken.IsCancellationRequested) return false;
-            
+
             var task = ffmpeg.ConvertAsync(input, output, opt, cancelToken);
             Task.WaitAll(task);
-            
+
             // Load Audio
-            try {
-                Audio.Value = new AudioStream {
-                    WaveStream = new MediaFoundationReader(path)
-                };
-            } catch (Exception ex) {
-                Logger.Warning(ex, "Failed to load audio from video stream, trying to convert audio");
+            Logger.Debug("Convert Audio to mp3");
+            ffmpeg.Progress -= FfmpegOnProgress;
+            opt = new ConversionOptions();
+            input = new InputFile(path);
+            output = new OutputFile(Path.ChangeExtension(path, "mp3"));
 
-                ffmpeg.Progress -= FfmpegOnProgress;
-                opt = new ConversionOptions();
-                input = new InputFile(path);
-                output = new OutputFile(Path.ChangeExtension(path, "mp3"));
+            ffmpeg.ConvertAsync(input, output, opt, cancelToken).Wait(cancelToken);
 
-                ffmpeg.ConvertAsync(input, output, opt, cancelToken).Wait(cancelToken);
+            Audio.Value = new AudioStream {
+                AudioFile = Path.ChangeExtension(path, "mp3")
+            };
 
-                Audio.Value = new AudioStream {
-                    WaveStream = new MediaFoundationReader(Path.ChangeExtension(path,"mp3"))
-                };
-
-                Logger.Information("Audio converted to mp3");
-            }
+            Logger.Information("Audio converted to mp3");
 
             Video.Value = new VideoFile {
                 VideoFileName = path
@@ -120,7 +118,7 @@ namespace Thumbnify.Data.Processing.Input {
                 var target = ParamStoreResults.FirstOrDefault(x => x.Id == param.Id);
                 target?.SetValue(param.Value);
             }
-            
+
             Name.SetValue(new StringParam {
                 Value = MediaPart.Metadata.Name
             });

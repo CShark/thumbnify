@@ -1,0 +1,84 @@
+﻿<UserControl x:Class="Thumbnify.Controls.CompressorPreview"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Thumbnify.Controls"
+             xmlns:converter="clr-namespace:Thumbnify.Converter"
+             mc:Ignorable="d"
+             d:DesignHeight="200" d:DesignWidth="200">
+    <UserControl.Resources>
+        <converter:DbRangeToViewport x:Key="DbToView" />
+        <converter:MinConverter x:Key="MinConv" />
+        <GeometryDrawing x:Key="SmallGridGeometry"
+                         Geometry="M0,0 L0,1 0.03,1 0.03,0.03 1,0.03 1,0 Z"
+                         Brush="{StaticResource ControlBorder}" />
+        <DrawingBrush x:Key="SmallGridLinesDrawingBrush"
+                      TileMode="Tile"
+                      ViewportUnits="RelativeToBoundingBox"
+                      Drawing="{StaticResource SmallGridGeometry}">
+            <DrawingBrush.Viewport>
+                <MultiBinding Converter="{StaticResource DbToView}">
+                    <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=local:CompressorPreview}"
+                             Path="MinDb" />
+                    <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=local:CompressorPreview}"
+                             Path="MaxDb" />
+                </MultiBinding>
+            </DrawingBrush.Viewport>
+        </DrawingBrush>
+    </UserControl.Resources>
+
+    <Grid DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:CompressorPreview}}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="10" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid Background="{StaticResource SmallGridLinesDrawingBrush}"
+                  Height="{Binding RelativeSource={RelativeSource Self}, Path=ActualWidth}">
+                <Grid.Width>
+                    <MultiBinding Converter="{StaticResource MinConv}">
+                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=Grid}" Path="ActualHeight" />
+                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=Grid}" Path="ActualWidth" />
+                    </MultiBinding>
+                </Grid.Width>
+
+                <Border BorderThickness="2" BorderBrush="{StaticResource ControlBorder}"></Border>
+
+                <Line StrokeThickness="2" Stroke="{StaticResource ControlBorder}" X1="0"
+                      X2="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Grid}, Path=ActualWidth}"
+                      Y1="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Grid}, Path=ActualHeight}">
+                </Line>
+                
+                <Path Stretch="Uniform" Data="{Binding Curve}" Stroke="Yellow" StrokeThickness="2">
+                    <Path.LayoutTransform>
+                        <ScaleTransform ScaleY="-1"></ScaleTransform>
+                    </Path.LayoutTransform>
+                </Path>
+            </Grid>
+        </Grid>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="1">
+            <TextBlock Text="Output Level (dB)" VerticalAlignment="Center">
+                <TextBlock.LayoutTransform>
+                    <RotateTransform Angle="-90"></RotateTransform>
+                </TextBlock.LayoutTransform>
+            </TextBlock>
+        </StackPanel>
+        <TextBlock Grid.ColumnSpan="2">20dB</TextBlock>
+
+        <StackPanel Grid.Row="2" Grid.Column="1">
+            <TextBlock HorizontalAlignment="Center">Input Level (dB)</TextBlock>
+        </StackPanel>
+
+        <TextBlock Grid.Row="2" Grid.ColumnSpan="2">-60dB</TextBlock>
+        <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Right">20dB</TextBlock>
+    </Grid>
+</UserControl>

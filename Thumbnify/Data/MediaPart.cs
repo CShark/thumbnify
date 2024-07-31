@@ -74,15 +74,5 @@ namespace Thumbnify.Data {
             OnPropertyChanged(propertyName);
             return true;
         }
-
-        public string GetTempDir() {
-            var path = Path.Combine(App.TemporaryDirectory, Id);
-
-            if (!Directory.Exists(path)) {
-                Directory.CreateDirectory(path);
-            }
-
-            return path;
-        }
     }
 }

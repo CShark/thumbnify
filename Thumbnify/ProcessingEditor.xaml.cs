@@ -12,6 +12,8 @@ using Thumbnify.Data.Processing;
 using Thumbnify.Dialogs;
 using Thumbnify.Data;
 using Thumbnify.Data.ParamStore;
+using Thumbnify.Data.Processing.Audio;
+using Thumbnify.Data.Processing.Parameters;
 using Thumbnify.Postprocessing;
 using Connection = Thumbnify.Postprocessing.Connection;
 using Connector = Thumbnify.Postprocessing.Connector;
@@ -60,6 +62,17 @@ namespace Thumbnify {
                 ContextMenu.PlacementTarget = this;
                 ContextMenu.IsOpen = true;
             });
+
+            CommandBindings.Add(new(AudioCompressor.OpenParameters, (_, e) => {
+                if (e.Parameter is CompressorParam param) {
+                    var dlg = new CompressorParamEditor();
+                    dlg.Parameters = param;
+                    dlg.Owner = this;
+                    dlg.ShowDialog();
+                }
+            }, (_, e) => {
+                e.CanExecute = e.Parameter is CompressorParam;
+            }));
 
             Graph = new();
 

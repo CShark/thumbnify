@@ -31,9 +31,6 @@
                         Executed="DeleteParameter_OnExecuted" CanExecute="DeleteParameter_OnCanExecute">
         </CommandBinding>
     </Window.CommandBindings>
-    <Window.InputBindings>
-        <KeyBinding Command="{Binding AddNode}" Key="A" Modifiers="Shift" />
-    </Window.InputBindings>
     <Window.Resources>
         <Style TargetType="MenuItem">
             <Setter Property="CommandTarget"
@@ -134,6 +131,11 @@
                                 <wpf:MaterialIcon Kind="Waveform"></wpf:MaterialIcon>
                             </MenuItem.Icon>
                         </MenuItem>
+                        <MenuItem Header="{lex:Loc audio_compressor}" Command="{x:Static controls:GraphEditor.CreateNode}" CommandParameter="{x:Type audio:AudioCompressor}">
+                            <MenuItem.Icon>
+                                <wpf:MaterialIcon Kind="ArrowCollapseVertical" />
+                            </MenuItem.Icon>
+                        </MenuItem>
                         <Separator />
                         <MenuItem Header="Upload FTP" Command="{x:Static controls:GraphEditor.CreateNode}">
                             <MenuItem.Icon>
@@ -164,25 +166,31 @@
             </controls:GraphEditor.ContextMenu>
         </controls:GraphEditor>
 
-        <WrapPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5">
-            <WrapPanel.Resources>
-                <Style TargetType="Button" BasedOn="{StaticResource SingleButton}">
-                    <Setter Property="Margin" Value="3"></Setter>
+        <Border HorizontalAlignment="Left" CornerRadius="0,10,10,0" VerticalAlignment="Center"
+                Background="{StaticResource ControlBorder}" Padding="2,5">
+            <Border.Resources>
+                <Style TargetType="Button" BasedOn="{StaticResource SquareButton}">
+                    <Setter Property="Width" Value="32" />
+                    <Setter Property="Height" Value="32" />
                 </Style>
-                <Style TargetType="wpf:MaterialIcon">
-                    <Setter Property="Margin" Value="3"></Setter>
+                <Style TargetType="ToggleButton" BasedOn="{StaticResource SquareButton}">
+                    <Setter Property="Width" Value="32" />
+                    <Setter Property="Height" Value="32" />
                 </Style>
-            </WrapPanel.Resources>
-            <Button Click="NewGraph_OnClick">
-                <wpf:MaterialIcon Kind="FilePlus"></wpf:MaterialIcon>
-            </Button>
-            <Button Click="GraphLoad_OnClick">
-                <wpf:MaterialIcon Kind="FolderOpen"></wpf:MaterialIcon>
-            </Button>
-            <Button Click="GraphSave_OnClick">
-                <wpf:MaterialIcon Kind="ContentSave"></wpf:MaterialIcon>
-            </Button>
-        </WrapPanel>
+            </Border.Resources>
+            <StackPanel>
+                <Button Click="NewGraph_OnClick">
+                    <wpf:MaterialIcon Kind="FilePlusOutline" />
+                </Button>
+                <Button Click="GraphLoad_OnClick">
+                    <wpf:MaterialIcon Kind="FolderOpenOutline" />
+                </Button>
+                <Button Click="GraphSave_OnClick">
+                    <wpf:MaterialIcon Kind="ContentSaveOutline" />
+                </Button>
+            </StackPanel>
+        </Border>
+
 
         <StackPanel Grid.Column="1">
             <Expander Header="{lex:Loc Parameter}" IsExpanded="True"

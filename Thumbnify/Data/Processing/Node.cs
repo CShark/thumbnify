@@ -61,7 +61,7 @@ namespace Thumbnify.Data.Processing {
         }
 
         [JsonIgnore]
-        public string Messages { get; private set; } = "";
+        public string TempPath { get; set; }
 
         [JsonIgnore]
         public CancellationToken CancelToken { get; set; }
@@ -141,7 +141,6 @@ namespace Thumbnify.Data.Processing {
             }
 
             NodeStatus = ENodeStatus.Pending;
-            Messages = "";
             Progress = 0;
         }
 

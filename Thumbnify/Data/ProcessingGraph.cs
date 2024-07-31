@@ -108,6 +108,11 @@ namespace Thumbnify.Data {
         public void RunGraph() {
             if (IsGraphRunning()) return;
 
+            TempPath = Path.Combine(App.TemporaryDirectory, Path.GetRandomFileName());
+            if (!Directory.Exists(TempPath)) {
+                Directory.CreateDirectory(TempPath);
+            }
+
             LogMessages = new();
             _logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
@@ -130,6 +135,8 @@ namespace Thumbnify.Data {
                 node.NodeCompleted -= OnNodeCompleted;
                 node.PropertyChanged -= NodeOnPropertyChanged;
                 node.ClearNode();
+
+                node.TempPath = TempPath;
 
                 _nodes[node.Uid] = node;
                 _edgesForward[node.Uid] = new();
@@ -247,6 +254,9 @@ namespace Thumbnify.Data {
         }
 
         public string? Base64Image { get; set; }
+
+        [JsonIgnore]
+        public string TempPath { get; private set; }
 
         [JsonIgnore]
         public BitmapSource? Preview { get; set; }
