@@ -66,9 +66,10 @@ namespace Thumbnify.Data.Processing.Audio {
                         }
 
                         writer.WriteSamples(buffer, 0, read);
-                        ReportProgress(src.Position + src.Length, src.Length);
+                        ReportProgress(src.Position + src.Length, src.Length * 3);
                     }
 
+                    writer.Flush();
                     dst.Seek(0, SeekOrigin.Begin);
 
                     // calculate final loudness
@@ -81,6 +82,8 @@ namespace Thumbnify.Data.Processing.Audio {
                     Logger.Debug($"Integrated Loudness after normalization: {lufsMeter.IntegratedLoudness} LU");
                 }
             }
+
+            AudioResult.Value = new AudioStream { AudioFile = destFile };
 
             return true;
         }

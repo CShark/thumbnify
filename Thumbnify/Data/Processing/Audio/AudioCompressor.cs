@@ -57,6 +57,8 @@ namespace Thumbnify.Data.Processing.Audio {
             var spacingDb = SpacingDb;
 
             for (var ch = 0; ch < chunks; ch++) {
+                ReportProgress(ch, chunks);
+
                 state.DetectorAvg = Fix(state.DetectorAvg, 1);
                 var desiredGain = state.DetectorAvg;
                 var scaledDesiredGain = (float)(Math.Asin(desiredGain) * ang90inv);

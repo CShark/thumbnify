@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Thumbnify.Data.ParamStore;
 using Thumbnify.Data.Processing.Parameters;
 using Thumbnify.Postprocessing;
+using Vortice.MediaFoundation;
 
 namespace Thumbnify.Data.Processing.Input {
     public sealed class MediaPartInput : Node {
@@ -83,7 +84,9 @@ namespace Thumbnify.Data.Processing.Input {
                 opt.ExtraArguments = "-c copy";
             }
 
-            opt.CutMedia(new TimeSpan(MediaPart.Start), new TimeSpan(MediaPart.Duration));
+            if (MediaPart.Duration > 0) {
+                opt.CutMedia(new TimeSpan(MediaPart.Start), new TimeSpan(MediaPart.Duration));
+            }
 
             var input = new InputFile(MediaPart.Parent.FileName);
             var output = new OutputFile(path);

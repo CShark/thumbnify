@@ -214,6 +214,15 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Graph Parameters ähnelt.
+        /// </summary>
+        internal static string GraphParameters {
+            get {
+                return ResourceManager.GetString("GraphParameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Graph Viewer ähnelt.
         /// </summary>
         internal static string GraphViewer {
@@ -273,6 +282,24 @@ namespace Thumbnify.Resources {
         internal static string LogViewer {
             get {
                 return ResourceManager.GetString("LogViewer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Media File ähnelt.
+        /// </summary>
+        internal static string MediaFile {
+            get {
+                return ResourceManager.GetString("MediaFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Open Media File ähnelt.
+        /// </summary>
+        internal static string MediaFileOpen {
+            get {
+                return ResourceManager.GetString("MediaFileOpen", resourceCulture);
             }
         }
         

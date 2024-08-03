@@ -261,7 +261,7 @@
             <Grid Background="{StaticResource LargeGridLinesDrawingBrush}"></Grid>
             <nodify:NodifyEditor x:Name="Editor" Connections="{Binding Connections}"
                                  Background="{StaticResource SmallGridLinesDrawingBrush}"
-                                 DisconnectConnectorCommand="{Binding DisconnectCommand}"
+                                 DisconnectConnectorCommand="{x:Static local:GraphEditor.DisconnectNodes}"
                                  EnableRealtimeSelection="True"
                                  BringIntoViewSpeed="5000"
                                  SelectedItems="{Binding SelectedNodes}"

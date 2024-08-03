@@ -1,6 +1,4 @@
-﻿
-
-/*
+﻿/*
  *    This file is a part of the LUFS metering utils
  *    Copyright (C) 2020  Xuan525
  *
@@ -21,6 +19,7 @@
  *    Github : https://github.com/xuan525
  */
 
+using System.IO;
 using NAudio.Wave;
 
 namespace Thumbnify.Data.Processing.Audio.R128 {
@@ -93,9 +92,6 @@ namespace Thumbnify.Data.Processing.Audio.R128 {
             StepBuffer = new double[NumChannel];
 
             BlockSquaredSum = new double[BlockStepCount][];
-            for (int i = 0; i < BlockSquaredSum.Length; i++) {
-                BlockSquaredSum[i] = new double[NumChannel];
-            }
 
             // init short-term loudness
             ShortTermMeanSquaresLength = (int)Math.Round(ShortTermDuration / StepDuration);
@@ -217,10 +213,6 @@ namespace Thumbnify.Data.Processing.Audio.R128 {
 
             StepBufferPosition = 0;
             StepBuffer = new double[NumChannel];
-
-            for (int i = 0; i < BlockSquaredSum.Length; i++) {
-                BlockSquaredSum[i] = new double[NumChannel];
-            }
         }
 
         /// <summary>
@@ -238,6 +230,11 @@ namespace Thumbnify.Data.Processing.Audio.R128 {
                 bufferPosition += samplesRead;
                 progressUpdated?.Invoke(bufferPosition);
 
+                StepBuffer = new double[NumChannel];
+                for(int c=0; c<NumChannel; c++) {
+                    StepBuffer[c] = 0;
+                }
+                
                 // calculate squared sum for next step
                 for (int i = 0; i < samplesRead; i++) {
                     // “K” frequency weighting
@@ -305,7 +302,6 @@ namespace Thumbnify.Data.Processing.Audio.R128 {
                 }
             }
         }
-
 
 
         private void ShiftBuffer(double[] buffer) {

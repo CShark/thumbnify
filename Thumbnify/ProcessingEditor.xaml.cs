@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
@@ -13,6 +14,7 @@ using Thumbnify.Dialogs;
 using Thumbnify.Data;
 using Thumbnify.Data.ParamStore;
 using Thumbnify.Data.Processing.Audio;
+using Thumbnify.Data.Processing.Input;
 using Thumbnify.Data.Processing.Parameters;
 using Thumbnify.Postprocessing;
 using Connection = Thumbnify.Postprocessing.Connection;
@@ -36,7 +38,8 @@ namespace Thumbnify {
         }
 
         public static readonly DependencyProperty GraphProperty = DependencyProperty.Register(
-            nameof(Graph), typeof(ProcessingGraph), typeof(ProcessingEditor), new PropertyMetadata(default(ProcessingGraph)));
+            nameof(Graph), typeof(ProcessingGraph), typeof(ProcessingEditor),
+            new PropertyMetadata(default(ProcessingGraph)));
 
         public ProcessingGraph Graph {
             get { return (ProcessingGraph)GetValue(GraphProperty); }
@@ -70,9 +73,7 @@ namespace Thumbnify {
                     dlg.Owner = this;
                     dlg.ShowDialog();
                 }
-            }, (_, e) => {
-                e.CanExecute = e.Parameter is CompressorParam;
-            }));
+            }, (_, e) => { e.CanExecute = e.Parameter is CompressorParam; }));
 
             Graph = new();
 
@@ -148,6 +149,42 @@ namespace Thumbnify {
             }
 
             Graph = new ProcessingGraph();
+        }
+
+        private void FitToScreen_OnClick(object sender, RoutedEventArgs e) {
+            Editor.FitAll();
+        }
+
+        private void RunGraph_OnClick(object sender, RoutedEventArgs e) {
+            var dlg = new ProcessingStatus();
+            dlg.Owner = this;
+
+            if (Graph.Nodes.Any(x => x is MediaPartInput)) {
+                var mediaPart = new MediaPart();
+                var metadata = new PartMetadata();
+
+                var metaDlg = new GraphParameters();
+                metaDlg.Owner = this;
+                metaDlg.PartMetadata = metadata;
+
+                if (metaDlg.ShowDialog() == true) {
+                    if (File.Exists(metaDlg.MediaFile)) {
+                        mediaPart.Duration = -1;
+                        mediaPart.Start = 0;
+                        mediaPart.End = -1;
+                        mediaPart.Parent = new MediaSource {
+                            FileName = metaDlg.MediaFile
+                        };
+                        mediaPart.Metadata = metadata;
+
+                        dlg.StartProcessing(new[] { mediaPart });
+                    }
+                }
+            } else {
+                dlg.StartProcessing(new[] { Graph });
+            }
+
+            dlg.ShowDialog();
         }
     }
 }

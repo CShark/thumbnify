@@ -56,10 +56,18 @@ namespace Thumbnify {
         }
 
         public void StartProcessing(IEnumerable<MediaPart> parts) {
+            StartProcessing(parts.Select(x => new QueueItemStatus(x)));
+        }
+
+        public void StartProcessing(IEnumerable<ProcessingGraph> graphs) {
+            StartProcessing(graphs.Select(x => new QueueItemStatus(x)));
+        }
+
+        public void StartProcessing(IEnumerable<QueueItemStatus> items) {
             MediaParts.Clear();
 
-            foreach (var part in parts) {
-                var queueItem = new QueueItemStatus(part);
+            foreach (var item in items) {
+                var queueItem = item;
                 queueItem.Graph.PropertyChanged += (_, args) => {
                     if (args.PropertyName == nameof(ProcessingGraph.Progress)) {
                         Dispatcher.Invoke(() => {
@@ -69,15 +77,23 @@ namespace Thumbnify {
                 };
 
                 MediaParts.Add(queueItem);
-                queueItem.Graph.RunGraph(part);
+                if (item.MediaPart != null) {
+                    queueItem.Graph.RunGraph(item.MediaPart);
+                } else {
+                    queueItem.Graph.RunGraph();
+                }
             }
         }
+
+
 
         private void ProcessingStatus_OnClosed(object? sender, EventArgs e) {
             foreach (var item in MediaParts) {
                 if (item.Graph.GraphState == ENodeStatus.Completed) {
-                    item.MediaPart.ProcessingCompleted = true;
-                    item.MediaPart.ProcessingCompletedDate = DateTime.Now;
+                    if (item.MediaPart != null) {
+                        item.MediaPart.ProcessingCompleted = true;
+                        item.MediaPart.ProcessingCompletedDate = DateTime.Now;
+                    }
                 }
 
                 var tempDir = item.Graph.TempPath;

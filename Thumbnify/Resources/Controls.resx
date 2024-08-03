@@ -223,4 +223,13 @@
   <data name="CompressorParameters" xml:space="preserve">
     <value>Compressor Parameters</value>
   </data>
+  <data name="GraphParameters" xml:space="preserve">
+    <value>Graph Parameters</value>
+  </data>
+  <data name="MediaFile" xml:space="preserve">
+    <value>Media File</value>
+  </data>
+  <data name="MediaFileOpen" xml:space="preserve">
+    <value>Open Media File</value>
+  </data>
 </root>

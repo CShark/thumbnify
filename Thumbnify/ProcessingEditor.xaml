@@ -188,6 +188,15 @@
                 <Button Click="GraphSave_OnClick">
                     <wpf:MaterialIcon Kind="ContentSaveOutline" />
                 </Button>
+
+                <Separator/>
+
+                <Button Click="RunGraph_OnClick">
+                    <wpf:MaterialIcon Kind="Play" Foreground="Green" />
+                </Button>
+                <Button Click="FitToScreen_OnClick">
+                    <wpf:MaterialIcon Kind="FitToScreen" />
+                </Button>
             </StackPanel>
         </Border>
 
