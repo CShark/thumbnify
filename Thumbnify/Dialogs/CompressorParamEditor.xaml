@@ -4,12 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Thumbnify.Dialogs" xmlns:controls="clr-namespace:Thumbnify.Controls"
+        xmlns:lex="http://wpflocalizeextension.codeplex.com"
         mc:Ignorable="d"
+        lex:LocalizeDictionary.DesignCulture="de-DE"
+        lex:ResxLocalizationProvider.DefaultAssembly="Thumbnify"
+        lex:ResxLocalizationProvider.DefaultDictionary="Controls"
         Style="{StaticResource Dark}"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
+        ShowInTaskbar="False"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="CompressorParamEditor" Height="280" Width="740">
+        Title="{lex:Loc CompressorParameters}" Height="280" Width="740">
     <Window.Resources>
         <Style TargetType="controls:ParameterSlider">
             <Setter Property="Margin" Value="5,0"></Setter>
@@ -26,28 +31,28 @@
         <controls:CompressorPreview Parameters="{Binding Parameters}" Margin="10" VerticalAlignment="Center" />
 
         <StackPanel Orientation="Horizontal" Grid.Column="1">
-            <controls:ParameterSlider TickPlacement="Both" TickFrequency="10" Minimum="-60" Maximum="20"
+            <controls:ParameterSlider TickPlacement="Both" TickFrequency="10" Minimum="-60" Maximum="20" DefaultValue="0"
                                       Header="Pre Gain" ValueSuffix="dB" Value="{Binding Parameters.PreGain}" />
 
-            <controls:ParameterSlider TickPlacement="Both" TickFrequency="10" Minimum="-60" Maximum="20"
+            <controls:ParameterSlider TickPlacement="Both" TickFrequency="10" Minimum="-60" Maximum="20" DefaultValue="-24"
                                       Header="Threshold" ValueSuffix="dB" Value="{Binding Parameters.Threshold}" />
 
-            <controls:ParameterSlider TickPlacement="Both" TickFrequency="10" Minimum="0" Maximum="40"
+            <controls:ParameterSlider TickPlacement="Both" TickFrequency="10" Minimum="0" Maximum="40" DefaultValue="30"
                                       Header="Knee" ValueSuffix="dB" Value="{Binding Parameters.Knee}" />
 
-            <controls:ParameterSlider TickPlacement="Both" TickFrequency="1" Minimum="1" Maximum="16"
+            <controls:ParameterSlider TickPlacement="Both" TickFrequency="1" Minimum="1" Maximum="16" DefaultValue="12"
                                       Header="Ratio" Value="{Binding Parameters.Ratio}" />
 
-            <controls:ParameterSlider TickPlacement="Both" TickFrequency="10" Minimum="0" Maximum="100"
+            <controls:ParameterSlider TickPlacement="Both" TickFrequency="10" Minimum="0" Maximum="100" DefaultValue="3"
                                       Header="Attack" ValueSuffix="ms" Value="{Binding Parameters.Attack}" />
 
-            <controls:ParameterSlider TickPlacement="Both" TickFrequency="100" Minimum="0" Maximum="1000"
+            <controls:ParameterSlider TickPlacement="Both" TickFrequency="100" Minimum="0" Maximum="1000" DefaultValue="250"
                                       Header="Release" ValueSuffix="ms" Value="{Binding Parameters.Release}" />
 
-            <controls:ParameterSlider TickPlacement="Both" TickFrequency="10" Minimum="-60" Maximum="20"
+            <controls:ParameterSlider TickPlacement="Both" TickFrequency="10" Minimum="-60" Maximum="20" DefaultValue="0"
                                       Header="Post Gain" ValueSuffix="dB" Value="{Binding Parameters.PostGain}" />
 
-            <controls:ParameterSlider TickPlacement="Both" TickFrequency="10" Minimum="0" Maximum="100" Width="75"
+            <controls:ParameterSlider TickPlacement="Both" TickFrequency="10" Minimum="0" Maximum="100" Width="75" DefaultValue="100"
                                       Header="Wet/Dry" ValueSuffix="% Wet" Value="{Binding Parameters.Wet}" />
         </StackPanel>
     </Grid>

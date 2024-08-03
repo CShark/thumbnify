@@ -79,6 +79,15 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Normalize Audio ähnelt.
+        /// </summary>
+        internal static string audio_normalize {
+            get {
+                return ResourceManager.GetString("audio_normalize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Save Audio ähnelt.
         /// </summary>
         internal static string audio_save {
@@ -210,6 +219,15 @@ namespace Thumbnify.Resources {
         internal static string param_path {
             get {
                 return ResourceManager.GetString("param_path", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Target Loudness (LUFS) ähnelt.
+        /// </summary>
+        internal static string param_target_lu {
+            get {
+                return ResourceManager.GetString("param_target_lu", resourceCulture);
             }
         }
         

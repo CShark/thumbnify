@@ -15,6 +15,10 @@
         <TextBox Text="{Binding Value}" />
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type parameters:IntParam}">
+        <TextBox Text="{Binding Value}" />
+    </DataTemplate>
+
     <DataTemplate DataType="{x:Type parameters:DateParam}">
         <DataTemplate.Resources>
             <converter:BoolInvert x:Key="BoolInvert" />
@@ -50,7 +54,8 @@
         <converter:ParameterColor Type="{x:Type parameters:VideoFile}" Color="MediumPurple" />
         <converter:ParameterColor Type="{x:Type parameters:ThumbnailParam}" Color="MediumPurple" />
         <converter:ParameterColor Type="{x:Type parameters:StringParam}" Color="CornflowerBlue" />
-        <converter:ParameterColor Type="{x:Type parameters:DateParam}" Color="CornflowerBlue" />
+        <converter:ParameterColor Type="{x:Type parameters:IntParam}" Color="CornflowerBlue" />
+        <converter:ParameterColor Type="{x:Type parameters:DateParam}" Color="MediumPurple" />
     </converter:ParameterTypeToColor>
 
     <ControlTemplate TargetType="Control" x:Key="ConnectorCircle">
@@ -70,7 +75,7 @@
 
     <ControlTemplate TargetType="Control" x:Key="ConnectorEmptyDiamond">
         <Border Background="{TemplateBinding Background}" Width="10" Height="10">
-            <Rectangle Width="6" Height="6" Fill="{StaticResource ControlBackground}" />
+            <Rectangle Width="6" Height="6" Fill="#2A2A2A" />
             <Border.LayoutTransform>
                 <TransformGroup>
                     <ScaleTransform ScaleX=".8" ScaleY=".8"></ScaleTransform>
@@ -89,9 +94,11 @@
                                       Template="{StaticResource ConnectorDiamond}" />
         <converter:ParameterConnector Type="{x:Type parameters:StringParam}"
                                       Template="{StaticResource ConnectorDiamond}" />
+        <converter:ParameterConnector Type="{x:Type parameters:IntParam}"
+                                      Template="{StaticResource ConnectorEmptyDiamond}" />
         <converter:ParameterConnector Type="{x:Type parameters:DateParam}"
                                       Template="{StaticResource ConnectorEmptyDiamond}" />
         <converter:ParameterConnector Type="{x:Type parameters:ThumbnailParam}"
-                                      Template="{StaticResource ConnectorEmptyDiamond}" />
+                                      Template="{StaticResource ConnectorDiamond}" />
     </converter:ParameterTypeToConnector>
 </ResourceDictionary>

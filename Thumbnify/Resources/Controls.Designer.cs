@@ -115,6 +115,15 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Compressor Parameters ähnelt.
+        /// </summary>
+        internal static string CompressorParameters {
+            get {
+                return ResourceManager.GetString("CompressorParameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Create ähnelt.
         /// </summary>
         internal static string Create {

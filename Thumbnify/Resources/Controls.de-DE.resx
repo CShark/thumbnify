@@ -220,4 +220,7 @@
   <data name="LogViewer" xml:space="preserve">
     <value>Protokoll ansehen</value>
   </data>
+  <data name="CompressorParameters" xml:space="preserve">
+    <value>Kompressor Parameter</value>
+  </data>
 </root>

@@ -126,7 +126,7 @@
                                 <wpf:MaterialIcon Kind="CallMerge" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Normalisieren" Command="{x:Static controls:GraphEditor.CreateNode}">
+                        <MenuItem Header="Normalisieren" Command="{x:Static controls:GraphEditor.CreateNode}" CommandParameter="{x:Type audio:AudioNormalizer}">
                             <MenuItem.Icon>
                                 <wpf:MaterialIcon Kind="Waveform"></wpf:MaterialIcon>
                             </MenuItem.Icon>

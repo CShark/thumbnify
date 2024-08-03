@@ -27,6 +27,14 @@ namespace Thumbnify.Controls {
             set { SetValue(ValueProperty, value); }
         }
 
+        public static readonly DependencyProperty DefaultValueProperty = DependencyProperty.Register(
+            nameof(DefaultValue), typeof(double), typeof(ParameterSlider), new PropertyMetadata(default(double)));
+
+        public double DefaultValue {
+            get { return (double)GetValue(DefaultValueProperty); }
+            set { SetValue(DefaultValueProperty, value); }
+        }
+
         public static readonly DependencyProperty MinimumProperty = DependencyProperty.Register(
             nameof(Minimum), typeof(double), typeof(ParameterSlider), new PropertyMetadata(default(double)));
 
@@ -78,6 +86,10 @@ namespace Thumbnify.Controls {
 
         public ParameterSlider() {
             InitializeComponent();
+        }
+
+        private void Slider_OnMouseDoubleClick(object sender, MouseButtonEventArgs e) {
+            Value = DefaultValue;
         }
     }
 }

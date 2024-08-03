@@ -16,7 +16,7 @@
         <TextBlock HorizontalAlignment="Center" Text="{Binding Header}"></TextBlock>
 
         <Slider Orientation="Vertical" Grid.Row="1" Value="{Binding Value}" Minimum="{Binding Minimum}" HorizontalAlignment="Center"
-                Maximum="{Binding Maximum}" TickPlacement="{Binding TickPlacement}"
+                Maximum="{Binding Maximum}" TickPlacement="{Binding TickPlacement}" MouseDoubleClick="Slider_OnMouseDoubleClick"
                 TickFrequency="{Binding TickFrequency}">
         </Slider>
 

@@ -157,4 +157,10 @@
   <data name="audio_compressor" xml:space="preserve">
     <value>Kompressor</value>
   </data>
+  <data name="param_target_lu" xml:space="preserve">
+    <value>Ziellautstärke (LUFS)</value>
+  </data>
+  <data name="audio_normalize" xml:space="preserve">
+    <value>Audio Normalisieren</value>
+  </data>
 </root>
