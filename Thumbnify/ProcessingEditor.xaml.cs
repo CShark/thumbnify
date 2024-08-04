@@ -177,7 +177,7 @@ namespace Thumbnify {
                         };
                         mediaPart.Metadata = metadata;
 
-                        dlg.StartProcessing(new[] { mediaPart });
+                        dlg.StartProcessing([mediaPart], false);
                     }
                 }
             } else {

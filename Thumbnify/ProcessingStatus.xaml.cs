@@ -55,8 +55,8 @@ namespace Thumbnify {
             }));
         }
 
-        public void StartProcessing(IEnumerable<MediaPart> parts) {
-            StartProcessing(parts.Select(x => new QueueItemStatus(x)));
+        public void StartProcessing(IEnumerable<MediaPart> parts, bool refetchGraph= true) {
+            StartProcessing(parts.Select(x => new QueueItemStatus(x, refetchGraph)));
         }
 
         public void StartProcessing(IEnumerable<ProcessingGraph> graphs) {

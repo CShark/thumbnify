@@ -7,10 +7,17 @@ using Newtonsoft.Json;
 
 namespace Thumbnify.Data {
     public class QueueItemStatus {
-        public QueueItemStatus(MediaPart mediaPart) {
+        public QueueItemStatus(MediaPart mediaPart, bool refetchGraph = true) {
             MediaPart = mediaPart;
 
-            var json = JsonConvert.SerializeObject(MediaPart.Metadata.ProcessingGraph);
+            var graph = mediaPart.Metadata.ProcessingGraph;
+            var orig = App.Settings.Processing.FirstOrDefault(x => x.Name.ToLower() == graph.Name.ToLower());
+
+            if (orig != null) {
+                graph = orig;
+            }
+            
+            var json = JsonConvert.SerializeObject(graph);
             Graph = JsonConvert.DeserializeObject<ProcessingGraph>(json);
         }
 

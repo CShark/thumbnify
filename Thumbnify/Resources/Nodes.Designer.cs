@@ -79,6 +79,15 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Merge Audio ähnelt.
+        /// </summary>
+        internal static string audio_merge {
+            get {
+                return ResourceManager.GetString("audio_merge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Normalize Audio ähnelt.
         /// </summary>
         internal static string audio_normalize {
@@ -201,6 +210,33 @@ namespace Thumbnify.Resources {
         internal static string param_audio {
             get {
                 return ResourceManager.GetString("param_audio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Audio 1 ähnelt.
+        /// </summary>
+        internal static string param_audio1 {
+            get {
+                return ResourceManager.GetString("param_audio1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Audio 2 ähnelt.
+        /// </summary>
+        internal static string param_audio2 {
+            get {
+                return ResourceManager.GetString("param_audio2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Bitdepth ähnelt.
+        /// </summary>
+        internal static string param_bitdepth {
+            get {
+                return ResourceManager.GetString("param_bitdepth", resourceCulture);
             }
         }
         

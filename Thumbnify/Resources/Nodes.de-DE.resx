@@ -169,4 +169,16 @@
   <data name="param_samples" xml:space="preserve">
     <value>Samples</value>
   </data>
+  <data name="audio_merge" xml:space="preserve">
+    <value>Zusammenschneiden</value>
+  </data>
+  <data name="param_audio1" xml:space="preserve">
+    <value>Audio 1</value>
+  </data>
+  <data name="param_audio2" xml:space="preserve">
+    <value>Audio 2</value>
+  </data>
+  <data name="param_bitdepth" xml:space="preserve">
+    <value>Bittiefe</value>
+  </data>
 </root>

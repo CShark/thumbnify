@@ -68,7 +68,11 @@ namespace Thumbnify.Dialogs {
         private void EditPreset_OnClick(object sender, RoutedEventArgs e) {
             var dlg = new ProcessingEditor();
             dlg.Owner = this;
-            dlg.Graph = PartMetadata.ProcessingGraph ?? new();
+
+            var graph = App.Settings.Processing.FirstOrDefault(x =>
+                x.Name.ToLower() == PartMetadata.ProcessingGraph.Name.ToLower()) ?? PartMetadata.ProcessingGraph;
+
+            dlg.Graph = graph ?? new();
 
             dlg.ShowDialog();
 

@@ -121,7 +121,7 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Header="Merge" Command="{x:Static controls:GraphEditor.CreateNode}">
+                        <MenuItem Header="{lex:Loc audio_merge}" Command="{x:Static controls:GraphEditor.CreateNode}" CommandParameter="{x:Type audio:AudioMerge}">
                             <MenuItem.Icon>
                                 <wpf:MaterialIcon Kind="CallMerge" />
                             </MenuItem.Icon>
