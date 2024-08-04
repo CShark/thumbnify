@@ -163,4 +163,10 @@
   <data name="audio_normalize" xml:space="preserve">
     <value>Normalize Audio</value>
   </data>
+  <data name="audio_resample" xml:space="preserve">
+    <value>Resample Audio</value>
+  </data>
+  <data name="param_samples" xml:space="preserve">
+    <value>Samples</value>
+  </data>
 </root>

@@ -155,11 +155,15 @@ namespace Thumbnify.Data.Processing {
         protected abstract bool Execute(CancellationToken cancelToken);
 
         protected void ReportProgress(double progress) {
-            Progress = progress;
+            if (Math.Abs(progress - Progress) > 0.001) {
+                App.Current.Dispatcher.Invoke(() => {
+                    Progress = progress;
+                });
+            }
         }
 
         protected void ReportProgress(long step, long max) {
-            Progress = (double)step / max;
+            ReportProgress((double)step / max);
         }
 
         public EditorNode GenerateNode() {

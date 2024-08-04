@@ -88,6 +88,15 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Resample Audio ähnelt.
+        /// </summary>
+        internal static string audio_resample {
+            get {
+                return ResourceManager.GetString("audio_resample", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Save Audio ähnelt.
         /// </summary>
         internal static string audio_save {
@@ -219,6 +228,15 @@ namespace Thumbnify.Resources {
         internal static string param_path {
             get {
                 return ResourceManager.GetString("param_path", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Samples ähnelt.
+        /// </summary>
+        internal static string param_samples {
+            get {
+                return ResourceManager.GetString("param_samples", resourceCulture);
             }
         }
         

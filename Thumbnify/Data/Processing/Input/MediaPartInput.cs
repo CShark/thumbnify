@@ -98,19 +98,19 @@ namespace Thumbnify.Data.Processing.Input {
             Task.WaitAll(task);
 
             // Load Audio
-            Logger.Debug("Convert Audio to mp3");
+            Logger.Debug("Convert Audio to wav");
             ffmpeg.Progress -= FfmpegOnProgress;
             opt = new ConversionOptions();
             input = new InputFile(path);
-            output = new OutputFile(Path.ChangeExtension(path, "mp3"));
+            output = new OutputFile(Path.ChangeExtension(path, "wav"));
 
             ffmpeg.ConvertAsync(input, output, opt, cancelToken).Wait(cancelToken);
 
             Audio.Value = new AudioStream {
-                AudioFile = Path.ChangeExtension(path, "mp3")
+                AudioFile = Path.ChangeExtension(path, "wav")
             };
 
-            Logger.Information("Audio converted to mp3");
+            Logger.Information("Audio converted to wav");
 
             Video.Value = new VideoFile {
                 VideoFileName = path

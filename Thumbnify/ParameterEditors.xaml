@@ -19,6 +19,10 @@
         <TextBox Text="{Binding Value}" />
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type parameters:EnumParameter}">
+        <ComboBox SelectedValue="{Binding Value}" ItemsSource="{Binding Options}" DisplayMemberPath="Key" SelectedValuePath="Value"></ComboBox>
+    </DataTemplate>
+
     <DataTemplate DataType="{x:Type parameters:DateParam}">
         <DataTemplate.Resources>
             <converter:BoolInvert x:Key="BoolInvert" />

@@ -42,6 +42,7 @@ namespace Thumbnify.Data.Processing.Audio {
 
         protected override bool Execute(CancellationToken cancelToken) {
             var source = AudioParameter.Value.GetWaveStream();
+            var sourceReader = source.ToSampleProvider();
             var destFile = Path.Combine(TempPath, Path.GetRandomFileName() + ".wav");
             var output = new WaveFileWriter(destFile, source.WaveFormat);
             var state = InitializeState(source.WaveFormat.SampleRate);
@@ -50,7 +51,7 @@ namespace Thumbnify.Data.Processing.Audio {
             var delayBuffer = new float[state.DelayBufSize * channels];
 
             var samplesPerChunk = SPU;
-            var chunks = source.Length / samplesPerChunk;
+            var chunks = source.SampleCount / samplesPerChunk;
             var ang90 = Math.PI * .5;
             var ang90inv = 2 / Math.PI;
             var samplePos = 0;
@@ -83,11 +84,11 @@ namespace Thumbnify.Data.Processing.Audio {
                     enveloperate = (float)(1.0f - Math.Pow(0.25f / attenuate, state.AttackSamplesInv));
                 }
 
-                // process the chunk
-                for (int chi = 0; chi < samplesPerChunk; chi++) {
-                    var input = new float[samplesPerChunk * channels];
-                    source.Read(input, 0, input.Length);
+                var input = new float[samplesPerChunk * channels];
+                var read = sourceReader.Read(input, 0, input.Length);
 
+                // process the chunk
+                for (int chi = 0; chi < read / channels; chi++) {
                     state.DelayReadPos = (state.DelayReadPos + 1) % state.DelayBufSize;
                     state.DelayWritePos = (state.DelayWritePos + 1) % state.DelayBufSize;
 
@@ -95,11 +96,10 @@ namespace Thumbnify.Data.Processing.Audio {
                     for (int i = 0; i < channels; i++) {
                         sample[i] = input[chi * source.WaveFormat.Channels + i] * state.LinearPreGain;
                         delayBuffer[state.DelayWritePos * channels + i] = sample[i];
-                        sample[i] = Math.Abs(sample[i]);
                     }
 
 
-                    var inputMax = sample.Max();
+                    var inputMax = sample.Max(x => Math.Abs(x));
                     var attenuation = 1f;
 
                     if (inputMax >= 0.0001) {
@@ -157,6 +157,8 @@ namespace Thumbnify.Data.Processing.Audio {
 
             output.Flush();
             output.Close();
+
+            source.Close();
 
             AudioResult.Value = new AudioStream { AudioFile = destFile };
 

@@ -10,8 +10,8 @@ namespace Thumbnify.Data.Processing.Parameters {
     public class AudioStream : ParamType {
         public string AudioFile { get; set; }
 
-        public AudioFileReader GetWaveStream() {
-            return new AudioFileReader(AudioFile);
+        public WaveFileReader GetWaveStream() {
+            return new WaveFileReader(AudioFile);
         }
 
         public override ParamType Clone() {
