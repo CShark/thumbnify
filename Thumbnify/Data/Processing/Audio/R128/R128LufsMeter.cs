@@ -220,13 +220,15 @@ namespace Thumbnify.Data.Processing.Audio.R128 {
         /// </summary>
         /// <param name="buffer">The samples need to be process</param>
         /// <returns>A array of result with the interval of 100ms</returns>
-        public void ProcessBuffer(ISampleProvider samples, Action<int> progressUpdated) {
+        public void ProcessBuffer(ISampleProvider samples, Action<int> progressUpdated, CancellationToken cancelToken) {
             // Init the process
             int bufferPosition = 0;
             var tempBuffer = new float[NumChannel * StepSampleCount];
             var samplesRead = 0;
 
             while ((samplesRead = samples.Read(tempBuffer, 0, tempBuffer.Length)) > 0) {
+                if (cancelToken.IsCancellationRequested) return;
+
                 bufferPosition += samplesRead;
                 progressUpdated?.Invoke(bufferPosition);
 

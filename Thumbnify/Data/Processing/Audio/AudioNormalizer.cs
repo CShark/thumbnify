@@ -47,9 +47,10 @@ namespace Thumbnify.Data.Processing.Audio {
 
                     // calculate loudness
                     lufsMeter.StartIntegrated();
-                    lufsMeter.ProcessBuffer(sampleReader, (position) => ReportProgress(src.Position, src.Length * 3));
+                    lufsMeter.ProcessBuffer(sampleReader, (position) => ReportProgress(src.Position, src.Length * 3), CancelToken);
                     lufsMeter.StopIntegrated();
 
+                    if (CancelToken.IsCancellationRequested) return false;
                     Logger.Debug($"Integrated Loudness: {lufsMeter.IntegratedLoudness} LU");
 
                     // apply gain
@@ -62,6 +63,8 @@ namespace Thumbnify.Data.Processing.Audio {
                     var read = 0;
                     var pos = 0;
                     while ((read = sampleReader.Read(buffer, 0, buffer.Length)) > 0) {
+                        if (CancelToken.IsCancellationRequested) return false;
+
                         for (int i = 0; i < read; i++) {
                             buffer[i] *= gainLin;
                         }
@@ -77,9 +80,10 @@ namespace Thumbnify.Data.Processing.Audio {
                     var dstReader = new WaveFileReader(dst);
                     lufsMeter.StartIntegrated();
                     lufsMeter.ProcessBuffer(dstReader.ToSampleProvider(),
-                        (pos) => ReportProgress(dstReader.Position + 2 * dstReader.Length, dstReader.Length * 3));
+                        (pos) => ReportProgress(dstReader.Position + 2 * dstReader.Length, dstReader.Length * 3), CancelToken);
                     lufsMeter.StopIntegrated();
 
+                    if (CancelToken.IsCancellationRequested) return false;
                     Logger.Debug($"Integrated Loudness after normalization: {lufsMeter.IntegratedLoudness} LU");
                 }
             }

@@ -58,6 +58,7 @@ namespace Thumbnify.Data.Processing.Audio {
             var spacingDb = SpacingDb;
 
             for (var ch = 0; ch < chunks; ch++) {
+                if (CancelToken.IsCancellationRequested) return false;
                 ReportProgress(ch, chunks);
 
                 state.DetectorAvg = Fix(state.DetectorAvg, 1);

@@ -17,6 +17,7 @@
         xmlns:lex="https://github.com/XAMLMarkupExtensions/WPFLocalizationExtension"
         xmlns:video="clr-namespace:Thumbnify.Data.Processing.Video"
         xmlns:paramStore="clr-namespace:Thumbnify.Data.ParamStore"
+        xmlns:converters="clr-namespace:Thumbnify.Data.Processing.Converters"
         lex:LocalizeDictionary.DesignCulture="de-DE"
         lex:ResxLocalizationProvider.DefaultAssembly="Thumbnify"
         lex:ResxLocalizationProvider.DefaultDictionary="Controls"
@@ -121,27 +122,43 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Header="{lex:Loc audio_merge}" Command="{x:Static controls:GraphEditor.CreateNode}" CommandParameter="{x:Type audio:AudioMerge}">
+                        <MenuItem Header="{lex:Loc audio_merge}" Command="{x:Static controls:GraphEditor.CreateNode}"
+                                  CommandParameter="{x:Type audio:AudioMerge}">
                             <MenuItem.Icon>
                                 <wpf:MaterialIcon Kind="CallMerge" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="{lex:Loc audio_resample}" Command="{x:Static controls:GraphEditor.CreateNode}" CommandParameter="{x:Type audio:AudioResample}">
+                        <MenuItem Header="{lex:Loc audio_resample}"
+                                  Command="{x:Static controls:GraphEditor.CreateNode}"
+                                  CommandParameter="{x:Type audio:AudioResample}">
                             <MenuItem.Icon>
                                 <wpf:MaterialIcon Kind="SineWave"></wpf:MaterialIcon>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="{lex:Loc audio_normalize}" Command="{x:Static controls:GraphEditor.CreateNode}" CommandParameter="{x:Type audio:AudioNormalizer}">
+                        <MenuItem Header="{lex:Loc audio_normalize}"
+                                  Command="{x:Static controls:GraphEditor.CreateNode}"
+                                  CommandParameter="{x:Type audio:AudioNormalizer}">
                             <MenuItem.Icon>
                                 <wpf:MaterialIcon Kind="Waveform"></wpf:MaterialIcon>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="{lex:Loc audio_compressor}" Command="{x:Static controls:GraphEditor.CreateNode}" CommandParameter="{x:Type audio:AudioCompressor}">
+                        <MenuItem Header="{lex:Loc audio_compressor}"
+                                  Command="{x:Static controls:GraphEditor.CreateNode}"
+                                  CommandParameter="{x:Type audio:AudioCompressor}">
                             <MenuItem.Icon>
                                 <wpf:MaterialIcon Kind="ArrowCollapseVertical" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
+                        <MenuItem Header="{lex:Loc audio_metadata}"
+                                  Command="{x:Static controls:GraphEditor.CreateNode}"
+                                  CommandParameter="{x:Type audio:AudioMetadata}">
+                            <MenuItem.Icon>
+                                <wpf:MaterialIcon Kind="Tag" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="Dateien">
                         <MenuItem Header="Upload FTP" Command="{x:Static controls:GraphEditor.CreateNode}">
                             <MenuItem.Icon>
                                 <wpf:MaterialIcon Kind="FolderUpload" />
@@ -150,6 +167,17 @@
                         <MenuItem Header="Upload WebDAV" Command="{x:Static controls:GraphEditor.CreateNode}">
                             <MenuItem.Icon>
                                 <wpf:MaterialIcon Kind="CloudUpload" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="{lex:Loc mnu_convert}">
+                        <MenuItem.Icon>
+                            <wpf:MaterialIcon Kind="SwapHorizontal"/>
+                        </MenuItem.Icon>
+
+                        <MenuItem Header="{lex:Loc convert_date}" Command="{x:Static controls:GraphEditor.CreateNode}" CommandParameter="{x:Type converters:ConvertDate}">
+                            <MenuItem.Icon>
+                                <wpf:MaterialIcon Kind="Calendar" />
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuItem>
@@ -194,7 +222,7 @@
                     <wpf:MaterialIcon Kind="ContentSaveOutline" />
                 </Button>
 
-                <Separator/>
+                <Separator />
 
                 <Button Click="RunGraph_OnClick">
                     <wpf:MaterialIcon Kind="Play" Foreground="Green" />

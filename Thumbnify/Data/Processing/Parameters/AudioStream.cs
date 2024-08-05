@@ -10,6 +10,12 @@ namespace Thumbnify.Data.Processing.Parameters {
     public class AudioStream : ParamType {
         public string AudioFile { get; set; }
 
+        public string? Title { get; set; }
+
+        public string? Album { get; set; }
+
+        public string? Interpret { get; set; }
+
         public WaveFileReader GetWaveStream() {
             return new WaveFileReader(AudioFile);
         }

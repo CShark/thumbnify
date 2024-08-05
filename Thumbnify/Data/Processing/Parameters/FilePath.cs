@@ -45,6 +45,10 @@ namespace Thumbnify.Data.Processing.Parameters {
             Filter = filter;
         }
 
+        public FilePath(string fileName) {
+            _fileName = fileName;
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null) {

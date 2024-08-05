@@ -88,6 +88,15 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Set Metadata ähnelt.
+        /// </summary>
+        internal static string audio_metadata {
+            get {
+                return ResourceManager.GetString("audio_metadata", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Normalize Audio ähnelt.
         /// </summary>
         internal static string audio_normalize {
@@ -111,6 +120,15 @@ namespace Thumbnify.Resources {
         internal static string audio_save {
             get {
                 return ResourceManager.GetString("audio_save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Convert Date ähnelt.
+        /// </summary>
+        internal static string convert_date {
+            get {
+                return ResourceManager.GetString("convert_date", resourceCulture);
             }
         }
         
@@ -160,6 +178,15 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Convert ähnelt.
+        /// </summary>
+        internal static string mnu_convert {
+            get {
+                return ResourceManager.GetString("mnu_convert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Delete ähnelt.
         /// </summary>
         internal static string mnu_delete {
@@ -201,6 +228,15 @@ namespace Thumbnify.Resources {
         internal static string op_pathcombine {
             get {
                 return ResourceManager.GetString("op_pathcombine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Album ähnelt.
+        /// </summary>
+        internal static string param_album {
+            get {
+                return ResourceManager.GetString("param_album", resourceCulture);
             }
         }
         
@@ -250,6 +286,33 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Date ähnelt.
+        /// </summary>
+        internal static string param_date {
+            get {
+                return ResourceManager.GetString("param_date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Format ähnelt.
+        /// </summary>
+        internal static string param_format {
+            get {
+                return ResourceManager.GetString("param_format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Interpret ähnelt.
+        /// </summary>
+        internal static string param_interpret {
+            get {
+                return ResourceManager.GetString("param_interpret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Name ähnelt.
         /// </summary>
         internal static string param_name {
@@ -282,6 +345,15 @@ namespace Thumbnify.Resources {
         internal static string param_target_lu {
             get {
                 return ResourceManager.GetString("param_target_lu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Title ähnelt.
+        /// </summary>
+        internal static string param_title {
+            get {
+                return ResourceManager.GetString("param_title", resourceCulture);
             }
         }
         

@@ -7,16 +7,20 @@ using Thumbnify.Postprocessing;
 
 namespace Thumbnify.Data.Processing.Audio {
     internal sealed class AudioSaveFile : Node {
-
         [JsonIgnore]
         public Parameter<AudioStream> AudioStream { get; } = new("audio", true);
 
         public Parameter<FilePath> AudioFile { get; } = new("path", true,
             new(FilePath.EPathMode.SaveFile, "MP3-Audio|*.mp3"));
 
+        [JsonIgnore]
+        public Result<FilePath> AudioResult { get; } = new("path");
+
         public AudioSaveFile() {
             RegisterParameter(AudioStream);
             RegisterParameter(AudioFile);
+
+            RegisterResult(AudioResult);
         }
 
         protected override ENodeType NodeType => ENodeType.Audio;
@@ -41,6 +45,24 @@ namespace Thumbnify.Data.Processing.Audio {
                         FileTools.CopyStreams(src, writer, ReportProgress, CancelToken);
                     }
                 }
+
+                // Write Metadata
+                var tagFile = TagLib.File.Create(filename);
+                if (!string.IsNullOrWhiteSpace(AudioStream.Value.Title)) {
+                    tagFile.Tag.Title = AudioStream.Value.Title;
+                }
+
+                if (!string.IsNullOrWhiteSpace(AudioStream.Value.Album)) {
+                    tagFile.Tag.Album = AudioStream.Value.Album;
+                }
+
+                if (!string.IsNullOrWhiteSpace(AudioStream.Value.Interpret)) {
+                    tagFile.Tag.Composers = new[] { AudioStream.Value.Interpret };
+                }
+
+                tagFile.Save();
+
+                AudioResult.Value = new FilePath(filename);
 
                 return true;
             } catch (Exception ex) {

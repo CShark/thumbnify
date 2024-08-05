@@ -10,6 +10,14 @@ namespace Thumbnify.Data.Processing.Parameters {
 
         public bool Today { get; set; }
 
+        public DateTime ResolveDate() {
+            if (Today) {
+                return DateTime.Now;
+            } else {
+                return Value;
+            }
+        }
+
         public override ParamType Clone() {
             return new DateParam {
                 Value = Value,
