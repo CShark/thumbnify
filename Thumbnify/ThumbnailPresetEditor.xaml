@@ -115,7 +115,7 @@
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="Black" Opacity="1" Direction="0"></DropShadowEffect>
                 </Border.Effect>
-                <controls:ThumbnailPreview Thumbnail="{Binding Thumbnail}" PreviewMetadata="{Binding PreviewMetadata}">
+                <controls:ThumbnailPreview Thumbnail="{Binding Thumbnail}" PreviewMetadata="{Binding PreviewMetadata}" ResolveParams="ThumbnailPreview_OnResolveParams" LivePreview="True">
                     <controls:ThumbnailPreview.Clip>
                         <RectangleGeometry Rect="0,0,210,118" RadiusX="8" RadiusY="8"></RectangleGeometry>
                     </controls:ThumbnailPreview.Clip>
@@ -127,7 +127,7 @@
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="Black" Opacity="1" Direction="0"></DropShadowEffect>
                 </Border.Effect>
-                <controls:ThumbnailPreview Thumbnail="{Binding Thumbnail}" PreviewMetadata="{Binding PreviewMetadata}">
+                <controls:ThumbnailPreview Thumbnail="{Binding Thumbnail}" PreviewMetadata="{Binding PreviewMetadata}" ResolveParams="ThumbnailPreview_OnResolveParams" LivePreview="True">
                     <controls:ThumbnailPreview.Clip>
                         <RectangleGeometry Rect="0,0,362,203" RadiusX="8" RadiusY="8"></RectangleGeometry>
                     </controls:ThumbnailPreview.Clip>

@@ -139,4 +139,10 @@
   <data name="msg_cancelGraphs" xml:space="preserve">
     <value>Eine Medienausschnitte wurden noch nicht fertig verarbeitet. Sollen diese abgebrochen werden?</value>
   </data>
+  <data name="title_ytNoChannels" xml:space="preserve">
+    <value>Keine Kanäle gefunden</value>
+  </data>
+  <data name="msg_ytNoChannels" xml:space="preserve">
+    <value>Der gewählte Account hat keine Kanäle.</value>
+  </data>
 </root>

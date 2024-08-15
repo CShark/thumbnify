@@ -16,6 +16,7 @@ namespace Thumbnify.Data {
         private string _defaultThumbnail;
         private ObservableCollection<ProcessingGraph> _processing = new();
         private string _defaultProcessing;
+        private ObservableCollection<YoutubeCredentials> _youtubeCredentials = new();
 
         public string VideoPath {
             get => _videoPath;
@@ -40,6 +41,11 @@ namespace Thumbnify.Data {
         public string DefaultProcessing {
             get => _defaultProcessing;
             set => SetField(ref _defaultProcessing, value);
+        }
+
+        public ObservableCollection<YoutubeCredentials> YoutubeCredentials {
+            get => _youtubeCredentials;
+            set => SetField(ref _youtubeCredentials, value);
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

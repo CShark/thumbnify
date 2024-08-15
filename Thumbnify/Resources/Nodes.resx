@@ -205,4 +205,31 @@
   <data name="convert_date" xml:space="preserve">
     <value>Convert Date</value>
   </data>
+  <data name="input_temppath" xml:space="preserve">
+    <value>Temporary Path</value>
+  </data>
+  <data name="mnu_youtube" xml:space="preserve">
+    <value>Youtube</value>
+  </data>
+  <data name="youtube_upload" xml:space="preserve">
+    <value>Upload Video</value>
+  </data>
+  <data name="param_credentials" xml:space="preserve">
+    <value>Credentials</value>
+  </data>
+  <data name="param_account" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="param_description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="param_category" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="youtube_addplaylist" xml:space="preserve">
+    <value>Add to Playlist</value>
+  </data>
+  <data name="param_playlist" xml:space="preserve">
+    <value>Playlist</value>
+  </data>
 </root>

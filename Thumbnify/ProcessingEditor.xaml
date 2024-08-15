@@ -18,6 +18,7 @@
         xmlns:video="clr-namespace:Thumbnify.Data.Processing.Video"
         xmlns:paramStore="clr-namespace:Thumbnify.Data.ParamStore"
         xmlns:converters="clr-namespace:Thumbnify.Data.Processing.Converters"
+        xmlns:youtube="clr-namespace:Thumbnify.Data.Processing.Youtube"
         lex:LocalizeDictionary.DesignCulture="de-DE"
         lex:ResxLocalizationProvider.DefaultAssembly="Thumbnify"
         lex:ResxLocalizationProvider.DefaultDictionary="Controls"
@@ -77,6 +78,13 @@
                                 <wpf:MaterialIcon Kind="Folder" />
                             </MenuItem.Icon>
                         </MenuItem>
+                        <MenuItem Header="{lex:Loc Key={x:Static input:TempPathInput.Id}}"
+                                  Command="{x:Static controls:GraphEditor.CreateNode}"
+                                  CommandParameter="{x:Type input:TempPathInput}">
+                            <MenuItem.Icon>
+                                <wpf:MaterialIcon Kind="FolderPound" />
+                            </MenuItem.Icon>
+                        </MenuItem>
                         <MenuItem Header="{lex:Loc {x:Static input:StringInput.Id}}"
                                   Command="{x:Static controls:GraphEditor.CreateNode}"
                                   CommandParameter="{x:Type input:StringInput}">
@@ -96,8 +104,9 @@
                                 <wpf:MaterialIcon Kind="ContentSave" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <Separator />
-                        <MenuItem Header="Youtube" Command="{x:Static controls:GraphEditor.CreateNode}">
+                        <MenuItem Header="{lex:Loc {x:Static youtube:YoutubeUpload.Id}}"
+                                  Command="{x:Static controls:GraphEditor.CreateNode}"
+                                  CommandParameter="{x:Type youtube:YoutubeUpload}">
                             <MenuItem.Icon>
                                 <wpf:MaterialIcon Kind="CloudUpload" />
                             </MenuItem.Icon>
@@ -122,27 +131,27 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Header="{lex:Loc audio_merge}" Command="{x:Static controls:GraphEditor.CreateNode}"
+                        <MenuItem Header="{lex:Loc {x:Static audio:AudioMerge.Id}}" Command="{x:Static controls:GraphEditor.CreateNode}"
                                   CommandParameter="{x:Type audio:AudioMerge}">
                             <MenuItem.Icon>
                                 <wpf:MaterialIcon Kind="CallMerge" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="{lex:Loc audio_resample}"
+                        <MenuItem Header="{lex:Loc {x:Static audio:AudioResample.Id}}"
                                   Command="{x:Static controls:GraphEditor.CreateNode}"
                                   CommandParameter="{x:Type audio:AudioResample}">
                             <MenuItem.Icon>
                                 <wpf:MaterialIcon Kind="SineWave"></wpf:MaterialIcon>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="{lex:Loc audio_normalize}"
+                        <MenuItem Header="{lex:Loc {x:Static audio:AudioNormalizer.Id}}"
                                   Command="{x:Static controls:GraphEditor.CreateNode}"
                                   CommandParameter="{x:Type audio:AudioNormalizer}">
                             <MenuItem.Icon>
                                 <wpf:MaterialIcon Kind="Waveform"></wpf:MaterialIcon>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="{lex:Loc audio_compressor}"
+                        <MenuItem Header="{lex:Loc {x:Static audio:AudioCompressor.Id}}"
                                   Command="{x:Static controls:GraphEditor.CreateNode}"
                                   CommandParameter="{x:Type audio:AudioCompressor}">
                             <MenuItem.Icon>
@@ -150,11 +159,31 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Header="{lex:Loc audio_metadata}"
+                        <MenuItem Header="{lex:Loc {x:Static audio:AudioMetadata.Id}}"
                                   Command="{x:Static controls:GraphEditor.CreateNode}"
                                   CommandParameter="{x:Type audio:AudioMetadata}">
                             <MenuItem.Icon>
                                 <wpf:MaterialIcon Kind="Tag" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="{lex:Loc mnu_youtube}">
+                        <MenuItem.Icon>
+                            <wpf:MaterialIcon Kind="VideoBox" />
+                        </MenuItem.Icon>
+
+                        <MenuItem Header="{lex:Loc {x:Static youtube:YoutubeUpload.Id}}"
+                                  Command="{x:Static controls:GraphEditor.CreateNode}"
+                                  CommandParameter="{x:Type youtube:YoutubeUpload}">
+                            <MenuItem.Icon>
+                                <wpf:MaterialIcon Kind="CloudUpload" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+
+                        <MenuItem Header="{lex:Loc {x:Static youtube:YoutubeAddPlaylist.Id}}"
+                                  Command="{x:Static controls:GraphEditor.CreateNode}" CommandParameter="{x:Type youtube:YoutubeAddPlaylist}">
+                            <MenuItem.Icon>
+                                <wpf:MaterialIcon Kind="ViewList" />
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuItem>
@@ -170,12 +199,14 @@
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuItem>
+                    <Separator />
                     <MenuItem Header="{lex:Loc mnu_convert}">
                         <MenuItem.Icon>
-                            <wpf:MaterialIcon Kind="SwapHorizontal"/>
+                            <wpf:MaterialIcon Kind="SwapHorizontal" />
                         </MenuItem.Icon>
 
-                        <MenuItem Header="{lex:Loc convert_date}" Command="{x:Static controls:GraphEditor.CreateNode}" CommandParameter="{x:Type converters:ConvertDate}">
+                        <MenuItem Header="{lex:Loc {x:Static converters:ConvertDate.Id}}" Command="{x:Static controls:GraphEditor.CreateNode}"
+                                  CommandParameter="{x:Type converters:ConvertDate}">
                             <MenuItem.Icon>
                                 <wpf:MaterialIcon Kind="Calendar" />
                             </MenuItem.Icon>

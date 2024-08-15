@@ -124,6 +124,15 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die The selected account does not have any channels. ähnelt.
+        /// </summary>
+        internal static string msg_ytNoChannels {
+            get {
+                return ResourceManager.GetString("msg_ytNoChannels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Cancel Processing ähnelt.
         /// </summary>
         internal static string title_cancelGraphs {
@@ -183,6 +192,15 @@ namespace Thumbnify.Resources {
         internal static string title_overwritePreset {
             get {
                 return ResourceManager.GetString("title_overwritePreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die No Channels found ähnelt.
+        /// </summary>
+        internal static string title_ytNoChannels {
+            get {
+                return ResourceManager.GetString("title_ytNoChannels", resourceCulture);
             }
         }
     }

@@ -18,10 +18,17 @@ namespace Thumbnify.Data.Thumbnail {
         private double _shadowDirection = 315;
         private double _shadowBlur = 10d;
         private bool _textEditMode;
+        private string? _previewText;
 
         public string Placeholder {
             get => _placeholder;
             set => SetField(ref _placeholder, value);
+        }
+
+        [JsonIgnore]
+        public string? PreviewText {
+            get => _previewText;
+            set => SetField(ref _previewText, value);
         }
 
         public Color Foreground {

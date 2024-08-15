@@ -11,6 +11,9 @@ using Thumbnify.Dialogs;
 using Thumbnify.Data;
 using Thumbnify.Data.Thumbnail;
 using Path = System.IO.Path;
+using System.Collections.ObjectModel;
+using Thumbnify.Data.ParamStore;
+using Thumbnify.Data.Processing;
 
 namespace Thumbnify {
     /// <summary>
@@ -99,6 +102,8 @@ namespace Thumbnify {
         public List<FontFamily> FontFamilies { get; }
 
         public List<int> FontSizes { get; }
+
+        public ObservableCollection<ParamDefinition>? PreviewParameters { get; set; }
 
         public ThumbnailPresetEditor() {
             Thumbnail = new();
@@ -325,6 +330,10 @@ namespace Thumbnify {
             }
 
             return null;
+        }
+
+        private void ThumbnailPreview_OnResolveParams(ResolveParamArgs obj) {
+            obj.Parameters = PreviewParameters;
         }
     }
 }

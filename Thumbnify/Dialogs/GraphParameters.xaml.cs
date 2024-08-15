@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Ookii.Dialogs.Wpf;
 using Thumbnify.Data;
+using Thumbnify.Data.Processing;
 using Thumbnify.Tools;
 
 namespace Thumbnify.Dialogs {
@@ -58,6 +59,10 @@ namespace Thumbnify.Dialogs {
         private void Apply_OnClick(object sender, RoutedEventArgs e) {
             DialogResult = true;
             Close();
+        }
+
+        private void GraphParameters_OnResolveParams(ResolveParamArgs obj) {
+            obj.Parameters = PartMetadata.Parameters;
         }
     }
 }

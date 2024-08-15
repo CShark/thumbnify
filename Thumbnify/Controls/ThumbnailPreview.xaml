@@ -15,7 +15,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
-        <converter:TextMetadataSubstitute x:Key="TextPreview" />
+        <converter:FirstNotNullConverter x:Key="TextPreview" />
 
         <Style TargetType="MenuItem">
             <Setter Property="CommandTarget"
@@ -47,15 +47,8 @@
                                        FontFamily="{Binding FontFace}">
                                 <TextBlock.Text>
                                     <MultiBinding Converter="{StaticResource TextPreview}">
-                                        <Binding Path="Placeholder"></Binding>
-                                        <Binding
-                                            RelativeSource="{RelativeSource FindAncestor, AncestorType=local:ThumbnailPreview}"
-                                            Path="PreviewMetadata.Prediger">
-                                        </Binding>
-                                        <Binding
-                                            RelativeSource="{RelativeSource FindAncestor, AncestorType=local:ThumbnailPreview}"
-                                            Path="PreviewMetadata.Thema">
-                                        </Binding>
+                                        <Binding Path="PreviewText" />
+                                        <Binding Path="Placeholder" />
                                     </MultiBinding>
                                 </TextBlock.Text>
                                 <TextBlock.Foreground>
@@ -123,7 +116,8 @@
                             </Setter.Value>
                         </Setter>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding ElementName=ThumbnailPreviewControl, Path=EditMode}" Value="False">
+                            <DataTrigger Binding="{Binding ElementName=ThumbnailPreviewControl, Path=EditMode}"
+                                         Value="False">
                                 <Setter Property="ContextMenu" Value="{x:Null}"></Setter>
                             </DataTrigger>
                         </Style.Triggers>

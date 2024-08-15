@@ -97,52 +97,109 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="msg_deleteActions" xml:space="preserve">
-    <value>Delete all selected actions?</value>
+  <data name="yt_public" xml:space="preserve">
+    <value>Public</value>
   </data>
-  <data name="title_deleteActions" xml:space="preserve">
-    <value>Delete Actions</value>
+  <data name="yt_private" xml:space="preserve">
+    <value>Private</value>
   </data>
-  <data name="msg_deleteMediaPart" xml:space="preserve">
-    <value>Delete the selected media part?</value>
+  <data name="yt_unlisted" xml:space="preserve">
+    <value>Unlisted</value>
   </data>
-  <data name="title_deleteMediaPart" xml:space="preserve">
-    <value>Delete Media Part</value>
+  <data name="yt_cat_02" xml:space="preserve">
+    <value>Autos &amp; Vehicles</value>
   </data>
-  <data name="msg_deletePreset" xml:space="preserve">
-    <value>Delete the selected preset?</value>
+  <data name="yt_cat_01" xml:space="preserve">
+    <value>Film &amp; Animation</value>
   </data>
-  <data name="title_deletePreset" xml:space="preserve">
-    <value>Delete Preset</value>
+  <data name="yt_cat_10" xml:space="preserve">
+    <value>Music</value>
   </data>
-  <data name="msg_overwritePreset" xml:space="preserve">
-    <value>Overwrite selected preset?</value>
+  <data name="yt_cat_15" xml:space="preserve">
+    <value>Pets &amp; Animals</value>
   </data>
-  <data name="title_overwritePreset" xml:space="preserve">
-    <value>Overwrite Preset</value>
+  <data name="yt_cat_17" xml:space="preserve">
+    <value>Sports</value>
   </data>
-  <data name="msg_cleanup" xml:space="preserve">
-    <value>Delete all media files that are already completely processed?</value>
+  <data name="yt_cat_18" xml:space="preserve">
+    <value>Short Movies</value>
   </data>
-  <data name="title_cleanup" xml:space="preserve">
-    <value>Media Cleanup</value>
+  <data name="yt_cat_19" xml:space="preserve">
+    <value>Travel &amp; Events</value>
   </data>
-  <data name="msg_createNew" xml:space="preserve">
-    <value>Create new preset? You will lose all unsaved changes.</value>
+  <data name="yt_cat_20" xml:space="preserve">
+    <value>Gaming</value>
   </data>
-  <data name="title_createNew" xml:space="preserve">
-    <value>Create New preset</value>
+  <data name="yt_cat_21" xml:space="preserve">
+    <value>Videoblogging</value>
   </data>
-  <data name="title_cancelGraphs" xml:space="preserve">
-    <value>Cancel Processing</value>
+  <data name="yt_cat_22" xml:space="preserve">
+    <value>People &amp; Blogs</value>
   </data>
-  <data name="msg_cancelGraphs" xml:space="preserve">
-    <value>Some media parts have not yet finished processing. Do you want to cancel them?</value>
+  <data name="yt_cat_23" xml:space="preserve">
+    <value>Comedy</value>
   </data>
-  <data name="title_ytNoChannels" xml:space="preserve">
-    <value>No Channels found</value>
+  <data name="yt_cat_24" xml:space="preserve">
+    <value>Entertainment</value>
   </data>
-  <data name="msg_ytNoChannels" xml:space="preserve">
-    <value>The selected account does not have any channels.</value>
+  <data name="yt_cat_25" xml:space="preserve">
+    <value>News &amp; Politics</value>
+  </data>
+  <data name="yt_cat_26" xml:space="preserve">
+    <value>HowTo &amp; Style</value>
+  </data>
+  <data name="yt_cat_27" xml:space="preserve">
+    <value>Education</value>
+  </data>
+  <data name="yt_cat_28" xml:space="preserve">
+    <value>Science &amp; Technology</value>
+  </data>
+  <data name="yt_cat_29" xml:space="preserve">
+    <value>Nonprofits &amp; Activism</value>
+  </data>
+  <data name="yt_cat_30" xml:space="preserve">
+    <value>Movies</value>
+  </data>
+  <data name="yt_cat_31" xml:space="preserve">
+    <value>Anime/Animation</value>
+  </data>
+  <data name="yt_cat_32" xml:space="preserve">
+    <value>Action/Adventure</value>
+  </data>
+  <data name="yt_cat_33" xml:space="preserve">
+    <value>Classics</value>
+  </data>
+  <data name="yt_cat_34" xml:space="preserve">
+    <value>Comedy</value>
+  </data>
+  <data name="yt_cat_35" xml:space="preserve">
+    <value>Documentary</value>
+  </data>
+  <data name="yt_cat_36" xml:space="preserve">
+    <value>Drama</value>
+  </data>
+  <data name="yt_cat_37" xml:space="preserve">
+    <value>Family</value>
+  </data>
+  <data name="yt_cat_38" xml:space="preserve">
+    <value>Foreign</value>
+  </data>
+  <data name="yt_cat_39" xml:space="preserve">
+    <value>Horror</value>
+  </data>
+  <data name="yt_cat_40" xml:space="preserve">
+    <value>Sci-Fi/Fantasy</value>
+  </data>
+  <data name="yt_cat_41" xml:space="preserve">
+    <value>Thriller</value>
+  </data>
+  <data name="yt_cat_42" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="yt_cat_43" xml:space="preserve">
+    <value>Shows</value>
+  </data>
+  <data name="yt_cat_44" xml:space="preserve">
+    <value>Trailers</value>
   </data>
 </root>

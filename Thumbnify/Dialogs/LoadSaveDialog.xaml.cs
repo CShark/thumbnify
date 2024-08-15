@@ -76,7 +76,7 @@ namespace Thumbnify.Dialogs {
         public static RoutedUICommand DeleteSelected { get; } = new();
 
         private Action<IDialogItem>? _deleteHandler;
-        private Action? _newHandler;
+        private Func<Task<bool>>? _newHandler;
 
         public static readonly DependencyProperty ShowDeleteButtonProperty = DependencyProperty.Register(
             nameof(ShowDeleteButton), typeof(bool), typeof(LoadSaveDialog), new PropertyMetadata(default(bool)));
@@ -100,12 +100,13 @@ namespace Thumbnify.Dialogs {
             }, (_, e) => { e.CanExecute = _deleteHandler != null && SelectedItem != null; }));
         }
 
-        public static T? ShowOpenDialog<T>(Window owner, IEnumerable<T> items, Action<T>? onDelete = null, Action? onNew = null)
+        public static T? ShowOpenDialog<T>(Window owner, IEnumerable<T> items, Action<T>? onDelete = null,
+            Func<Task<bool>>? onNew = null)
             where T : class, IDialogItem {
             var dlg = new LoadSaveDialog();
             dlg.Owner = owner;
             dlg.DialogItems = new ObservableCollection<IDialogItem>(items);
-            
+
             if (onDelete != null) {
                 dlg._deleteHandler = x => onDelete((T)x);
                 dlg.ShowDeleteButton = true;
@@ -125,12 +126,13 @@ namespace Thumbnify.Dialogs {
             }
         }
 
-        public static string? ShowSaveDialog<T>(Window owner, IEnumerable<T> items, Action<T>? onDelete = null, Action? onNew = null)
+        public static string? ShowSaveDialog<T>(Window owner, IEnumerable<T> items, Action<T>? onDelete = null,
+            Func<Task<bool>>? onNew = null)
             where T : class, IDialogItem {
             var dlg = new LoadSaveDialog();
             dlg.Owner = owner;
             dlg.DialogItems = new ObservableCollection<IDialogItem>(items);
-            
+
             if (onDelete != null) {
                 dlg._deleteHandler = x => onDelete((T)x);
                 dlg.ShowDeleteButton = true;
@@ -172,11 +174,14 @@ namespace Thumbnify.Dialogs {
             }
         }
 
-        private void New_OnClick(object sender, RoutedEventArgs e) {
+        private async void New_OnClick(object sender, RoutedEventArgs e) {
             if (_newHandler != null) {
-                DialogResult = null;
-                Close();
-                _newHandler();
+                var closeDialog = await _newHandler();
+
+                if (closeDialog) {
+                    DialogResult = null;
+                    Close();
+                }
             }
         }
     }

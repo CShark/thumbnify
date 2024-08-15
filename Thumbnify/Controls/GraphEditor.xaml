@@ -448,6 +448,34 @@
                     </DataTemplate>
                 </nodify:NodifyEditor.PendingConnectionTemplate>
             </nodify:NodifyEditor>
+
+            <nodify:Minimap Width="200" Height="120" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10"
+                            ViewportLocation="{Binding ElementName=Editor, Path=ViewportLocation}"
+                            ItemsSource="{Binding Nodes}"
+                            ResizeToViewport="False"
+                            ViewportSize="{Binding ElementName=Editor, Path=ViewportSize}">
+                <nodify:Minimap.ItemTemplate>
+                    <DataTemplate DataType="{x:Type postprocessing:EditorNode}">
+                        <Grid />
+                    </DataTemplate>
+                </nodify:Minimap.ItemTemplate>
+                <nodify:Minimap.ItemContainerStyle>
+                    <Style TargetType="{x:Type nodify:MinimapItem}"
+                           BasedOn="{StaticResource {x:Type nodify:MinimapItem}}">
+                        <Setter Property="Location"
+                                Value="{Binding SourceNode.NodeLocation}" />
+                        <Setter Property="Width"
+                                Value="150" />
+                        <Setter Property="Height"
+                                Value="130" />
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <SolidColorBrush Color="{Binding NodeColor}"></SolidColorBrush>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </nodify:Minimap.ItemContainerStyle>
+            </nodify:Minimap>
         </Grid>
     </Grid>
 </UserControl>

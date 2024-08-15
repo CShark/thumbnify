@@ -108,6 +108,9 @@ namespace Thumbnify.Controls {
             Connections = new();
             SelectedNodes = new();
 
+            NodifyEditor.EnableCuttingLinePreview = true;
+            EditorGestures.Mappings.Editor.Cutting.Value = MultiGesture.None;
+
             PendingConnection = new PendingConnection((a, b) => {
                 if (a.Parameter != null) {
                     (a, b) = (b, a);

@@ -17,6 +17,7 @@ namespace Thumbnify.Postprocessing {
         Audio = 1,
         Video = 2,
         Parameter = 3,
+        Youtube = 4,
     }
 
     public class EditorNode : INotifyPropertyChanged {
@@ -29,7 +30,8 @@ namespace Thumbnify.Postprocessing {
             { ENodeType.None, Colors.DimGray },
             { ENodeType.Audio, Colors.DarkOrange },
             { ENodeType.Video, Colors.MediumOrchid },
-            { ENodeType.Parameter, Colors.CornflowerBlue }
+            { ENodeType.Parameter, Colors.CornflowerBlue },
+            { ENodeType.Youtube, Colors.Red }
         };
 
         public EditorNode(string titleId, ENodeType nodeType, Node sourceNode) {
@@ -43,6 +45,7 @@ namespace Thumbnify.Postprocessing {
 
             NodeColor = TypeColorMap[NodeType];
         }
+
         public string TitleId { get; }
 
         public ENodeType NodeType { get; }

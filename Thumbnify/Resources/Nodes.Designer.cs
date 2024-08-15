@@ -151,6 +151,15 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Temporary Path ähnelt.
+        /// </summary>
+        internal static string input_temppath {
+            get {
+                return ResourceManager.GetString("input_temppath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die String ähnelt.
         /// </summary>
         internal static string input_text {
@@ -223,11 +232,29 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Youtube ähnelt.
+        /// </summary>
+        internal static string mnu_youtube {
+            get {
+                return ResourceManager.GetString("mnu_youtube", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Combine Path ähnelt.
         /// </summary>
         internal static string op_pathcombine {
             get {
                 return ResourceManager.GetString("op_pathcombine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Account ähnelt.
+        /// </summary>
+        internal static string param_account {
+            get {
+                return ResourceManager.GetString("param_account", resourceCulture);
             }
         }
         
@@ -277,6 +304,15 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Category ähnelt.
+        /// </summary>
+        internal static string param_category {
+            get {
+                return ResourceManager.GetString("param_category", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Copy Stream ähnelt.
         /// </summary>
         internal static string param_copystream {
@@ -286,11 +322,29 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Credentials ähnelt.
+        /// </summary>
+        internal static string param_credentials {
+            get {
+                return ResourceManager.GetString("param_credentials", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Date ähnelt.
         /// </summary>
         internal static string param_date {
             get {
                 return ResourceManager.GetString("param_date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Description ähnelt.
+        /// </summary>
+        internal static string param_description {
+            get {
+                return ResourceManager.GetString("param_description", resourceCulture);
             }
         }
         
@@ -327,6 +381,15 @@ namespace Thumbnify.Resources {
         internal static string param_path {
             get {
                 return ResourceManager.GetString("param_path", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Playlist ähnelt.
+        /// </summary>
+        internal static string param_playlist {
+            get {
+                return ResourceManager.GetString("param_playlist", resourceCulture);
             }
         }
         
@@ -381,6 +444,24 @@ namespace Thumbnify.Resources {
         internal static string video_save {
             get {
                 return ResourceManager.GetString("video_save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Add to Playlist ähnelt.
+        /// </summary>
+        internal static string youtube_addplaylist {
+            get {
+                return ResourceManager.GetString("youtube_addplaylist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Upload Video ähnelt.
+        /// </summary>
+        internal static string youtube_upload {
+            get {
+                return ResourceManager.GetString("youtube_upload", resourceCulture);
             }
         }
     }

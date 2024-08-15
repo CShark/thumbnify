@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.Marshalling;
@@ -17,6 +18,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ColorPicker.Models;
 using Thumbnify.Data;
+using Thumbnify.Data.Processing;
 using Thumbnify.Data.Thumbnail;
 using WpfColorFontDialog;
 using Path = System.IO.Path;
@@ -26,6 +28,8 @@ namespace Thumbnify.Controls {
     /// Interaktionslogik für ThumbnailPreview.xaml
     /// </summary>
     public partial class ThumbnailPreview : UserControl {
+        private Timer _previewTimer;
+
         public static readonly DependencyProperty ThumbnailProperty = DependencyProperty.Register(
             nameof(Thumbnail), typeof(ThumbnailData), typeof(ThumbnailPreview),
             new PropertyMetadata(new ThumbnailData()));
@@ -49,7 +53,8 @@ namespace Thumbnify.Controls {
             }));
 
         public static readonly DependencyProperty PreviewMetadataProperty = DependencyProperty.Register(
-            nameof(PreviewMetadata), typeof(PartMetadata), typeof(ThumbnailPreview), new PropertyMetadata(default(PartMetadata)));
+            nameof(PreviewMetadata), typeof(PartMetadata), typeof(ThumbnailPreview),
+            new PropertyMetadata(default(PartMetadata)));
 
         public PartMetadata PreviewMetadata {
             get { return (PartMetadata)GetValue(PreviewMetadataProperty); }
@@ -70,7 +75,25 @@ namespace Thumbnify.Controls {
             set { SetValue(EditModeProperty, value); }
         }
 
+        public static RoutedEvent ResolveParamsEvent = EventManager.RegisterRoutedEvent(nameof(ResolveParams),
+            RoutingStrategy.Bubble, typeof(Action<ResolveParamArgs>), typeof(ThumbnailPreview));
+
+        public event Action<ResolveParamArgs> ResolveParams {
+            add => AddHandler(ResolveParamsEvent, value);
+            remove => RemoveHandler(ResolveParamsEvent, value);
+        }
+
+        public static readonly DependencyProperty LivePreviewProperty = DependencyProperty.Register(
+            nameof(LivePreview), typeof(bool), typeof(ThumbnailPreview),
+            new PropertyMetadata(default(bool), (o, _) => ((ThumbnailPreview)o).UpdatePreviewStatus()));
+
+        public bool LivePreview {
+            get { return (bool)GetValue(LivePreviewProperty); }
+            set { SetValue(LivePreviewProperty, value); }
+        }
+
         public ThumbnailPreview() {
+            _previewTimer = new(UpdatePreview);
             InitializeComponent();
         }
 
@@ -113,6 +136,35 @@ namespace Thumbnify.Controls {
         private void ThumbnailPreview_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
             SelectedControl = null;
             _ctrlDrag = false;
+        }
+
+        private void UpdatePreviewStatus() {
+            if (!DesignerProperties.GetIsInDesignMode(this)) {
+                if (LivePreview) {
+                    _previewTimer.Change(TimeSpan.Zero, TimeSpan.FromMilliseconds(250));
+                } else {
+                    _previewTimer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+                }
+            }
+        }
+
+
+        private void UpdatePreview(object? state) {
+            var args = new ResolveParamArgs();
+            args.RoutedEvent = ResolveParamsEvent;
+            args.Source = this;
+
+            RaiseEvent(args);
+
+            if (Thumbnail != null) {
+                foreach (var part in Thumbnail.Controls.OfType<TextBoxPart>()) {
+                    if (args.Parameters == null) {
+                        part.PreviewText = null;
+                    } else {
+                        part.PreviewText = "YOLOR";
+                    }
+                }
+            }
         }
     }
 }

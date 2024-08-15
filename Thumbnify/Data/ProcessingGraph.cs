@@ -108,7 +108,7 @@ namespace Thumbnify.Data {
         public void RunGraph() {
             if (IsGraphRunning()) return;
 
-            TempPath = Path.Combine(App.TemporaryDirectory, Path.GetRandomFileName());
+            TempPath = Path.Combine(App.AppDirectory, Path.GetRandomFileName());
             if (!Directory.Exists(TempPath)) {
                 Directory.CreateDirectory(TempPath);
             }

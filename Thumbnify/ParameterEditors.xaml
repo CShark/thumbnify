@@ -5,7 +5,8 @@
                     xmlns:converter="clr-namespace:Thumbnify.Converter"
                     xmlns:lex="http://wpflocalizeextension.codeplex.com"
                     xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
-                    xmlns:audio="clr-namespace:Thumbnify.Data.Processing.Audio">
+                    xmlns:audio="clr-namespace:Thumbnify.Data.Processing.Audio"
+                    xmlns:generic="clr-namespace:System.Collections.Generic;assembly=System.Runtime">
 
     <DataTemplate DataType="{x:Type parameters:FilePath}">
         <controls:FilePathControl FilePath="{Binding}" />
@@ -20,7 +21,14 @@
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type parameters:EnumParameter}">
-        <ComboBox SelectedValue="{Binding Value}" ItemsSource="{Binding Options}" DisplayMemberPath="Key" SelectedValuePath="Value"></ComboBox>
+        <ComboBox SelectedValue="{Binding Value}" ItemsSource="{Binding Options}" SelectedValuePath="Value">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{lex:Loc {Binding Key}, FallbackBehavior=Key}"
+                               lex:ResxLocalizationProvider.DefaultDictionary="Enums" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type parameters:DateParam}">
@@ -43,13 +51,24 @@
             <controls:CompressorPreview Parameters="{Binding}" />
             <Button Margin="0,5" Command="{x:Static audio:AudioCompressor.OpenParameters}" CommandParameter="{Binding}">
                 <WrapPanel>
-                    <wpf:MaterialIcon Kind="Tune"/>
+                    <wpf:MaterialIcon Kind="Tune" />
                     <TextBlock VerticalAlignment="Center" Text="{lex:Loc Controls:Parameter}"></TextBlock>
                 </WrapPanel>
             </Button>
         </StackPanel>
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type parameters:ThumbnailParam}">
+        <controls:ThumbnailPreview LivePreview="True" Thumbnail="{Binding Thumbnail}" />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type parameters:YoutubeCredentialsParam}">
+        <controls:YoutubeCredentialsControl Credentials="{Binding}" />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type parameters:YoutubePlaylistParam}">
+        <controls:YoutubePlaylistPicker Playlist="{Binding}" />
+    </DataTemplate>
 
     <!-- Parameter-Connector darstellung -->
     <converter:ParameterTypeToColor x:Key="ParamTypeToColor">
@@ -60,6 +79,9 @@
         <converter:ParameterColor Type="{x:Type parameters:StringParam}" Color="CornflowerBlue" />
         <converter:ParameterColor Type="{x:Type parameters:IntParam}" Color="CornflowerBlue" />
         <converter:ParameterColor Type="{x:Type parameters:DateParam}" Color="MediumPurple" />
+
+        <converter:ParameterColor Type="{x:Type parameters:YoutubeVideoParam}" Color="Red" />
+        <converter:ParameterColor Type="{x:Type parameters:YoutubePlaylistParam}" Color="Red" />
     </converter:ParameterTypeToColor>
 
     <ControlTemplate TargetType="Control" x:Key="ConnectorCircle">
@@ -104,5 +126,10 @@
                                       Template="{StaticResource ConnectorEmptyDiamond}" />
         <converter:ParameterConnector Type="{x:Type parameters:ThumbnailParam}"
                                       Template="{StaticResource ConnectorDiamond}" />
+
+        <converter:ParameterConnector Type="{x:Type parameters:YoutubeVideoParam}"
+                                      Template="{StaticResource ConnectorDiamond}" />
+        <converter:ParameterConnector Type="{x:Type parameters:YoutubePlaylistParam}"
+                                      Template="{StaticResource ConnectorCircle}" />
     </converter:ParameterTypeToConnector>
 </ResourceDictionary>
