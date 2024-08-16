@@ -162,6 +162,10 @@ namespace Thumbnify {
             if (Graph.Nodes.Any(x => x is MediaPartInput)) {
                 var mediaPart = new MediaPart();
                 var metadata = new PartMetadata();
+                metadata.Parameters=new();
+                foreach (var param in Graph.Parameters) {
+                    metadata.Parameters.Add(param.Clone());
+                }
 
                 var metaDlg = new GraphParameters();
                 metaDlg.Owner = this;
@@ -179,6 +183,8 @@ namespace Thumbnify {
 
                         dlg.StartProcessing([mediaPart], false);
                     }
+                } else {
+                    return;
                 }
             } else {
                 dlg.StartProcessing(new[] { Graph });

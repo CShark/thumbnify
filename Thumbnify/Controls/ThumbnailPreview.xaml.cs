@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.Marshalling;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,7 +20,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ColorPicker.Models;
 using Thumbnify.Data;
+using Thumbnify.Data.ParamStore;
 using Thumbnify.Data.Processing;
+using Thumbnify.Data.Processing.Parameters;
 using Thumbnify.Data.Thumbnail;
 using WpfColorFontDialog;
 using Path = System.IO.Path;
@@ -76,9 +80,9 @@ namespace Thumbnify.Controls {
         }
 
         public static RoutedEvent ResolveParamsEvent = EventManager.RegisterRoutedEvent(nameof(ResolveParams),
-            RoutingStrategy.Bubble, typeof(Action<ResolveParamArgs>), typeof(ThumbnailPreview));
+            RoutingStrategy.Bubble, typeof(ResolveParamDelegate), typeof(ThumbnailPreview));
 
-        public event Action<ResolveParamArgs> ResolveParams {
+        public event ResolveParamDelegate ResolveParams {
             add => AddHandler(ResolveParamsEvent, value);
             remove => RemoveHandler(ResolveParamsEvent, value);
         }
@@ -148,21 +152,54 @@ namespace Thumbnify.Controls {
             }
         }
 
+        private Regex _previewRegex = new Regex(@"\{(.*?)\}", RegexOptions.Compiled);
 
         private void UpdatePreview(object? state) {
             var args = new ResolveParamArgs();
             args.RoutedEvent = ResolveParamsEvent;
             args.Source = this;
 
-            RaiseEvent(args);
+            try {
+                Dispatcher.Invoke(() => {
+                    RaiseEvent(args);
 
-            if (Thumbnail != null) {
-                foreach (var part in Thumbnail.Controls.OfType<TextBoxPart>()) {
-                    if (args.Parameters == null) {
-                        part.PreviewText = null;
-                    } else {
-                        part.PreviewText = "YOLOR";
+                    if (Thumbnail != null) {
+                        SetParameters(args.Parameters);
+                       
                     }
+                });
+            } catch (TaskCanceledException ex) {
+            }
+        }
+
+        public void SetParameters(ObservableCollection<ParamDefinition>? paramList) {
+            foreach (var part in Thumbnail.Controls.OfType<TextBoxPart>()) {
+                if (paramList == null) {
+                    part.PreviewText = null;
+                } else {
+                    part.PreviewText = part.Placeholder;
+                    part.PreviewText = _previewRegex.Replace(part.PreviewText, match => {
+                        var value = match.Groups[1].Value;
+                        var parts = value.Split('|');
+
+                        var param = paramList.FirstOrDefault(x =>
+                            string.Equals(x.Name, parts[0], StringComparison.CurrentCultureIgnoreCase));
+
+                        if (param != null) {
+                            switch (param.Value) {
+                                case StringParam s:
+                                    return s.Value;
+                                case DateParam d:
+                                    if (parts.Length == 2) {
+                                        return d.ResolveDate().ToString(parts[1]);
+                                    } else {
+                                        return d.ResolveDate().ToString();
+                                    }
+                            }
+                        }
+
+                        return "";
+                    });
                 }
             }
         }

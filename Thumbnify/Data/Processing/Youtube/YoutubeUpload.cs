@@ -5,13 +5,15 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using Newtonsoft.Json;
 using Thumbnify.Data.Processing.Parameters;
 using Thumbnify.Postprocessing;
-
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using YoutubeVideo = Google.Apis.YouTube.v3.Data.Video;
 
 namespace Thumbnify.Data.Processing.Youtube {
@@ -66,6 +68,8 @@ namespace Thumbnify.Data.Processing.Youtube {
             { "yt_cat_44", "44" },
         }));
 
+        public Parameter<ThumbnailParam> Thumbnail { get; } = new("thumbnail", true, new());
+
         [JsonIgnore]
         public Result<YoutubeVideoParam> VideoResult = new("video");
 
@@ -80,6 +84,7 @@ namespace Thumbnify.Data.Processing.Youtube {
             RegisterParameter(Description);
             RegisterParameter(Status);
             RegisterParameter(Category);
+            RegisterParameter(Thumbnail);
 
             RegisterResult(VideoResult);
         }
@@ -111,15 +116,26 @@ namespace Thumbnify.Data.Processing.Youtube {
             YoutubeVideo? videoResult = null;
             using (var file = new FileStream(Video.Value.VideoFileName, FileMode.Open)) {
                 var req = service.Videos.Insert(video, "snippet,status", file, "video/*");
-                req.ProgressChanged += progress => {
-                    ReportProgress(progress.BytesSent, file.Length);
-                };
-                req.ResponseReceived += vid => {
-                    videoResult = vid;
-                };
+                req.ProgressChanged += progress => { ReportProgress(progress.BytesSent, file.Length); };
+                req.ResponseReceived += vid => { videoResult = vid; };
 
                 Task.WaitAll(req.UploadAsync(cancelToken));
             }
+
+            var paramList = RequestParameters();
+            App.Current.Dispatcher.Invoke(() => {
+                var thumbnail = Thumbnail.Value.RenderThumbnail(paramList);
+                var encoder = new JpegBitmapEncoder();
+                encoder.QualityLevel = 70;
+                encoder.Frames.Add(BitmapFrame.Create(thumbnail));
+
+                using (var stream = new MemoryStream()) {
+                    encoder.Save(stream);
+                    stream.Seek(0, SeekOrigin.Begin);
+                    var req = service.Thumbnails.Set(videoResult.Id, stream, "image/jpeg");
+                    Task.WaitAll(req.UploadAsync(cancelToken));
+                }
+            });
 
             VideoResult.Value = new YoutubeVideoParam {
                 Credentials = cred,

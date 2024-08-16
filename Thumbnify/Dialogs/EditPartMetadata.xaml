@@ -18,6 +18,7 @@
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        controls:ThumbnailPreview.ResolveParams="GraphParameters_OnResolveParams"
         Title="{lex:Loc EditMediaPart}" Height="450" Width="300">
     <Grid>
         <Grid.RowDefinitions>

@@ -7,6 +7,7 @@
         xmlns:lex="http://wpflocalizeextension.codeplex.com"
         xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
         xmlns:paramStore="clr-namespace:Thumbnify.Data.ParamStore"
+        xmlns:controls="clr-namespace:Thumbnify.Controls"
         lex:LocalizeDictionary.DesignCulture="de-DE"
         lex:ResxLocalizationProvider.DefaultAssembly="Thumbnify"
         lex:ResxLocalizationProvider.DefaultDictionary="Controls"
@@ -16,6 +17,7 @@
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        controls:ThumbnailPreview.ResolveParams="GraphParameters_OnResolveParams"
         Title="{lex:Loc GraphParameters}" Height="450" Width="300">
     <Grid>
         <Grid.RowDefinitions>

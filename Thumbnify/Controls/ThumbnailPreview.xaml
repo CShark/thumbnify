@@ -43,6 +43,7 @@
                     <DataTemplate DataType="{x:Type thumbnail:TextBoxPart}">
                         <Grid Background="#01000000" MouseLeftButtonDown="Ctrl_OnMouseLeftButtonDown">
                             <TextBlock FontSize="{Binding FontSize}"
+                                       TextWrapping="Wrap"
                                        Width="{Binding Width}" Height="{Binding Height}"
                                        FontFamily="{Binding FontFace}">
                                 <TextBlock.Text>

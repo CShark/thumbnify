@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="Thumbnify.Controls.ThumbnailPicker"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Thumbnify.Controls"
+             xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+             xmlns:lex="http://wpflocalizeextension.codeplex.com"
+             mc:Ignorable="d"
+             lex:LocalizeDictionary.DesignCulture="de-DE"
+             lex:ResxLocalizationProvider.DefaultAssembly="Thumbnify"
+             lex:ResxLocalizationProvider.DefaultDictionary="Controls"
+             d:DesignHeight="250" d:DesignWidth="300">
+    <StackPanel
+        DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:ThumbnailPicker}}">
+        <local:ThumbnailPreview LivePreview="True" Thumbnail="{Binding Thumbnail.Thumbnail}" />
+        <Grid Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Button Click="OpenThumbnail_OnClick" Style="{StaticResource FirstButton}">
+                <WrapPanel>
+                    <wpf:MaterialIcon Kind="FolderOpen" Width="16" />
+                    <TextBlock Margin="5,0" Text="{lex:Loc Load}" />
+                </WrapPanel>
+            </Button>
+            <Button Click="ResetThumbnail_OnClick" Grid.Column="1" Width="30" Style="{StaticResource MiddleButton}"
+                    IsEnabled="{Binding Thumbnail.Edited}">
+                <WrapPanel>
+                    <wpf:MaterialIcon Kind="UndoVariant" Width="16" />
+                </WrapPanel>
+            </Button>
+            <Button Click="EditThumbnail_OnClick" Grid.Column="2" Style="{StaticResource LastButton}">
+                <WrapPanel>
+                    <wpf:MaterialIcon Kind="Edit" Width="16" />
+                    <TextBlock Margin="5,0" Text="{lex:Loc Edit}" />
+                </WrapPanel>
+            </Button>
+        </Grid>
+    </StackPanel>
+</UserControl>

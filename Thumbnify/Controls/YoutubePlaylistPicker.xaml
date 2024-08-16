@@ -10,7 +10,7 @@
         DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:YoutubePlaylistPicker}}">
         <local:YoutubeCredentialsControl Credentials="{Binding Playlist.Credentials}"
                                          CredentialsChanged="YoutubeCredentialsControl_OnCredentialsChanged" />
-        <ComboBox ItemsSource="{Binding PlaylistItems}" SelectedItem="{Binding Playlist.PlaylistId}" Margin="0,5"
+        <ComboBox ItemsSource="{Binding PlaylistItems}" SelectedValue="{Binding Playlist.PlaylistId}" Margin="0,5"
                   DisplayMemberPath="Name" SelectedValuePath="Id" />
     </StackPanel>
 </UserControl>

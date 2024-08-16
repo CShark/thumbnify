@@ -133,6 +133,15 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Date ähnelt.
+        /// </summary>
+        internal static string input_date {
+            get {
+                return ResourceManager.GetString("input_date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Mediapart ähnelt.
         /// </summary>
         internal static string input_part {
@@ -408,6 +417,15 @@ namespace Thumbnify.Resources {
         internal static string param_target_lu {
             get {
                 return ResourceManager.GetString("param_target_lu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Thumbnail ähnelt.
+        /// </summary>
+        internal static string param_thumbnail {
+            get {
+                return ResourceManager.GetString("param_thumbnail", resourceCulture);
             }
         }
         

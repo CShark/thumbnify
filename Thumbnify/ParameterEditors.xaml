@@ -13,11 +13,11 @@
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type parameters:StringParam}">
-        <TextBox Text="{Binding Value}" />
+        <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" />
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type parameters:IntParam}">
-        <TextBox Text="{Binding Value}" />
+        <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" />
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type parameters:EnumParameter}">
@@ -59,7 +59,7 @@
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type parameters:ThumbnailParam}">
-        <controls:ThumbnailPreview LivePreview="True" Thumbnail="{Binding Thumbnail}" />
+        <controls:ThumbnailPicker Thumbnail="{Binding}" />
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type parameters:YoutubeCredentialsParam}">

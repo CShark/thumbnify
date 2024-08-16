@@ -16,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
+using Google.Apis.YouTube.v3.Data;
 using Thumbnify.Data.Processing.Parameters;
 
 namespace Thumbnify.Controls {
@@ -27,7 +28,8 @@ namespace Thumbnify.Controls {
 
         public static readonly DependencyProperty PlaylistProperty = DependencyProperty.Register(
             nameof(Playlist), typeof(YoutubePlaylistParam), typeof(YoutubePlaylistPicker),
-            new PropertyMetadata(default(YoutubePlaylistParam)));
+            new PropertyMetadata(default(YoutubePlaylistParam),
+                (o, _) => ((YoutubePlaylistPicker)o).YoutubeCredentialsControl_OnCredentialsChanged()));
 
         public YoutubePlaylistParam Playlist {
             get { return (YoutubePlaylistParam)GetValue(PlaylistProperty); }
@@ -51,6 +53,7 @@ namespace Thumbnify.Controls {
         }
 
         private async void YoutubeCredentialsControl_OnCredentialsChanged() {
+            var id = Playlist.PlaylistId;
             Playlist.PlaylistId = "";
             PlaylistItems.Clear();
 
@@ -64,11 +67,20 @@ namespace Thumbnify.Controls {
 
                 var req = service.Playlists.List("snippet");
                 req.Mine = true;
+                PlaylistListResponse lists;
 
-                var lists = await req.ExecuteAsync();
+                do {
+                    lists = await req.ExecuteAsync();
 
-                foreach (var list in lists.Items) {
-                    PlaylistItems.Add(new Item(list.Id, list.Snippet.Title));
+                    foreach (var list in lists.Items) {
+                        PlaylistItems.Add(new Item(list.Id, list.Snippet.Title));
+                    }
+
+                    req.PageToken = lists.NextPageToken;
+                } while (lists.NextPageToken != null);
+
+                if (PlaylistItems.Any(x => x.Id == id)) {
+                    Playlist.PlaylistId = id;
                 }
             }
         }

@@ -11,8 +11,7 @@ using Thumbnify.Data.Processing.Parameters;
 using Thumbnify.Postprocessing;
 
 namespace Thumbnify.Data.Processing.Youtube {
-    internal class YoutubeAddPlaylist :Node {
-
+    internal class YoutubeAddPlaylist : Node {
         public Parameter<YoutubeVideoParam> Video { get; } = new("video", true);
 
         public Parameter<YoutubePlaylistParam> Playlist { get; } = new("playlist", true, new());
@@ -43,8 +42,9 @@ namespace Thumbnify.Data.Processing.Youtube {
                 Snippet = new() {
                     PlaylistId = Playlist.Value.PlaylistId,
                     ResourceId = new() {
-                        VideoId = Video.Value.Video.Id
-                    } 
+                        VideoId = Video.Value.Video.Id,
+                        Kind = "youtube#video"
+                    }
                 }
             };
 

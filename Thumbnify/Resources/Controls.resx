@@ -232,4 +232,10 @@
   <data name="MediaFileOpen" xml:space="preserve">
     <value>Open Media File</value>
   </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
 </root>

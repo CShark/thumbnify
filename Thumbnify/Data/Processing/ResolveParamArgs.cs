@@ -8,6 +8,8 @@ using System.Windows;
 using Thumbnify.Data.ParamStore;
 
 namespace Thumbnify.Data.Processing {
+    public delegate void ResolveParamDelegate(object sender, ResolveParamArgs e);
+
     public class ResolveParamArgs : RoutedEventArgs {
         public ObservableCollection<ParamDefinition>? Parameters { get; set; }
     }

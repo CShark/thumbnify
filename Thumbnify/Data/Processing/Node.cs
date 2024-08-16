@@ -1,8 +1,10 @@
-﻿using JsonKnownTypes;
+﻿using System.Collections.ObjectModel;
+using JsonKnownTypes;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
 using Serilog;
+using Thumbnify.Data.ParamStore;
 using Thumbnify.Postprocessing;
 using Point = System.Windows.Point;
 
@@ -29,6 +31,8 @@ namespace Thumbnify.Data.Processing {
         public event Action<Node> NodeCompleted;
 
         public event Action PortsChanged;
+
+        public event ResolveParamDelegate ResolveParameters;
 
         public string Uid { get; set; }
 
@@ -190,6 +194,14 @@ namespace Thumbnify.Data.Processing {
 
         protected virtual void OnPortsChanged() {
             PortsChanged?.Invoke();
+        }
+
+        protected ObservableCollection<ParamDefinition>? RequestParameters() {
+            var args = new ResolveParamArgs();
+
+            ResolveParameters?.Invoke(this, args);
+
+            return args.Parameters;
         }
     }
 }

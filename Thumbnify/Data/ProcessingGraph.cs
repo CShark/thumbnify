@@ -41,6 +41,7 @@ namespace Thumbnify.Data {
 
         private ILogger _logger;
         private LocalLogSink _logMessages;
+        private MediaPart? _media;
 
         [JsonIgnore]
         public double Progress {
@@ -96,6 +97,8 @@ namespace Thumbnify.Data {
         }
 
         public void RunGraph(MediaPart part) {
+            _media = part;
+
             foreach (var node in Nodes) {
                 if (node is MediaPartInput mediaNode) {
                     mediaNode.MediaPart = part;
@@ -133,6 +136,7 @@ namespace Thumbnify.Data {
             foreach (var node in Nodes) {
                 node.CancelToken = _cancelToken.Token;
                 node.NodeCompleted -= OnNodeCompleted;
+                node.ResolveParameters -= OnNodeResolveParameters;
                 node.PropertyChanged -= NodeOnPropertyChanged;
                 node.ClearNode();
 
@@ -151,6 +155,7 @@ namespace Thumbnify.Data {
                 }
 
                 node.PropertyChanged += NodeOnPropertyChanged;
+                node.ResolveParameters += OnNodeResolveParameters;
                 node.SetLogger(_logger.ForContext(new NodeEnricher(node)));
             }
 
@@ -229,6 +234,7 @@ namespace Thumbnify.Data {
         private void OnNodeCompleted(Node node) {
             _openNodes.Remove(node);
             node.NodeCompleted -= OnNodeCompleted;
+            node.ResolveParameters -= OnNodeResolveParameters;
 
             foreach (var result in node.Results) {
                 var next = _edgesForward[node.Uid][result.Key];
@@ -247,6 +253,10 @@ namespace Thumbnify.Data {
                     _nodes[next[0].Node].Parameters[next[0].Port].ApplyValue(result.Value.GetValue());
                 }
             }
+        }
+
+        private void OnNodeResolveParameters(object sender, ResolveParamArgs e) {
+            e.Parameters = _media?.Metadata.Parameters;
         }
 
         public string Name {

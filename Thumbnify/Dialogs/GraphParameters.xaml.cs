@@ -61,8 +61,8 @@ namespace Thumbnify.Dialogs {
             Close();
         }
 
-        private void GraphParameters_OnResolveParams(ResolveParamArgs obj) {
-            obj.Parameters = PartMetadata.Parameters;
+        private void GraphParameters_OnResolveParams(object sender, ResolveParamArgs e) {
+            e.Parameters = PartMetadata.Parameters;
         }
     }
 }

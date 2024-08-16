@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Thumbnify.Data;
+using Thumbnify.Data.Processing;
 
 namespace Thumbnify.Dialogs {
     /// <summary>
@@ -90,6 +91,10 @@ namespace Thumbnify.Dialogs {
         private void Cancel_OnClick(object sender, RoutedEventArgs e) {
             DialogResult = false;
             Close();
+        }
+
+        private void GraphParameters_OnResolveParams(object sender, ResolveParamArgs e) {
+            e.Parameters = PartMetadata.Parameters;
         }
     }
 }

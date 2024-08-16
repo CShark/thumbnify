@@ -332,8 +332,8 @@ namespace Thumbnify {
             return null;
         }
 
-        private void ThumbnailPreview_OnResolveParams(ResolveParamArgs obj) {
-            obj.Parameters = PreviewParameters;
+        private void ThumbnailPreview_OnResolveParams(object sender, ResolveParamArgs e) {
+            e.Parameters = PreviewParameters;
         }
     }
 }

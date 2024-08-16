@@ -232,4 +232,10 @@
   <data name="param_playlist" xml:space="preserve">
     <value>Playlist</value>
   </data>
+  <data name="input_date" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="param_thumbnail" xml:space="preserve">
+    <value>Thumbnail</value>
+  </data>
 </root>

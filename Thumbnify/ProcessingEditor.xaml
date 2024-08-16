@@ -92,6 +92,13 @@
                                 <wpf:MaterialIcon Kind="FormTextbox" />
                             </MenuItem.Icon>
                         </MenuItem>
+                        <MenuItem Header="{lex:Loc {x:Static input:ThumbnailInput.Id}}"
+                                  Command="{x:Static controls:GraphEditor.CreateNode}"
+                                  CommandParameter="{x:Type input:ThumbnailInput}">
+                            <MenuItem.Icon>
+                                <wpf:MaterialIcon Kind="Image" />
+                            </MenuItem.Icon>
+                        </MenuItem>
                     </MenuItem>
                     <MenuItem Header="{lex:Loc mnu_video}">
                         <MenuItem.Icon>
@@ -131,7 +138,8 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Header="{lex:Loc {x:Static audio:AudioMerge.Id}}" Command="{x:Static controls:GraphEditor.CreateNode}"
+                        <MenuItem Header="{lex:Loc {x:Static audio:AudioMerge.Id}}"
+                                  Command="{x:Static controls:GraphEditor.CreateNode}"
                                   CommandParameter="{x:Type audio:AudioMerge}">
                             <MenuItem.Icon>
                                 <wpf:MaterialIcon Kind="CallMerge" />
@@ -181,7 +189,8 @@
                         </MenuItem>
 
                         <MenuItem Header="{lex:Loc {x:Static youtube:YoutubeAddPlaylist.Id}}"
-                                  Command="{x:Static controls:GraphEditor.CreateNode}" CommandParameter="{x:Type youtube:YoutubeAddPlaylist}">
+                                  Command="{x:Static controls:GraphEditor.CreateNode}"
+                                  CommandParameter="{x:Type youtube:YoutubeAddPlaylist}">
                             <MenuItem.Icon>
                                 <wpf:MaterialIcon Kind="ViewList" />
                             </MenuItem.Icon>
@@ -205,7 +214,8 @@
                             <wpf:MaterialIcon Kind="SwapHorizontal" />
                         </MenuItem.Icon>
 
-                        <MenuItem Header="{lex:Loc {x:Static converters:ConvertDate.Id}}" Command="{x:Static controls:GraphEditor.CreateNode}"
+                        <MenuItem Header="{lex:Loc {x:Static converters:ConvertDate.Id}}"
+                                  Command="{x:Static controls:GraphEditor.CreateNode}"
                                   CommandParameter="{x:Type converters:ConvertDate}">
                             <MenuItem.Icon>
                                 <wpf:MaterialIcon Kind="Calendar" />
