@@ -18,8 +18,8 @@ namespace Thumbnify.Postprocessing {
 
         public string Id { get; }
 
-        public Parameter? Parameter { get; }
-        public Result? Result { get; }
+        public Parameter? Parameter { get; set; }
+        public Result? Result { get; set; }
 
         public Point Anchor {
             get => _anchor;

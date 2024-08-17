@@ -18,6 +18,7 @@ using System.Windows.Shapes;
 using Nodify;
 using Thumbnify.Data;
 using Thumbnify.Data.Processing;
+using Thumbnify.Data.Processing.Input;
 using Thumbnify.Postprocessing;
 using Thumbnify.Tools;
 using Connection = Thumbnify.Postprocessing.Connection;
@@ -171,6 +172,12 @@ namespace Thumbnify.Controls {
             CommandBindings.Add(new CommandBinding(CreateNode, (_, args) => {
                 if (args.Parameter is Type t) {
                     if (t.IsAssignableTo(typeof(Node))) {
+                        if (t.IsAssignableFrom(typeof(MediaPartInput))) {
+                            if (Graph.Nodes.Count(x => x is MediaPartInput) > 0) {
+                                return;
+                            }
+                        }
+
                         if (Activator.CreateInstance(t) is Node step) {
                             Editor.ViewportTransform.Inverse.TryTransform(Mouse.GetPosition(Editor), out var point);
                             step.NodeLocation = point;
@@ -244,6 +251,11 @@ namespace Thumbnify.Controls {
             };
 
             Loaded += (sender, args) => { FitAll(); };
+            Unloaded += (sender, args) => {
+                foreach (var node in Nodes) {
+                    node.Dispose();
+                }
+            };
         }
 
         private bool IsCyclic(Connection? pending = null) {
@@ -309,6 +321,7 @@ namespace Thumbnify.Controls {
                     var localNode = Nodes.FirstOrDefault(x => x.SourceNode == node);
                     if (localNode != null) {
                         Nodes.Remove(localNode);
+                        localNode.Dispose();
                     }
                 }
             }

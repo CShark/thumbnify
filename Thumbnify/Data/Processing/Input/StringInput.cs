@@ -12,7 +12,7 @@ namespace Thumbnify.Data.Processing.Input {
         [JsonIgnore]
         public Result<StringParam> Result { get; } = new("value");
 
-        public Parameter<StringParam> Input { get; } = new("value", false, new StringParam(), false);
+        public Parameter<StringParam> Input { get; } = new("value", false, new(true), false);
 
         public StringInput() {
             RegisterParameter(Input);

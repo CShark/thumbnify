@@ -238,4 +238,7 @@
   <data name="Edit" xml:space="preserve">
     <value>Edit</value>
   </data>
+  <data name="DefaultValue" xml:space="preserve">
+    <value>Default Value</value>
+  </data>
 </root>

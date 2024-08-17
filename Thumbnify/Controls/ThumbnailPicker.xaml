@@ -14,31 +14,19 @@
     <StackPanel
         DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:ThumbnailPicker}}">
         <local:ThumbnailPreview LivePreview="True" Thumbnail="{Binding Thumbnail.Thumbnail}" />
-        <Grid Margin="5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-
+        <UniformGrid Rows="1" Margin="5">
             <Button Click="OpenThumbnail_OnClick" Style="{StaticResource FirstButton}">
-                <WrapPanel>
-                    <wpf:MaterialIcon Kind="FolderOpen" Width="16" />
-                    <TextBlock Margin="5,0" Text="{lex:Loc Load}" />
-                </WrapPanel>
+                <wpf:MaterialIcon Kind="FolderOpen" Width="16" />
             </Button>
-            <Button Click="ResetThumbnail_OnClick" Grid.Column="1" Width="30" Style="{StaticResource MiddleButton}"
+            <Button Click="ResetThumbnail_OnClick" Style="{StaticResource MiddleButton}"
                     IsEnabled="{Binding Thumbnail.Edited}">
                 <WrapPanel>
                     <wpf:MaterialIcon Kind="UndoVariant" Width="16" />
                 </WrapPanel>
             </Button>
-            <Button Click="EditThumbnail_OnClick" Grid.Column="2" Style="{StaticResource LastButton}">
-                <WrapPanel>
-                    <wpf:MaterialIcon Kind="Edit" Width="16" />
-                    <TextBlock Margin="5,0" Text="{lex:Loc Edit}" />
-                </WrapPanel>
+            <Button Click="EditThumbnail_OnClick" Style="{StaticResource LastButton}">
+                <wpf:MaterialIcon Kind="Edit" Width="16" />
             </Button>
-        </Grid>
+        </UniformGrid>
     </StackPanel>
 </UserControl>

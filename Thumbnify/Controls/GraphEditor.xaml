@@ -399,6 +399,13 @@
                                     </nodify:NodeOutput>
                                 </DataTemplate>
                             </nodify:Node.OutputConnectorTemplate>
+                            <nodify:Node.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="{lex:Loc mnu_delete}"
+                                              Command="{x:Static local:GraphEditor.DeleteNode}" />
+                                </ContextMenu>
+                            </nodify:Node.ContextMenu>
+
 
                             <ItemsControl ItemsSource="{Binding StaticParameters}"
                                           IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:GraphEditor}, Path = IsReadOnly, Converter={StaticResource BoolInvert}}"

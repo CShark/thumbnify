@@ -20,7 +20,7 @@ namespace Thumbnify {
         public static Config Settings { get; private set; }
         private static readonly string _settingsPath;
 
-        public static string AppDirectory { get; } = Path.Combine(SpecialDirectories.CurrentUserApplicationData,
+        public static string AppDirectory { get; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             Assembly.GetExecutingAssembly().GetName().Name);
 
         static App() {

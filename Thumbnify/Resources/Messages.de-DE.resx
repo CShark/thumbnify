@@ -145,4 +145,10 @@
   <data name="msg_ytNoChannels" xml:space="preserve">
     <value>Der gewählte Account hat keine Kanäle.</value>
   </data>
+  <data name="msg_stringParam" xml:space="preserve">
+    <value>Parametertext:</value>
+  </data>
+  <data name="title_stringParam" xml:space="preserve">
+    <value>Text Parameter</value>
+  </data>
 </root>

@@ -47,14 +47,18 @@ namespace Thumbnify.Dialogs {
             Input.Focus();
         }
 
-        public static bool? ShowDialog(Window owner, string translationKey, string value = "") {
+        public static string ShowDialog(Window owner, string translationKey, string value = "") {
             var dlg = new InputBox();
             dlg.Owner = owner;
             dlg.Message = Translate.TranslateMessage($"msg_{translationKey}");
             dlg.Title = Translate.TranslateMessage($"title_{translationKey}");
             dlg.Value = value;
 
-            return dlg.ShowDialog();
+            if (dlg.ShowDialog() == true) {
+                return dlg.Value;
+            } else {
+                return value;
+            }
         }
 
         private void Ok_OnClick(object sender, RoutedEventArgs e) {

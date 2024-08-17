@@ -20,7 +20,7 @@ namespace Thumbnify.Postprocessing {
         Youtube = 4,
     }
 
-    public class EditorNode : INotifyPropertyChanged {
+    public class EditorNode : IDisposable, INotifyPropertyChanged {
         private List<Connector> _inputs = new();
         private List<Connector> _outputs = new();
         private List<Parameter> _staticParameters = new();
@@ -38,12 +38,47 @@ namespace Thumbnify.Postprocessing {
             TitleId = titleId;
             SourceNode = sourceNode;
             NodeType = nodeType;
-
-            _inputs = sourceNode.Parameters.Values.Where(x => x.Bindable).Select(x => new Connector(this, x)).ToList();
-            _outputs = sourceNode.Results.Values.Select(x => new Connector(this, x)).ToList();
-            _staticParameters = sourceNode.Parameters.Values.Where(x => !x.Bindable).ToList();
-
             NodeColor = TypeColorMap[NodeType];
+
+            SourceNode.PortsChanged += SourceNodeOnPortsChanged;
+            SourceNodeOnPortsChanged();
+        }
+
+        private void SourceNodeOnPortsChanged() {
+            var inConnectors = _inputs.ToList();
+            var outConnectors = _outputs.ToList();
+
+            var inputs = SourceNode.Parameters.Values.Where(x => x.Bindable);
+            var outputs = SourceNode.Results.Values;
+
+            foreach (var input in inputs) {
+                var orig = inConnectors.FirstOrDefault(x => x.Parameter.Id == input.Id);
+
+                if (orig != null) {
+                    orig.Parameter = input;
+                }
+            }
+
+            foreach (var output in outputs) {
+                var orig = outConnectors.FirstOrDefault(x => x.Result.Id == output.Id);
+
+                if (orig != null) {
+                    orig.Result = output;
+                }
+            }
+
+
+            _inputs = SourceNode.Parameters.Values.Where(x => x.Bindable).Select(x =>
+                inConnectors.FirstOrDefault(y => y.Parameter == x) ?? new Connector(this, x)).ToList();
+            _outputs = SourceNode.Results.Values
+                .Select(x => outConnectors.FirstOrDefault(y => y.Result == x) ?? new Connector(this, x)).ToList();
+
+
+            _staticParameters = SourceNode.Parameters.Values.Where(x => !x.Bindable).ToList();
+
+            OnPropertyChanged(nameof(Inputs));
+            OnPropertyChanged(nameof(Outputs));
+            OnPropertyChanged(nameof(StaticParameters));
         }
 
         public string TitleId { get; }
@@ -70,6 +105,10 @@ namespace Thumbnify.Postprocessing {
             field = value;
             OnPropertyChanged(propertyName);
             return true;
+        }
+
+        public void Dispose() {
+            SourceNode.PortsChanged -= SourceNodeOnPortsChanged;
         }
     }
 }

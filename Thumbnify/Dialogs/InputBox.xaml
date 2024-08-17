@@ -19,7 +19,7 @@
     </Window.Resources>
     <StackPanel>
         <TextBlock Margin="5" Text="{Binding Message}"></TextBlock>
-        <TextBox Margin="5" Text="{Binding Value}" x:Name="Input"></TextBox>
+        <TextBox Margin="5" Text="{Binding Value}" x:Name="Input" Height="150" AcceptsReturn="True" AcceptsTab="True"></TextBox>
         <UniformGrid Columns="2" HorizontalAlignment="Right" Margin="5">
             <Button IsDefault="True" Click="Ok_OnClick" Content="{lex:Loc Ok}"></Button>
             <Button IsCancel="True" Click="Cancel_OnClick" Content="{lex:Loc Cancel}"></Button>

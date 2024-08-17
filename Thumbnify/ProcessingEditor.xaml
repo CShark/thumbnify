@@ -19,6 +19,7 @@
         xmlns:paramStore="clr-namespace:Thumbnify.Data.ParamStore"
         xmlns:converters="clr-namespace:Thumbnify.Data.Processing.Converters"
         xmlns:youtube="clr-namespace:Thumbnify.Data.Processing.Youtube"
+        xmlns:icons="clr-namespace:Material.Icons;assembly=Material.Icons"
         lex:LocalizeDictionary.DesignCulture="de-DE"
         lex:ResxLocalizationProvider.DefaultAssembly="Thumbnify"
         lex:ResxLocalizationProvider.DefaultDictionary="Controls"
@@ -40,11 +41,9 @@
             </Setter>
         </Style>
 
-        <Style TargetType="TextBox">
-            <Setter Property="Background" Value="{StaticResource ControlBackground}" />
-            <Setter Property="Foreground" Value="{StaticResource ControlForeground}" />
-            <Setter Property="BorderBrush" Value="{StaticResource ControlForegroundDark}" />
-        </Style>
+        <ControlTemplate x:Key="Separator">
+            <Separator />
+        </ControlTemplate>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -57,185 +56,39 @@
                 <KeyBinding Command="{x:Static controls:GraphEditor.DeleteNode}" Key="X" />
             </controls:GraphEditor.InputBindings>
             <controls:GraphEditor.ContextMenu>
-                <ContextMenu lex:ResxLocalizationProvider.DefaultDictionary="Nodes">
-                    <MenuItem Header="{lex:Loc mnu_input}">
-                        <MenuItem.Icon>
-                            <wpf:MaterialIcon Kind="SourceCommitStart" />
-                        </MenuItem.Icon>
+                <ContextMenu lex:ResxLocalizationProvider.DefaultDictionary="Nodes"
+                             ItemsSource="{x:Static processing:ProcessingActions.Actions}">
+                    <ContextMenu.ItemContainerStyle>
+                        <Style TargetType="MenuItem">
+                            <Setter Property="Icon" Value="{Binding Icon}" />
+                            <Setter Property="ItemsSource" Value="{Binding Items}" />
+                            <Setter Property="ItemContainerStyle">
+                                <Setter.Value>
+                                    <Style TargetType="MenuItem">
+                                        <Setter Property="Icon" Value="{Binding Icon}" />
+                                        <Setter Property="Command" Value="{x:Static controls:GraphEditor.CreateNode}" />
+                                        <Setter Property="CommandParameter" Value="{Binding Type}" />
 
-                        <MenuItem Header="{lex:Loc {x:Static input:MediaPartInput.Id}}"
-                                  Command="{x:Static controls:GraphEditor.CreateNode}"
-                                  CommandParameter="{x:Type input:MediaPartInput}">
-                            <MenuItem.Icon>
-                                <wpf:MaterialIcon Kind="Multimedia" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <Separator />
-                        <MenuItem Header="{lex:Loc Key={x:Static input:PathInput.Id}}"
-                                  Command="{x:Static controls:GraphEditor.CreateNode}"
-                                  CommandParameter="{x:Type input:PathInput}">
-                            <MenuItem.Icon>
-                                <wpf:MaterialIcon Kind="Folder" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="{lex:Loc Key={x:Static input:TempPathInput.Id}}"
-                                  Command="{x:Static controls:GraphEditor.CreateNode}"
-                                  CommandParameter="{x:Type input:TempPathInput}">
-                            <MenuItem.Icon>
-                                <wpf:MaterialIcon Kind="FolderPound" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="{lex:Loc {x:Static input:StringInput.Id}}"
-                                  Command="{x:Static controls:GraphEditor.CreateNode}"
-                                  CommandParameter="{x:Type input:StringInput}">
-                            <MenuItem.Icon>
-                                <wpf:MaterialIcon Kind="FormTextbox" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="{lex:Loc {x:Static input:ThumbnailInput.Id}}"
-                                  Command="{x:Static controls:GraphEditor.CreateNode}"
-                                  CommandParameter="{x:Type input:ThumbnailInput}">
-                            <MenuItem.Icon>
-                                <wpf:MaterialIcon Kind="Image" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                    </MenuItem>
-                    <MenuItem Header="{lex:Loc mnu_video}">
-                        <MenuItem.Icon>
-                            <wpf:MaterialIcon Kind="MovieOpen" />
-                        </MenuItem.Icon>
-                        <MenuItem Header="{lex:Loc {x:Static video:VideoSaveFile.Id}}"
-                                  Command="{x:Static controls:GraphEditor.CreateNode}"
-                                  CommandParameter="{x:Type video:VideoSaveFile}">
-                            <MenuItem.Icon>
-                                <wpf:MaterialIcon Kind="ContentSave" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="{lex:Loc {x:Static youtube:YoutubeUpload.Id}}"
-                                  Command="{x:Static controls:GraphEditor.CreateNode}"
-                                  CommandParameter="{x:Type youtube:YoutubeUpload}">
-                            <MenuItem.Icon>
-                                <wpf:MaterialIcon Kind="CloudUpload" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                    </MenuItem>
-                    <MenuItem Header="{lex:Loc mnu_audio}">
-                        <MenuItem.Icon>
-                            <wpf:MaterialIcon Kind="Music" />
-                        </MenuItem.Icon>
-                        <MenuItem Header="{lex:Loc {x:Static audio:AudioLoadFile.Id}}"
-                                  Command="{x:Static controls:GraphEditor.CreateNode}"
-                                  CommandParameter="{x:Type audio:AudioLoadFile}">
-                            <MenuItem.Icon>
-                                <wpf:MaterialIcon Kind="FolderOpen" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="{lex:Loc {x:Static audio:AudioSaveFile.Id}}"
-                                  Command="{x:Static controls:GraphEditor.CreateNode}"
-                                  CommandParameter="{x:Type audio:AudioSaveFile}">
-                            <MenuItem.Icon>
-                                <wpf:MaterialIcon Kind="ContentSave" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <Separator />
-                        <MenuItem Header="{lex:Loc {x:Static audio:AudioMerge.Id}}"
-                                  Command="{x:Static controls:GraphEditor.CreateNode}"
-                                  CommandParameter="{x:Type audio:AudioMerge}">
-                            <MenuItem.Icon>
-                                <wpf:MaterialIcon Kind="CallMerge" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="{lex:Loc {x:Static audio:AudioResample.Id}}"
-                                  Command="{x:Static controls:GraphEditor.CreateNode}"
-                                  CommandParameter="{x:Type audio:AudioResample}">
-                            <MenuItem.Icon>
-                                <wpf:MaterialIcon Kind="SineWave"></wpf:MaterialIcon>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="{lex:Loc {x:Static audio:AudioNormalizer.Id}}"
-                                  Command="{x:Static controls:GraphEditor.CreateNode}"
-                                  CommandParameter="{x:Type audio:AudioNormalizer}">
-                            <MenuItem.Icon>
-                                <wpf:MaterialIcon Kind="Waveform"></wpf:MaterialIcon>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="{lex:Loc {x:Static audio:AudioCompressor.Id}}"
-                                  Command="{x:Static controls:GraphEditor.CreateNode}"
-                                  CommandParameter="{x:Type audio:AudioCompressor}">
-                            <MenuItem.Icon>
-                                <wpf:MaterialIcon Kind="ArrowCollapseVertical" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <Separator />
-                        <MenuItem Header="{lex:Loc {x:Static audio:AudioMetadata.Id}}"
-                                  Command="{x:Static controls:GraphEditor.CreateNode}"
-                                  CommandParameter="{x:Type audio:AudioMetadata}">
-                            <MenuItem.Icon>
-                                <wpf:MaterialIcon Kind="Tag" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                    </MenuItem>
-                    <MenuItem Header="{lex:Loc mnu_youtube}">
-                        <MenuItem.Icon>
-                            <wpf:MaterialIcon Kind="VideoBox" />
-                        </MenuItem.Icon>
-
-                        <MenuItem Header="{lex:Loc {x:Static youtube:YoutubeUpload.Id}}"
-                                  Command="{x:Static controls:GraphEditor.CreateNode}"
-                                  CommandParameter="{x:Type youtube:YoutubeUpload}">
-                            <MenuItem.Icon>
-                                <wpf:MaterialIcon Kind="CloudUpload" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-
-                        <MenuItem Header="{lex:Loc {x:Static youtube:YoutubeAddPlaylist.Id}}"
-                                  Command="{x:Static controls:GraphEditor.CreateNode}"
-                                  CommandParameter="{x:Type youtube:YoutubeAddPlaylist}">
-                            <MenuItem.Icon>
-                                <wpf:MaterialIcon Kind="ViewList" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                    </MenuItem>
-                    <MenuItem Header="Dateien">
-                        <MenuItem Header="Upload FTP" Command="{x:Static controls:GraphEditor.CreateNode}">
-                            <MenuItem.Icon>
-                                <wpf:MaterialIcon Kind="FolderUpload" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="Upload WebDAV" Command="{x:Static controls:GraphEditor.CreateNode}">
-                            <MenuItem.Icon>
-                                <wpf:MaterialIcon Kind="CloudUpload" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                    </MenuItem>
-                    <Separator />
-                    <MenuItem Header="{lex:Loc mnu_convert}">
-                        <MenuItem.Icon>
-                            <wpf:MaterialIcon Kind="SwapHorizontal" />
-                        </MenuItem.Icon>
-
-                        <MenuItem Header="{lex:Loc {x:Static converters:ConvertDate.Id}}"
-                                  Command="{x:Static controls:GraphEditor.CreateNode}"
-                                  CommandParameter="{x:Type converters:ConvertDate}">
-                            <MenuItem.Icon>
-                                <wpf:MaterialIcon Kind="Calendar" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                    </MenuItem>
-                    <MenuItem Header="{lex:Loc mnu_operations}">
-                        <MenuItem.Icon>
-                            <wpf:MaterialIcon Kind="Cog" />
-                        </MenuItem.Icon>
-                        <MenuItem Header="{lex:Loc {x:Static operations:PathCombine.Id}}"
-                                  Command="{x:Static controls:GraphEditor.CreateNode}"
-                                  CommandParameter="{x:Type operations:PathCombine}">
-                            <MenuItem.Icon>
-                                <wpf:MaterialIcon Kind="FileTree"></wpf:MaterialIcon>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                    </MenuItem>
-                    <Separator></Separator>
-                    <MenuItem Header="{lex:Loc mnu_delete}" Command="{x:Static controls:GraphEditor.DeleteNode}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                                <Setter Property="Template" Value="{StaticResource Separator}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ContextMenu.ItemContainerStyle>
+                    <ContextMenu.ItemTemplate>
+                        <DataTemplate DataType="{x:Type processing:ProcessingGroup}">
+                            <TextBlock Text="{lex:Loc {Binding TranslationKey}}" />
+                        </DataTemplate>
+                    </ContextMenu.ItemTemplate>
+                    <ContextMenu.Resources>
+                        <DataTemplate DataType="{x:Type icons:MaterialIconKind}">
+                            <wpf:MaterialIcon Kind="{Binding}" />
+                        </DataTemplate>
+                    </ContextMenu.Resources>
                 </ContextMenu>
             </controls:GraphEditor.ContextMenu>
         </controls:GraphEditor>
@@ -315,8 +168,20 @@
                                     CommandParameter="{Binding SelectedParam}">
                                 <wpf:MaterialIcon Kind="Minus"></wpf:MaterialIcon>
                             </Button>
+                            <Border Height="24" />
+                            <Button Style="{StaticResource FirstButtonVertical}" Command="{x:Static local:ProcessingEditor.MoveParamUp}" CommandParameter="{Binding SelectedParam}">
+                                <wpf:MaterialIcon Kind="ChevronUp"></wpf:MaterialIcon>
+                            </Button>
+                            <Button Style="{StaticResource LastButtonVertical}"
+                                    Command="{x:Static local:ProcessingEditor.MoveParamDown}"
+                                    CommandParameter="{Binding SelectedParam}">
+                                <wpf:MaterialIcon Kind="ChevronDown"></wpf:MaterialIcon>
+                            </Button>
                         </StackPanel>
                     </Grid>
+
+                    <TextBlock Text="{lex:Loc DefaultValue}" />
+                    <ContentPresenter Content="{Binding SelectedParam.Value}" />
                 </StackPanel>
             </Expander>
         </StackPanel>

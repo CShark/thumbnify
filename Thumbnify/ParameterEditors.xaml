@@ -13,7 +13,7 @@
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type parameters:StringParam}">
-        <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" />
+        <controls:StringEditor StringParam="{Binding}"/>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type parameters:IntParam}">

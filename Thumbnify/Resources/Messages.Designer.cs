@@ -124,6 +124,15 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Parameter text: ähnelt.
+        /// </summary>
+        internal static string msg_stringParam {
+            get {
+                return ResourceManager.GetString("msg_stringParam", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die The selected account does not have any channels. ähnelt.
         /// </summary>
         internal static string msg_ytNoChannels {
@@ -192,6 +201,15 @@ namespace Thumbnify.Resources {
         internal static string title_overwritePreset {
             get {
                 return ResourceManager.GetString("title_overwritePreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die String Parameter ähnelt.
+        /// </summary>
+        internal static string title_stringParam {
+            get {
+                return ResourceManager.GetString("title_stringParam", resourceCulture);
             }
         }
         

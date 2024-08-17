@@ -51,6 +51,9 @@ namespace Thumbnify {
 
         public static RoutedUICommand DeleteParameter { get; } = new();
 
+        public static RoutedUICommand MoveParamUp { get; } = new();
+        public static RoutedUICommand MoveParamDown { get; } = new();
+
         public ProcessingEditor() {
             CreateParameter = new ActionCommand(() => {
                 var def = ParamDefCreate.ShowDialog(this);
@@ -75,6 +78,36 @@ namespace Thumbnify {
                 }
             }, (_, e) => { e.CanExecute = e.Parameter is CompressorParam; }));
 
+            CommandBindings.Add(new(MoveParamUp, (_, e) => {
+                if (e.Parameter is ParamDefinition def) {
+                    var idx = Graph.Parameters.IndexOf(def);
+
+                    if (idx > 0) {
+                        Graph.Parameters.Move(idx, idx - 1);
+                    }
+                }
+            }, (_, e) => {
+                e.CanExecute = false;
+                if (e.Parameter is ParamDefinition def) {
+                    e.CanExecute = Graph.Parameters.IndexOf(def) > 0;
+                }
+            }));
+
+            CommandBindings.Add(new(MoveParamDown, (_, e) => {
+                if (e.Parameter is ParamDefinition def) {
+                    var idx = Graph.Parameters.IndexOf(def);
+
+                    if (idx < Graph.Parameters.Count - 1) {
+                        Graph.Parameters.Move(idx, idx + 1);
+                    }
+                }
+            }, (_, e) => {
+                e.CanExecute = false;
+                if (e.Parameter is ParamDefinition def) {
+                    e.CanExecute = Graph.Parameters.IndexOf(def) < Graph.Parameters.Count - 1;
+                }
+            }));
+
             Graph = new();
 
             InitializeComponent();
@@ -85,6 +118,15 @@ namespace Thumbnify {
         private void DeleteParameter_OnExecuted(object sender, ExecutedRoutedEventArgs e) {
             if (e.Parameter is ParamDefinition def) {
                 Graph.Parameters.Remove(def);
+
+                var mediaInput = Graph.Nodes.FirstOrDefault(x => x is MediaPartInput);
+                var connections =
+                    Graph.ProcessConnects.Where(x => x.Previous == mediaInput.Uid && x.PreviousPort == def.Id).ToList();
+
+                foreach (var connection in connections) {
+                    Graph.ProcessConnects.Remove(connection);
+                }
+
                 Editor.RebuildGraph();
             }
         }
@@ -162,7 +204,7 @@ namespace Thumbnify {
             if (Graph.Nodes.Any(x => x is MediaPartInput)) {
                 var mediaPart = new MediaPart();
                 var metadata = new PartMetadata();
-                metadata.Parameters=new();
+                metadata.Parameters = new();
                 foreach (var param in Graph.Parameters) {
                     metadata.Parameters.Add(param.Clone());
                 }

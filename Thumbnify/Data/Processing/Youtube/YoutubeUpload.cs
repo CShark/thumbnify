@@ -13,7 +13,6 @@ using Google.Apis.YouTube.v3.Data;
 using Newtonsoft.Json;
 using Thumbnify.Data.Processing.Parameters;
 using Thumbnify.Postprocessing;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using YoutubeVideo = Google.Apis.YouTube.v3.Data.Video;
 
 namespace Thumbnify.Data.Processing.Youtube {
@@ -25,7 +24,7 @@ namespace Thumbnify.Data.Processing.Youtube {
 
         public Parameter<StringParam> Title { get; } = new("title", true, new());
 
-        public Parameter<StringParam> Description { get; } = new("description", true, new());
+        public Parameter<StringParam> Description { get; } = new("description", true, new(true));
 
         public Parameter<EnumParameter> Status { get; } = new("status", false, new("private", new() {
             { "yt_private", "private" },

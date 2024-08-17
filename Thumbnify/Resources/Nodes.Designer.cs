@@ -214,6 +214,15 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Files ähnelt.
+        /// </summary>
+        internal static string mnu_files {
+            get {
+                return ResourceManager.GetString("mnu_files", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Input ähnelt.
         /// </summary>
         internal static string mnu_input {
@@ -255,6 +264,15 @@ namespace Thumbnify.Resources {
         internal static string op_pathcombine {
             get {
                 return ResourceManager.GetString("op_pathcombine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Render Thumbnail ähnelt.
+        /// </summary>
+        internal static string op_renderThumb {
+            get {
+                return ResourceManager.GetString("op_renderThumb", resourceCulture);
             }
         }
         

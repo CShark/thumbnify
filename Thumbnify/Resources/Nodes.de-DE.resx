@@ -238,4 +238,10 @@
   <data name="param_thumbnail" xml:space="preserve">
     <value>Thumbnail</value>
   </data>
+  <data name="mnu_files" xml:space="preserve">
+    <value>Dateien</value>
+  </data>
+  <data name="op_renderThumb" xml:space="preserve">
+    <value>Thumbnail Rendern</value>
+  </data>
 </root>

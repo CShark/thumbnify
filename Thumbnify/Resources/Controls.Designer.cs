@@ -160,6 +160,15 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Default Value ähnelt.
+        /// </summary>
+        internal static string DefaultValue {
+            get {
+                return ResourceManager.GetString("DefaultValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Delete ähnelt.
         /// </summary>
         internal static string Delete {

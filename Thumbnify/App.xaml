@@ -33,6 +33,12 @@
 
             <Style TargetType="Window" BasedOn="{StaticResource Dark}" />
 
+            <Style TargetType="TextBox">
+                <Setter Property="Background" Value="{StaticResource ControlBackground}" />
+                <Setter Property="Foreground" Value="{StaticResource ControlForeground}" />
+                <Setter Property="BorderBrush" Value="{StaticResource ControlForegroundDark}" />
+            </Style>
+
             <Style TargetType="Expander">
                 <Setter Property="Foreground" Value="{StaticResource ControlForegroundDark}" />
             </Style>
