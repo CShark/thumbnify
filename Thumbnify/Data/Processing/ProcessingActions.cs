@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Material.Icons;
 using Thumbnify.Data.Processing.Audio;
 using Thumbnify.Data.Processing.Converters;
+using Thumbnify.Data.Processing.Files;
 using Thumbnify.Data.Processing.Input;
 using Thumbnify.Data.Processing.Operations;
 using Thumbnify.Data.Processing.Video;
@@ -41,13 +42,17 @@ namespace Thumbnify.Data.Processing {
                 new(YoutubeUpload.Id, MaterialIconKind.CloudUpload, typeof(YoutubeUpload)),
                 new(YoutubeAddPlaylist.Id, MaterialIconKind.ViewList, typeof(YoutubeAddPlaylist))
             ]),
-            new("mnu_files", MaterialIconKind.Folder, []),
+            new("mnu_files", MaterialIconKind.Folder, [
+                new(WebDavUpload.Id, MaterialIconKind.CloudUpload, typeof(WebDavUpload))
+            ]),
             new("mnu_convert", MaterialIconKind.SwapHorizontal, [
                 new(ConvertDate.Id, MaterialIconKind.Calendar, typeof(ConvertDate))
             ]),
             new("mnu_operations", MaterialIconKind.Cog, [
                 new(PathCombine.Id, MaterialIconKind.FileTree, typeof(PathCombine)),
-                new(RenderThumbnail.Id, MaterialIconKind.Image, typeof(RenderThumbnail))
+                new(RenderThumbnail.Id, MaterialIconKind.Image, typeof(RenderThumbnail)),
+                new(TextReplace.Id, MaterialIconKind.FormTextbox, typeof(TextReplace)),
+                new(TextCombine.Id, MaterialIconKind.CallMerge, typeof(TextCombine)),
             ])
         };
     }

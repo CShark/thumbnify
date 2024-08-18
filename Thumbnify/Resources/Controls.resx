@@ -241,4 +241,31 @@
   <data name="DefaultValue" xml:space="preserve">
     <value>Default Value</value>
   </data>
+  <data name="NodeCreate" xml:space="preserve">
+    <value>Create Node</value>
+  </data>
+  <data name="NodeDelete" xml:space="preserve">
+    <value>Delete Node</value>
+  </data>
+  <data name="NodeConDelete" xml:space="preserve">
+    <value>Delete Connection</value>
+  </data>
+  <data name="TimelineDrag" xml:space="preserve">
+    <value>Drag Timeline</value>
+  </data>
+  <data name="TimelineItemDrag" xml:space="preserve">
+    <value>Drag Mediaitem</value>
+  </data>
+  <data name="TimelineIn" xml:space="preserve">
+    <value>Set In</value>
+  </data>
+  <data name="TimelineOut" xml:space="preserve">
+    <value>Set Out</value>
+  </data>
+  <data name="TimelinePlay" xml:space="preserve">
+    <value>Play/Pause</value>
+  </data>
+  <data name="TimelineAdd" xml:space="preserve">
+    <value>Media Part from Selection</value>
+  </data>
 </root>

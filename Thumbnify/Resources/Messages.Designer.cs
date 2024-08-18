@@ -97,6 +97,15 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Delete Media and all its source files? ähnelt.
+        /// </summary>
+        internal static string msg_deleteMedia {
+            get {
+                return ResourceManager.GetString("msg_deleteMedia", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Delete the selected media part? ähnelt.
         /// </summary>
         internal static string msg_deleteMediaPart {
@@ -174,6 +183,15 @@ namespace Thumbnify.Resources {
         internal static string title_deleteActions {
             get {
                 return ResourceManager.GetString("title_deleteActions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Delete Media File ähnelt.
+        /// </summary>
+        internal static string title_deleteMedia {
+            get {
+                return ResourceManager.GetString("title_deleteMedia", resourceCulture);
             }
         }
         

@@ -22,6 +22,7 @@ using ColorPicker.Models;
 using Thumbnify.Data;
 using Thumbnify.Data.ParamStore;
 using Thumbnify.Data.Processing;
+using Thumbnify.Data.Processing.Operations;
 using Thumbnify.Data.Processing.Parameters;
 using Thumbnify.Data.Thumbnail;
 using WpfColorFontDialog;
@@ -151,8 +152,7 @@ namespace Thumbnify.Controls {
                 }
             }
         }
-
-        private Regex _previewRegex = new Regex(@"\{(.*?)\}", RegexOptions.Compiled);
+        
 
         private void UpdatePreview(object? state) {
             var args = new ResolveParamArgs();
@@ -177,29 +177,7 @@ namespace Thumbnify.Controls {
                 if (paramList == null) {
                     part.PreviewText = null;
                 } else {
-                    part.PreviewText = part.Placeholder;
-                    part.PreviewText = _previewRegex.Replace(part.PreviewText, match => {
-                        var value = match.Groups[1].Value;
-                        var parts = value.Split('|');
-
-                        var param = paramList.FirstOrDefault(x =>
-                            string.Equals(x.Name, parts[0], StringComparison.CurrentCultureIgnoreCase));
-
-                        if (param != null) {
-                            switch (param.Value) {
-                                case StringParam s:
-                                    return s.Value;
-                                case DateParam d:
-                                    if (parts.Length == 2) {
-                                        return d.ResolveDate().ToString(parts[1]);
-                                    } else {
-                                        return d.ResolveDate().ToString();
-                                    }
-                            }
-                        }
-
-                        return "";
-                    });
+                    part.PreviewText = TextReplace.ReplaceVariables(part.Placeholder, paramList);
                 }
             }
         }

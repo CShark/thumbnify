@@ -241,4 +241,31 @@
   <data name="DefaultValue" xml:space="preserve">
     <value>Standardwert</value>
   </data>
+  <data name="NodeCreate" xml:space="preserve">
+    <value>Node Hinzufügen</value>
+  </data>
+  <data name="NodeDelete" xml:space="preserve">
+    <value>Node Löschen</value>
+  </data>
+  <data name="NodeConDelete" xml:space="preserve">
+    <value>Verbindung Löschen</value>
+  </data>
+  <data name="TimelineDrag" xml:space="preserve">
+    <value>Timeline Ziehen</value>
+  </data>
+  <data name="TimelineItemDrag" xml:space="preserve">
+    <value>Ausschnitt Ziehen</value>
+  </data>
+  <data name="TimelineIn" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="TimelineOut" xml:space="preserve">
+    <value>Ende</value>
+  </data>
+  <data name="TimelinePlay" xml:space="preserve">
+    <value>Wiedergabe</value>
+  </data>
+  <data name="TimelineAdd" xml:space="preserve">
+    <value>Ausschnitt aus Auswahl</value>
+  </data>
 </root>

@@ -244,4 +244,28 @@
   <data name="op_renderThumb" xml:space="preserve">
     <value>Thumbnail Rendern</value>
   </data>
+  <data name="op_textReplace" xml:space="preserve">
+    <value>Variablen ersetzen</value>
+  </data>
+  <data name="op_stringCombine" xml:space="preserve">
+    <value>Text Kombinieren</value>
+  </data>
+  <data name="input_prefix" xml:space="preserve">
+    <value>Präfix</value>
+  </data>
+  <data name="input_suffix" xml:space="preserve">
+    <value>Suffix</value>
+  </data>
+  <data name="file_webdav" xml:space="preserve">
+    <value>WebDav Upload</value>
+  </data>
+  <data name="param_url" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="param_file" xml:space="preserve">
+    <value>Datei</value>
+  </data>
+  <data name="input_credentials" xml:space="preserve">
+    <value>Autorisierung</value>
+  </data>
 </root>

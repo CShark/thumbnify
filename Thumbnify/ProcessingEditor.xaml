@@ -51,47 +51,68 @@
             <ColumnDefinition Width="200"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <controls:GraphEditor Graph="{Binding Graph}" x:Name="Editor">
-            <controls:GraphEditor.InputBindings>
-                <KeyBinding Command="{x:Static controls:GraphEditor.DeleteNode}" Key="X" />
-            </controls:GraphEditor.InputBindings>
-            <controls:GraphEditor.ContextMenu>
-                <ContextMenu lex:ResxLocalizationProvider.DefaultDictionary="Nodes"
-                             ItemsSource="{x:Static processing:ProcessingActions.Actions}">
-                    <ContextMenu.ItemContainerStyle>
-                        <Style TargetType="MenuItem">
-                            <Setter Property="Icon" Value="{Binding Icon}" />
-                            <Setter Property="ItemsSource" Value="{Binding Items}" />
-                            <Setter Property="ItemContainerStyle">
-                                <Setter.Value>
-                                    <Style TargetType="MenuItem">
-                                        <Setter Property="Icon" Value="{Binding Icon}" />
-                                        <Setter Property="Command" Value="{x:Static controls:GraphEditor.CreateNode}" />
-                                        <Setter Property="CommandParameter" Value="{Binding Type}" />
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="24"></RowDefinition>
+            </Grid.RowDefinitions>
 
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding}" Value="{x:Null}">
-                                                <Setter Property="Template" Value="{StaticResource Separator}" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </ContextMenu.ItemContainerStyle>
-                    <ContextMenu.ItemTemplate>
-                        <DataTemplate DataType="{x:Type processing:ProcessingGroup}">
-                            <TextBlock Text="{lex:Loc {Binding TranslationKey}}" />
-                        </DataTemplate>
-                    </ContextMenu.ItemTemplate>
-                    <ContextMenu.Resources>
-                        <DataTemplate DataType="{x:Type icons:MaterialIconKind}">
-                            <wpf:MaterialIcon Kind="{Binding}" />
-                        </DataTemplate>
-                    </ContextMenu.Resources>
-                </ContextMenu>
-            </controls:GraphEditor.ContextMenu>
-        </controls:GraphEditor>
+            <controls:GraphEditor Graph="{Binding Graph}" x:Name="Editor">
+                <controls:GraphEditor.InputBindings>
+                    <KeyBinding Command="{x:Static controls:GraphEditor.DeleteNode}" Key="X" />
+                </controls:GraphEditor.InputBindings>
+                <controls:GraphEditor.ContextMenu>
+                    <ContextMenu lex:ResxLocalizationProvider.DefaultDictionary="Nodes"
+                                 ItemsSource="{x:Static processing:ProcessingActions.Actions}">
+                        <ContextMenu.ItemContainerStyle>
+                            <Style TargetType="MenuItem">
+                                <Setter Property="Icon" Value="{Binding Icon}" />
+                                <Setter Property="ItemsSource" Value="{Binding Items}" />
+                                <Setter Property="ItemContainerStyle">
+                                    <Setter.Value>
+                                        <Style TargetType="MenuItem">
+                                            <Setter Property="Icon" Value="{Binding Icon}" />
+                                            <Setter Property="Command"
+                                                    Value="{x:Static controls:GraphEditor.CreateNode}" />
+                                            <Setter Property="CommandParameter" Value="{Binding Type}" />
+
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                                    <Setter Property="Template" Value="{StaticResource Separator}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ContextMenu.ItemContainerStyle>
+                        <ContextMenu.ItemTemplate>
+                            <DataTemplate DataType="{x:Type processing:ProcessingGroup}">
+                                <TextBlock Text="{lex:Loc {Binding TranslationKey}}" />
+                            </DataTemplate>
+                        </ContextMenu.ItemTemplate>
+                        <ContextMenu.Resources>
+                            <DataTemplate DataType="{x:Type icons:MaterialIconKind}">
+                                <wpf:MaterialIcon Kind="{Binding}" />
+                            </DataTemplate>
+                        </ContextMenu.Resources>
+                    </ContextMenu>
+                </controls:GraphEditor.ContextMenu>
+            </controls:GraphEditor>
+
+            <WrapPanel Grid.Row="1" HorizontalAlignment="Center" Margin="2">
+                <WrapPanel.Resources>
+                    <Style TargetType="controls:ShortcutInfo">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="Margin" Value="15,0" />
+                    </Style>
+                </WrapPanel.Resources>
+
+                <controls:ShortcutInfo MouseButton="Left" Key="ALT" Description="{lex:Loc NodeConDelete}"/>
+                <controls:ShortcutInfo MouseButton="Right" Description="{lex:Loc NodeCreate}"/>
+                <controls:ShortcutInfo Key="X" Description="{lex:Loc NodeDelete}"/>
+            </WrapPanel>
+        </Grid>
 
         <Border HorizontalAlignment="Left" CornerRadius="0,10,10,0" VerticalAlignment="Center"
                 Background="{StaticResource ControlBorder}" Padding="2,5">
@@ -169,7 +190,9 @@
                                 <wpf:MaterialIcon Kind="Minus"></wpf:MaterialIcon>
                             </Button>
                             <Border Height="24" />
-                            <Button Style="{StaticResource FirstButtonVertical}" Command="{x:Static local:ProcessingEditor.MoveParamUp}" CommandParameter="{Binding SelectedParam}">
+                            <Button Style="{StaticResource FirstButtonVertical}"
+                                    Command="{x:Static local:ProcessingEditor.MoveParamUp}"
+                                    CommandParameter="{Binding SelectedParam}">
                                 <wpf:MaterialIcon Kind="ChevronUp"></wpf:MaterialIcon>
                             </Button>
                             <Button Style="{StaticResource LastButtonVertical}"

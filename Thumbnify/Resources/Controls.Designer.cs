@@ -340,6 +340,33 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Delete Connection ähnelt.
+        /// </summary>
+        internal static string NodeConDelete {
+            get {
+                return ResourceManager.GetString("NodeConDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Create Node ähnelt.
+        /// </summary>
+        internal static string NodeCreate {
+            get {
+                return ResourceManager.GetString("NodeCreate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Delete Node ähnelt.
+        /// </summary>
+        internal static string NodeDelete {
+            get {
+                return ResourceManager.GetString("NodeDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Path to the OBS-Recordings ähnelt.
         /// </summary>
         internal static string ObsPath {
@@ -480,6 +507,60 @@ namespace Thumbnify.Resources {
         internal static string ThumbnailEditor {
             get {
                 return ResourceManager.GetString("ThumbnailEditor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Media Part from Selection ähnelt.
+        /// </summary>
+        internal static string TimelineAdd {
+            get {
+                return ResourceManager.GetString("TimelineAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Drag Timeline ähnelt.
+        /// </summary>
+        internal static string TimelineDrag {
+            get {
+                return ResourceManager.GetString("TimelineDrag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Set In ähnelt.
+        /// </summary>
+        internal static string TimelineIn {
+            get {
+                return ResourceManager.GetString("TimelineIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Drag Mediaitem ähnelt.
+        /// </summary>
+        internal static string TimelineItemDrag {
+            get {
+                return ResourceManager.GetString("TimelineItemDrag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Set Out ähnelt.
+        /// </summary>
+        internal static string TimelineOut {
+            get {
+                return ResourceManager.GetString("TimelineOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Play/Pause ähnelt.
+        /// </summary>
+        internal static string TimelinePlay {
+            get {
+                return ResourceManager.GetString("TimelinePlay", resourceCulture);
             }
         }
         

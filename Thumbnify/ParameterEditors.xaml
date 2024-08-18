@@ -13,7 +13,7 @@
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type parameters:StringParam}">
-        <controls:StringEditor StringParam="{Binding}"/>
+        <controls:StringEditor StringParam="{Binding}" />
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type parameters:IntParam}">
@@ -70,6 +70,13 @@
         <controls:YoutubePlaylistPicker Playlist="{Binding}" />
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type parameters:CredentialParam}">
+        <StackPanel>
+            <TextBox Text="{Binding Username}" />
+            <TextBox Text="{Binding Password}" Margin="0,5" />
+        </StackPanel>
+    </DataTemplate>
+
     <!-- Parameter-Connector darstellung -->
     <converter:ParameterTypeToColor x:Key="ParamTypeToColor">
         <converter:ParameterColor Type="{x:Type parameters:FilePath}" Color="LightPink" />
@@ -82,6 +89,8 @@
 
         <converter:ParameterColor Type="{x:Type parameters:YoutubeVideoParam}" Color="Red" />
         <converter:ParameterColor Type="{x:Type parameters:YoutubePlaylistParam}" Color="Red" />
+
+        <converter:ParameterColor Type="{x:Type parameters:CredentialParam}" Color="Gray" />
     </converter:ParameterTypeToColor>
 
     <ControlTemplate TargetType="Control" x:Key="ConnectorCircle">
@@ -131,5 +140,8 @@
                                       Template="{StaticResource ConnectorDiamond}" />
         <converter:ParameterConnector Type="{x:Type parameters:YoutubePlaylistParam}"
                                       Template="{StaticResource ConnectorCircle}" />
+
+        <converter:ParameterConnector Type="{x:Type parameters:CredentialParam}"
+                                      Template="{StaticResource ConnectorDiamond}" />
     </converter:ParameterTypeToConnector>
 </ResourceDictionary>

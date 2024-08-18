@@ -133,6 +133,24 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die WebDav Upload ähnelt.
+        /// </summary>
+        internal static string file_webdav {
+            get {
+                return ResourceManager.GetString("file_webdav", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Credentials ähnelt.
+        /// </summary>
+        internal static string input_credentials {
+            get {
+                return ResourceManager.GetString("input_credentials", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Date ähnelt.
         /// </summary>
         internal static string input_date {
@@ -156,6 +174,24 @@ namespace Thumbnify.Resources {
         internal static string input_path {
             get {
                 return ResourceManager.GetString("input_path", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Prefix ähnelt.
+        /// </summary>
+        internal static string input_prefix {
+            get {
+                return ResourceManager.GetString("input_prefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Suffix ähnelt.
+        /// </summary>
+        internal static string input_suffix {
+            get {
+                return ResourceManager.GetString("input_suffix", resourceCulture);
             }
         }
         
@@ -277,6 +313,24 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Combine Text ähnelt.
+        /// </summary>
+        internal static string op_stringCombine {
+            get {
+                return ResourceManager.GetString("op_stringCombine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Replace Variables ähnelt.
+        /// </summary>
+        internal static string op_textReplace {
+            get {
+                return ResourceManager.GetString("op_textReplace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Account ähnelt.
         /// </summary>
         internal static string param_account {
@@ -376,6 +430,15 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die File ähnelt.
+        /// </summary>
+        internal static string param_file {
+            get {
+                return ResourceManager.GetString("param_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Format ähnelt.
         /// </summary>
         internal static string param_format {
@@ -453,6 +516,15 @@ namespace Thumbnify.Resources {
         internal static string param_title {
             get {
                 return ResourceManager.GetString("param_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die URL ähnelt.
+        /// </summary>
+        internal static string param_url {
+            get {
+                return ResourceManager.GetString("param_url", resourceCulture);
             }
         }
         

@@ -151,4 +151,10 @@
   <data name="title_stringParam" xml:space="preserve">
     <value>Text Parameter</value>
   </data>
+  <data name="msg_deleteMedia" xml:space="preserve">
+    <value>Soll die Mediendatei gelöscht werden?</value>
+  </data>
+  <data name="title_deleteMedia" xml:space="preserve">
+    <value>Mediendatei Löschen</value>
+  </data>
 </root>

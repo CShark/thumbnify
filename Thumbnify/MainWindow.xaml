@@ -142,10 +142,11 @@
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
 
-                            <Border Background="LimeGreen" Visibility="{Binding SlatedForCleanup, Converter={StaticResource BoolToVis}}"/>
+                            <Border Background="LimeGreen"
+                                    Visibility="{Binding SlatedForCleanup, Converter={StaticResource BoolToVis}}" />
 
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
                                 <TextBlock Text="{Binding Date, StringFormat={}{0:dddd, dd.MM.yyyy HH:mm}}"></TextBlock>
                                 <ItemsControl ItemsSource="{Binding Parts}" Margin="20,0,0,0">
                                     <ItemsControl.ItemTemplate>
@@ -217,6 +218,16 @@
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
                             </StackPanel>
+
+                            <Grid.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="{lex:Loc DeleteMedia}" Command="{x:Static local:MainWindow.DeleteMedia}" CommandParameter="{Binding}">
+                                        <MenuItem.Icon>
+                                            <mi:MaterialIcon Kind="Delete" Margin="0"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </Grid.ContextMenu>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
@@ -230,6 +241,7 @@
                 <RowDefinition Height="50"></RowDefinition>
                 <RowDefinition Height="50"></RowDefinition>
                 <RowDefinition Height="150"></RowDefinition>
+                <RowDefinition Height="24"></RowDefinition>
             </Grid.RowDefinitions>
 
             <Grid>
@@ -369,7 +381,7 @@
 
                 <StackPanel Grid.Column="1" HorizontalAlignment="Center" Orientation="Horizontal">
                     <Button Style="{StaticResource FirstButton}" FontFamily="Segoe MDL2 Assets" Click="ZoomOut_OnClick">&#xE71F;</Button>
-                    <Button Style="{StaticResource MiddleButton}" FontFamily="Segoe MDL2 Assets"
+                    <Button Style="{StaticResource MiddleButton}" FontFamily="Segoe MDL2 Assets" Width="24"
                             Click="ZoomReset_OnClick">
                         &#xE9A6;
                     </Button>
@@ -467,7 +479,8 @@
 
                     <Slider Maximum="{Binding Player.Duration}" Value="{Binding Player.CurTime}" Grid.Row="1"
                             IsMoveToPointEnabled="True" SmallChange="{Binding Config.Player.SeekOffset}"
-                            LargeChange="{Binding Config.Player.SeekOffset2}" x:Name="VideoSeekSlider" Focusable="False">
+                            LargeChange="{Binding Config.Player.SeekOffset2}" x:Name="VideoSeekSlider"
+                            Focusable="False">
                         <Slider.Template>
                             <ControlTemplate>
                                 <Grid>
@@ -566,6 +579,22 @@
                         MouseMove="DragWaveform_OnMouseMove"
                         MouseLeave="DragWaveform_OnMouseLeave" x:Name="DragWaveform" />
             </Grid>
+
+            <WrapPanel Grid.Row="4" HorizontalAlignment="Center" Margin="2">
+                <WrapPanel.Resources>
+                    <Style TargetType="controls:ShortcutInfo">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="Margin" Value="15,0" />
+                    </Style>
+                </WrapPanel.Resources>
+
+                <controls:ShortcutInfo MouseButton="Left" Description="{lex:Loc TimelineDrag}" />
+                <controls:ShortcutInfo MouseButton="Right" Description="{lex:Loc TimelineItemDrag}" />
+                <controls:ShortcutInfo Key="I" Description="{lex:Loc TimelineIn}" />
+                <controls:ShortcutInfo Key="O" Description="{lex:Loc TimelineOut}" />
+                <controls:ShortcutInfo Key="Enter" Description="{lex:Loc TimelineAdd}" />
+                <controls:ShortcutInfo Key="Space" Description="{lex:Loc TimelinePlay}" />
+            </WrapPanel>
         </Grid>
     </Grid>
 </Window>

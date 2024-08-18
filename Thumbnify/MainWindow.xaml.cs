@@ -28,6 +28,8 @@ namespace Thumbnify {
 
         public static RoutedUICommand EditMediaPart { get; } = new();
         public static RoutedUICommand DeleteMediaPart { get; } = new();
+
+        public static RoutedUICommand DeleteMedia { get; } = new();
         public static RoutedUICommand AddToQueue { get; } = new();
         public static RoutedUICommand DelFromQueue { get; } = new();
         public static RoutedUICommand SelectMediaPart { get; } = new();
@@ -647,6 +649,25 @@ namespace Thumbnify {
 
             CommandBindings.Add(new(PlayPauseMedia, (_, _) => { PlayButton_OnClick(null, null); },
                 (_, args) => args.CanExecute = SelectedMedia != null));
+
+            CommandBindings.Add(new(DeleteMedia, (_, e) => {
+                if (e.Parameter is MediaSource media) {
+                    if (MessageBox.ShowDialog(this, "deleteMedia", MessageBoxButton.YesNo) == true) {
+                        try {
+                            File.Delete(media.FileName);
+                            File.Delete(media.FileName + ".peaks");
+                        } catch (Exception ex) {
+                            // ignored
+                        }
+
+                        if (!File.Exists(media.FileName) && !File.Exists(media.FileName + ".peaks")) {
+                            App.Settings.Media.Remove(media);
+                        }
+
+                        App.SaveSettings();
+                    }
+                }
+            }, (_, e) => { e.CanExecute = e.Parameter is MediaSource; }));
 
             IEnumerable<(long Position, MediaPart Part)> GetPartPositions() =>
                 SelectedMedia?.Parts.Select(x => (x.Start, x))?.Concat(SelectedMedia.Parts.Select(x => (x.End, x))) ??
