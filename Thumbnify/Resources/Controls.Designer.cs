@@ -520,11 +520,56 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Backward ähnelt.
+        /// </summary>
+        internal static string TimelineBackward {
+            get {
+                return ResourceManager.GetString("TimelineBackward", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Clear In ähnelt.
+        /// </summary>
+        internal static string TimelineClearIn {
+            get {
+                return ResourceManager.GetString("TimelineClearIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Clear Out ähnelt.
+        /// </summary>
+        internal static string TimelineClearOut {
+            get {
+                return ResourceManager.GetString("TimelineClearOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Create Part from Selection ähnelt.
+        /// </summary>
+        internal static string TimelineCreatePart {
+            get {
+                return ResourceManager.GetString("TimelineCreatePart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Drag Timeline ähnelt.
         /// </summary>
         internal static string TimelineDrag {
             get {
                 return ResourceManager.GetString("TimelineDrag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Forward ähnelt.
+        /// </summary>
+        internal static string TimelineForward {
+            get {
+                return ResourceManager.GetString("TimelineForward", resourceCulture);
             }
         }
         
@@ -547,6 +592,60 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Move Part Backward ähnelt.
+        /// </summary>
+        internal static string TimelineMoveBackward {
+            get {
+                return ResourceManager.GetString("TimelineMoveBackward", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Move Part Forward ähnelt.
+        /// </summary>
+        internal static string TimelineMoveForward {
+            get {
+                return ResourceManager.GetString("TimelineMoveForward", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Mute ähnelt.
+        /// </summary>
+        internal static string TimelineMute {
+            get {
+                return ResourceManager.GetString("TimelineMute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Next Frame ähnelt.
+        /// </summary>
+        internal static string TimelineNextFrame {
+            get {
+                return ResourceManager.GetString("TimelineNextFrame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Next Media File ähnelt.
+        /// </summary>
+        internal static string TimelineNextMedia {
+            get {
+                return ResourceManager.GetString("TimelineNextMedia", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Next Media Part ähnelt.
+        /// </summary>
+        internal static string TimelineNextPart {
+            get {
+                return ResourceManager.GetString("TimelineNextPart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Set Out ähnelt.
         /// </summary>
         internal static string TimelineOut {
@@ -561,6 +660,33 @@ namespace Thumbnify.Resources {
         internal static string TimelinePlay {
             get {
                 return ResourceManager.GetString("TimelinePlay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Previous Frame ähnelt.
+        /// </summary>
+        internal static string TimelinePrevFrame {
+            get {
+                return ResourceManager.GetString("TimelinePrevFrame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Previous Media File ähnelt.
+        /// </summary>
+        internal static string TimelinePrevMedia {
+            get {
+                return ResourceManager.GetString("TimelinePrevMedia", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Previous Media Part ähnelt.
+        /// </summary>
+        internal static string TimelinePrevPart {
+            get {
+                return ResourceManager.GetString("TimelinePrevPart", resourceCulture);
             }
         }
         

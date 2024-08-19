@@ -137,7 +137,8 @@ namespace Thumbnify {
 
         public static readonly DependencyProperty SelectedMediaPartProperty = DependencyProperty.Register(
             nameof(SelectedMediaPart), typeof(MediaPart), typeof(MainWindow),
-            new FrameworkPropertyMetadata(default(MediaPart?), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+            new FrameworkPropertyMetadata(default(MediaPart?), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                (o, args) => ((MainWindow)o).UpdateSelectedPartShortcuts()));
 
         public MediaPart? SelectedMediaPart {
             get { return (MediaPart?)GetValue(SelectedMediaPartProperty); }
@@ -160,6 +161,43 @@ namespace Thumbnify {
             get { return (bool)GetValue(ShowInOutOverlayProperty); }
             set { SetValue(ShowInOutOverlayProperty, value); }
         }
+
+        #region ShortcutInfo
+
+        public static readonly DependencyProperty ShortcutsProperty = DependencyProperty.Register(
+            nameof(Shortcuts), typeof(ObservableCollection<ShortcutData>), typeof(MainWindow),
+            new PropertyMetadata(default(ObservableCollection<ShortcutData>)));
+
+        public ObservableCollection<ShortcutData> Shortcuts {
+            get { return (ObservableCollection<ShortcutData>)GetValue(ShortcutsProperty); }
+            set { SetValue(ShortcutsProperty, value); }
+        }
+
+        private readonly ObservableCollection<ShortcutData> _defaultShortcuts = new() {
+            new("TimelinePlay", new Shortcut("space")),
+            new("TimelineMute", new Shortcut("M")),
+            new("TimelineBackward", new Shortcut("Ctrl", "Shift", "\u2190"), new Shortcut("Shift", "\u2190"),
+                new Shortcut("\u2190")),
+            new("TimelineForward", new Shortcut("Ctrl", "Shift", "\u2192"), new Shortcut("Shift", "\u2192"),
+                new Shortcut("\u2192")),
+            new("TimelinePrevFrame", new Shortcut(",")),
+            new("TimelineNextFrame", new Shortcut(".")),
+        };
+
+        private readonly ObservableCollection<ShortcutData> _mediaShortcuts = new() {
+            new("TimelinePrevPart", new Shortcut("\u2191")),
+            new("TimelineNextPart", new Shortcut("\u2193")),
+            new("TimelinePrevMedia", new Shortcut("Ctrl", "Shift", "\u2191")),
+            new("TimelineNextMedia", new Shortcut("Ctrl", "Shift", "\u2193"))
+        };
+
+        private readonly ObservableCollection<ShortcutData> _timelineShortcuts = new() {
+            new("TimelineDrag", new Shortcut(MouseButton.Left)),
+            new("TimelineIn", new Shortcut("I")),
+            new("TimelineOut", new Shortcut("O"))
+        };
+
+        #endregion
 
         public MainWindow() {
             Config = new Config();
@@ -186,6 +224,7 @@ namespace Thumbnify {
             Media.SortDescriptions.Add(new SortDescription(nameof(MediaSource.Date), ListSortDirection.Descending));
 
             UploadQueue = new();
+            Shortcuts = _defaultShortcuts;
 
             InitializeCommandBindings();
             InitializeComponent();
@@ -545,6 +584,7 @@ namespace Thumbnify {
                 }
 
                 SelectionLength = SelectionEnd - SelectionStart;
+                UpdateInOutShortcuts();
             }, MediaSelected_CanExecetute));
 
             CommandBindings.Add(new(SetOut, (_, _) => {
@@ -562,6 +602,7 @@ namespace Thumbnify {
                 }
 
                 SelectionLength = SelectionEnd - SelectionStart;
+                UpdateInOutShortcuts();
             }, MediaSelected_CanExecetute));
 
             CommandBindings.Add(new(ClearIn, (_, _) => {
@@ -574,6 +615,7 @@ namespace Thumbnify {
                 }
 
                 SelectionLength = SelectionEnd - SelectionStart;
+                UpdateInOutShortcuts();
             }, MediaSelected_CanExecetute));
 
             CommandBindings.Add(new(ClearOut, (_, _) => {
@@ -586,6 +628,7 @@ namespace Thumbnify {
                 }
 
                 SelectionLength = SelectionEnd - SelectionStart;
+                UpdateInOutShortcuts();
             }, MediaSelected_CanExecetute));
 
             CommandBindings.Add(new(ClearInOut, (_, _) => {
@@ -595,6 +638,7 @@ namespace Thumbnify {
                 SelectionEnd = Player.Duration;
                 SelectionVisible = false;
                 SelectionLength = Player.Duration;
+                UpdateInOutShortcuts();
             }, MediaSelected_CanExecetute));
 
             CommandBindings.Add(new(CreateMediaPart, (_, _) => { CreateMediaPartFromSelection(); },
@@ -829,5 +873,100 @@ namespace Thumbnify {
             dlg.Owner = this;
             dlg.Show();
         }
+
+        #region Shortcut Infobar
+
+        private void MainWindow_OnMouseMove(object sender, MouseEventArgs e) {
+            if (Shortcuts != _defaultShortcuts) {
+                Shortcuts = _defaultShortcuts;
+            }
+        }
+
+        private void MediaList_OnMouseMove(object sender, MouseEventArgs e) {
+            e.Handled = true;
+            if (Shortcuts != _mediaShortcuts) {
+                Shortcuts = _mediaShortcuts;
+            }
+        }
+
+        private void Timeline_OnMouseMove(object sender, MouseEventArgs e) {
+            e.Handled = true;
+            if (Shortcuts != _timelineShortcuts) {
+                Shortcuts = _timelineShortcuts;
+            }
+        }
+
+        private void UpdateSelectedPartShortcuts() {
+            var dragPart = _timelineShortcuts.FirstOrDefault(x => x.Description == "TimelineItemDrag");
+            var moveForward = _timelineShortcuts.FirstOrDefault(x => x.Description == "TimelineMoveForward");
+            var moveBackward = _timelineShortcuts.FirstOrDefault(x => x.Description == "TimelineMoveBackward");
+
+            if (SelectedMediaPart == null) {
+                if (dragPart != null) {
+                    _timelineShortcuts.Remove(dragPart);
+                }
+
+                if (moveForward != null) {
+                    _timelineShortcuts.Remove(moveForward);
+                }
+
+                if (moveBackward != null) {
+                    _timelineShortcuts.Remove(moveBackward);
+                }
+            } else {
+                if (dragPart == null) {
+                    _timelineShortcuts.Insert(1, new ShortcutData("TimelineItemDrag", new Shortcut(MouseButton.Right)));
+                }
+
+                if (moveBackward == null) {
+                    _timelineShortcuts.Insert(2,
+                        new ShortcutData("TimelineMoveBackward", new Shortcut("Alt", "Shift", "\u2190"),
+                            new Shortcut("Alt", "\u2190")));
+                }
+
+                if (moveForward == null) {
+                    _timelineShortcuts.Insert(3,
+                        new ShortcutData("TimelineMoveForward", new Shortcut("Alt", "Shift", "\u2192"),
+                            new Shortcut("Alt", "\u2192")));
+                }
+            }
+        }
+
+        private void UpdateInOutShortcuts() {
+            var @in = _timelineShortcuts.FirstOrDefault(x => x.Description == "TimelineIn");
+            var clearIn = _timelineShortcuts.FirstOrDefault(x => x.Description == "TimelineClearIn");
+            var @out = _timelineShortcuts.FirstOrDefault(x => x.Description == "TimelineOut");
+            var clearOut = _timelineShortcuts.FirstOrDefault(x => x.Description == "TimelineClearOut");
+            var createPart = _timelineShortcuts.FirstOrDefault(x => x.Description == "TimelineCreatePart");
+
+            if (SelectionVisible) {
+                if (clearIn == null) {
+                    _timelineShortcuts.Insert(_timelineShortcuts.IndexOf(@in) + 1, new ShortcutData("TimelineClearIn", new Shortcut("Alt", "I")));
+                }
+
+                if (clearOut == null) {
+                    _timelineShortcuts.Insert(_timelineShortcuts.IndexOf(@out)+1,new ShortcutData("TimelineClearOut", new Shortcut("Alt","O")));
+                }
+
+                if (createPart == null) {
+                    _timelineShortcuts.Insert(_timelineShortcuts.IndexOf(@out) + 2,
+                        new ShortcutData("TimelineCreatePart", new Shortcut("Enter")));
+                }
+            } else {
+                if (clearIn != null) {
+                    _timelineShortcuts.Remove(clearIn);
+                }
+
+                if (clearOut != null) {
+                    _timelineShortcuts.Remove(clearOut);
+                }
+
+                if (createPart != null) {
+                    _timelineShortcuts.Remove(createPart);
+                }
+            }
+        }
+
+        #endregion
     }
 }

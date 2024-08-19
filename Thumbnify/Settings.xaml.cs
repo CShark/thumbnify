@@ -45,7 +45,7 @@ namespace Thumbnify {
         }
 
         private void SelectGraph_OnClick(object sender, RoutedEventArgs e) {
-            var result = LoadSaveDialog.ShowOpenDialog(this, App.Settings.Processing);
+            var result = LoadSaveDialog.ShowOpenDialog(this, App.Settings.Processing.Where(x => x.RequiresMediaPart));
 
             if (result != null) {
                 Config.DefaultProcessing = result.Name;

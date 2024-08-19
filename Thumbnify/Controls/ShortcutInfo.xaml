@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Thumbnify.Controls"
              xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
              xmlns:converter="clr-namespace:Thumbnify.Converter"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
              mc:Ignorable="d"
              d:DesignHeight="24" d:DesignWidth="800">
     <UserControl.Resources>
@@ -14,37 +15,76 @@
 
     <StackPanel Orientation="Horizontal"
                 DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:ShortcutInfo}}">
-        <StackPanel Orientation="Horizontal" Visibility="{Binding Key, Converter={StaticResource HideWhenNull}}">
-            <Border Padding="4" BorderThickness="1" BorderBrush="{StaticResource ControlForegroundDark}" CornerRadius="3"
-                    VerticalAlignment="Center">
-                <TextBlock Text="{Binding Key}" VerticalAlignment="Center" ClipToBounds="False" FontSize="10"
-                           Foreground="{StaticResource ControlForegroundDark}" />
-            </Border>
-            <TextBlock VerticalAlignment="Center" Foreground="{StaticResource ControlForegroundDark}" Margin="4,0,0,0"
-                       Visibility="{Binding MouseButton, Converter={StaticResource HideWhenNull}}">
-                +
-            </TextBlock>
-        </StackPanel>
-        <ContentPresenter Content="{Binding MouseButton}">
-            <ContentPresenter.ContentTemplate>
-                <DataTemplate DataType="{x:Type MouseButton}">
-                    <wpf:MaterialIcon x:Name="icon" Margin="0" Foreground="{StaticResource ControlForegroundDark}" />
+        <ItemsControl ItemsSource="{Binding Shortcuts}" d:ItemsSource="{d:SampleData ItemCount=2}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type local:Shortcut}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="separator" Foreground="{StaticResource ControlForegroundDark}"
+                                   VerticalAlignment="Center" Margin="0,0,5,0">
+                            ,
+                        </TextBlock>
+
+                        <ItemsControl ItemsSource="{Binding Keys}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type system:String}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Padding="4" BorderThickness="1"
+                                                BorderBrush="{StaticResource ControlForegroundDark}"
+                                                CornerRadius="3" Margin="2,0"
+                                                VerticalAlignment="Center" MinWidth="24">
+                                            <TextBlock Text="{Binding}"
+                                                       Foreground="{StaticResource ControlForegroundDark}"
+                                                       VerticalAlignment="Center" FontSize="10"
+                                                       HorizontalAlignment="Center">
+                                            </TextBlock>
+                                        </Border>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <ContentPresenter Content="{Binding Mouse}">
+                            <ContentPresenter.ContentTemplate>
+                                <DataTemplate DataType="{x:Type MouseButton}">
+                                    <wpf:MaterialIcon x:Name="icon" Margin="0"
+                                                      Foreground="{StaticResource ControlForegroundDark}" />
+
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding}" Value="{x:Static MouseButton.Left}">
+                                            <Setter TargetName="icon" Property="Kind" Value="MouseLeftClickOutline"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding}" Value="{x:Static MouseButton.Right}">
+                                            <Setter TargetName="icon" Property="Kind" Value="MouseRightClickOutline"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                            <Setter TargetName="icon" Property="Visibility" Value="Collapsed"></Setter>
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </ContentPresenter.ContentTemplate>
+                        </ContentPresenter>
+                    </StackPanel>
 
                     <DataTemplate.Triggers>
-                        <DataTrigger Binding="{Binding}" Value="{x:Static MouseButton.Left}">
-                            <Setter TargetName="icon" Property="Kind" Value="MouseLeftClickOutline"></Setter>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding}" Value="{x:Static MouseButton.Right}">
-                            <Setter TargetName="icon" Property="Kind" Value="MouseRightClickOutline"></Setter>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding}" Value="{x:Null}">
-                            <Setter TargetName="icon" Property="Visibility" Value="Collapsed"></Setter>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
+                            <Setter TargetName="separator" Property="Visibility" Value="Collapsed"></Setter>
                         </DataTrigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>
-            </ContentPresenter.ContentTemplate>
-        </ContentPresenter>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
 
-        <TextBlock Text="{Binding Description}" Margin="10,0,0,0"  VerticalAlignment="Center" Foreground="{StaticResource ControlForegroundDark}"/>
+        <TextBlock Text="{Binding Description}" Margin="10,0,0,0" VerticalAlignment="Center"
+                   Foreground="{StaticResource ControlForegroundDark}" />
     </StackPanel>
 </UserControl>

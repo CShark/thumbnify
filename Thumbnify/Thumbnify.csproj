@@ -6,8 +6,16 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UseWPF>true</UseWPF>
+		<ApplicationIcon>img\icon.ico</ApplicationIcon>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <None Remove="img\32x32.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="img\icon.ico" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="FlyleafLib.Controls.WPF" Version="1.3.12" />
@@ -29,6 +37,9 @@
 		<PackageReference Include="xFFmpeg.NET" Version="7.2.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Resource Include="img\32x32.png" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<None Update="client_secret.json">

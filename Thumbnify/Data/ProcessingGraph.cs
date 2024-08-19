@@ -61,6 +61,9 @@ namespace Thumbnify.Data {
             set => SetField(ref _logMessages, value);
         }
 
+        [JsonIgnore]
+        public bool RequiresMediaPart => Nodes.Any(x => x is MediaPartInput);
+
         public ProcessingGraph() {
             Nodes.CollectionChanged += (_, args) => {
                 if (args.NewItems != null) {

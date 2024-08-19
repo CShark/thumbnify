@@ -257,15 +257,57 @@
     <value>Ausschnitt Ziehen</value>
   </data>
   <data name="TimelineIn" xml:space="preserve">
-    <value>Start</value>
+    <value>Start Setzen</value>
   </data>
   <data name="TimelineOut" xml:space="preserve">
-    <value>Ende</value>
+    <value>Ende Setzen</value>
   </data>
   <data name="TimelinePlay" xml:space="preserve">
     <value>Wiedergabe</value>
   </data>
   <data name="TimelineAdd" xml:space="preserve">
+    <value>Ausschnitt aus Auswahl</value>
+  </data>
+  <data name="TimelineMute" xml:space="preserve">
+    <value>Stummschalten</value>
+  </data>
+  <data name="TimelineForward" xml:space="preserve">
+    <value>Vorwärts</value>
+  </data>
+  <data name="TimelineBackward" xml:space="preserve">
+    <value>Rückwärts</value>
+  </data>
+  <data name="TimelineNextFrame" xml:space="preserve">
+    <value>Nächstes Frame</value>
+  </data>
+  <data name="TimelinePrevFrame" xml:space="preserve">
+    <value>Vorheriges Frame</value>
+  </data>
+  <data name="TimelineNextMedia" xml:space="preserve">
+    <value>Nächste Mediendatei</value>
+  </data>
+  <data name="TimelineNextPart" xml:space="preserve">
+    <value>Nächster Ausschnitt</value>
+  </data>
+  <data name="TimelinePrevPart" xml:space="preserve">
+    <value>Vorheriger Ausschnitt</value>
+  </data>
+  <data name="TimelinePrevMedia" xml:space="preserve">
+    <value>Vorherige Mediendatei</value>
+  </data>
+  <data name="TimelineMoveForward" xml:space="preserve">
+    <value>Vorwärts Verschieben</value>
+  </data>
+  <data name="TimelineMoveBackward" xml:space="preserve">
+    <value>Rückwärts Verschieben</value>
+  </data>
+  <data name="TimelineClearIn" xml:space="preserve">
+    <value>Start Entfernen</value>
+  </data>
+  <data name="TimelineClearOut" xml:space="preserve">
+    <value>Ende Entfernen</value>
+  </data>
+  <data name="TimelineCreatePart" xml:space="preserve">
     <value>Ausschnitt aus Auswahl</value>
   </data>
 </root>

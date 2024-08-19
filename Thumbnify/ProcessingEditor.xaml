@@ -20,6 +20,7 @@
         xmlns:converters="clr-namespace:Thumbnify.Data.Processing.Converters"
         xmlns:youtube="clr-namespace:Thumbnify.Data.Processing.Youtube"
         xmlns:icons="clr-namespace:Material.Icons;assembly=Material.Icons"
+        xmlns:system="clr-namespace:System;assembly=System.Runtime"
         lex:LocalizeDictionary.DesignCulture="de-DE"
         lex:ResxLocalizationProvider.DefaultAssembly="Thumbnify"
         lex:ResxLocalizationProvider.DefaultDictionary="Controls"
@@ -100,18 +101,24 @@
                 </controls:GraphEditor.ContextMenu>
             </controls:GraphEditor>
 
-            <WrapPanel Grid.Row="1" HorizontalAlignment="Center" Margin="2">
-                <WrapPanel.Resources>
+            <ItemsControl Grid.Row="1" HorizontalAlignment="Center" Margin="2" ItemsSource="{Binding Shortcuts}">
+                <ItemsControl.Resources>
                     <Style TargetType="controls:ShortcutInfo">
                         <Setter Property="VerticalAlignment" Value="Center" />
                         <Setter Property="Margin" Value="15,0" />
                     </Style>
-                </WrapPanel.Resources>
-
-                <controls:ShortcutInfo MouseButton="Left" Key="ALT" Description="{lex:Loc NodeConDelete}"/>
-                <controls:ShortcutInfo MouseButton="Right" Description="{lex:Loc NodeCreate}"/>
-                <controls:ShortcutInfo Key="X" Description="{lex:Loc NodeDelete}"/>
-            </WrapPanel>
+                </ItemsControl.Resources>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type controls:ShortcutData}">
+                        <controls:ShortcutInfo Description="{lex:Loc {Binding Description}}" Shortcuts="{Binding Shortcuts}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Grid>
 
         <Border HorizontalAlignment="Left" CornerRadius="0,10,10,0" VerticalAlignment="Center"

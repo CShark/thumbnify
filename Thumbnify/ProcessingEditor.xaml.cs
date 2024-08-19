@@ -46,6 +46,14 @@ namespace Thumbnify {
             set { SetValue(GraphProperty, value); }
         }
 
+        public static readonly DependencyProperty ShortcutsProperty = DependencyProperty.Register(
+            nameof(Shortcuts), typeof(ObservableCollection<ShortcutData>), typeof(ProcessingEditor), new PropertyMetadata(default(ObservableCollection<ShortcutData>)));
+
+        public ObservableCollection<ShortcutData> Shortcuts {
+            get { return (ObservableCollection<ShortcutData>)GetValue(ShortcutsProperty); }
+            set { SetValue(ShortcutsProperty, value); }
+        }
+
         public ICommand AddNode { get; }
         public ICommand CreateParameter { get; }
 
@@ -109,6 +117,12 @@ namespace Thumbnify {
             }));
 
             Graph = new();
+
+            Shortcuts = new() {
+                new("NodeConDelete", new Shortcut(MouseButton.Left, "ALT")),
+                new("NodeCreate", new Shortcut(MouseButton.Right)),
+                new("NodeDelete", new Shortcut("X"))
+            };
 
             InitializeComponent();
         }

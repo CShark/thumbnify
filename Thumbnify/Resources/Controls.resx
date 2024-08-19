@@ -268,4 +268,46 @@
   <data name="TimelineAdd" xml:space="preserve">
     <value>Media Part from Selection</value>
   </data>
+  <data name="TimelineMute" xml:space="preserve">
+    <value>Mute</value>
+  </data>
+  <data name="TimelineForward" xml:space="preserve">
+    <value>Forward</value>
+  </data>
+  <data name="TimelineBackward" xml:space="preserve">
+    <value>Backward</value>
+  </data>
+  <data name="TimelineNextFrame" xml:space="preserve">
+    <value>Next Frame</value>
+  </data>
+  <data name="TimelinePrevFrame" xml:space="preserve">
+    <value>Previous Frame</value>
+  </data>
+  <data name="TimelineNextPart" xml:space="preserve">
+    <value>Next Media Part</value>
+  </data>
+  <data name="TimelineNextMedia" xml:space="preserve">
+    <value>Next Media File</value>
+  </data>
+  <data name="TimelinePrevPart" xml:space="preserve">
+    <value>Previous Media Part</value>
+  </data>
+  <data name="TimelinePrevMedia" xml:space="preserve">
+    <value>Previous Media File</value>
+  </data>
+  <data name="TimelineMoveForward" xml:space="preserve">
+    <value>Move Part Forward</value>
+  </data>
+  <data name="TimelineMoveBackward" xml:space="preserve">
+    <value>Move Part Backward</value>
+  </data>
+  <data name="TimelineClearIn" xml:space="preserve">
+    <value>Clear In</value>
+  </data>
+  <data name="TimelineClearOut" xml:space="preserve">
+    <value>Clear Out</value>
+  </data>
+  <data name="TimelineCreatePart" xml:space="preserve">
+    <value>Create Part from Selection</value>
+  </data>
 </root>

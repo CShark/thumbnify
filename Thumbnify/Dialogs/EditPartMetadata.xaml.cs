@@ -46,15 +46,16 @@ namespace Thumbnify.Dialogs {
         private void OpenPreset_OnClick(object sender, RoutedEventArgs e) {
             ProcessingGraph? result2 = null;
 
-            var result = LoadSaveDialog.ShowOpenDialog(this, App.Settings.Processing, null, async () => {
-                var dlg = new ProcessingEditor();
-                dlg.Owner = this;
-                dlg.ShowDialog();
+            var result = LoadSaveDialog.ShowOpenDialog(this, App.Settings.Processing.Where(x => x.RequiresMediaPart),
+                null, async () => {
+                    var dlg = new ProcessingEditor();
+                    dlg.Owner = this;
+                    dlg.ShowDialog();
 
-                result2 = dlg.Graph;
-                result2.Name = "<Custom>";
-                return true;
-            });
+                    result2 = dlg.Graph;
+                    result2.Name = "<Custom>";
+                    return true;
+                });
 
             if (result2 != null) result = result2;
 

@@ -29,6 +29,7 @@
             <Style TargetType="Window" x:Key="Dark">
                 <Setter Property="Background" Value="{StaticResource WindowBackground}" />
                 <Setter Property="Foreground" Value="{StaticResource ControlForeground}" />
+                <Setter Property="Icon" Value="pack://application:,,,/Thumbnify;component/img/32x32.png"/>
             </Style>
 
             <Style TargetType="Window" BasedOn="{StaticResource Dark}" />

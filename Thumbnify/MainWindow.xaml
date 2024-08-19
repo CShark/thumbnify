@@ -21,6 +21,7 @@
         mc:Ignorable="d"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         WindowState="Maximized"
+        MouseMove="MainWindow_OnMouseMove"
         Focusable="True"
         Title="{lex:Loc AppName}" Height="600" Width="1000">
     <Window.Resources>
@@ -131,6 +132,7 @@
                                    SelectionChanged="MediaList_OnSelectionChanged"
                                    IsSynchronizedWithCurrentItem="True" Focusable="False"
                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                   MouseMove="MediaList_OnMouseMove"
                                    SelectedItem="{Binding SelectedMedia}" d:ItemsSource="{d:SampleData ItemCount=2}">
 
                 <ListBox.ItemTemplate>
@@ -221,9 +223,11 @@
 
                             <Grid.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem Header="{lex:Loc DeleteMedia}" Command="{x:Static local:MainWindow.DeleteMedia}" CommandParameter="{Binding}">
+                                    <MenuItem Header="{lex:Loc DeleteMedia}"
+                                              Command="{x:Static local:MainWindow.DeleteMedia}"
+                                              CommandParameter="{Binding}">
                                         <MenuItem.Icon>
-                                            <mi:MaterialIcon Kind="Delete" Margin="0"/>
+                                            <mi:MaterialIcon Kind="Delete" Margin="0" />
                                         </MenuItem.Icon>
                                     </MenuItem>
                                 </ContextMenu>
@@ -250,11 +254,11 @@
                     <ColumnDefinition Width="250" MinWidth="250"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <wpf:FlyleafHost Player="{Binding Player}" AttachedDragMove="None" KeyBindings="None"
+                <wpf:FlyleafHost Player="{Binding Player}" AttachedDragMove="None" KeyBindings="None" IsHitTestVisible="False"
                                  ToggleFullScreenOnDoubleClick="None" OpenOnDrop="None" MouseBindings="None">
                 </wpf:FlyleafHost>
 
-                <Grid Background="{StaticResource WindowBackground}"
+                <Grid Background="{StaticResource WindowBackground}" IsHitTestVisible="False"
                       Visibility="{Binding ShowInOutOverlay, Converter={StaticResource BoolToVis}}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -506,7 +510,7 @@
                 </Grid>
             </Grid>
 
-            <Grid Grid.Row="3" HorizontalAlignment="Stretch" ClipToBounds="True"
+            <Grid Grid.Row="3" HorizontalAlignment="Stretch" ClipToBounds="True" MouseMove="Timeline_OnMouseMove"
                   Background="{StaticResource ControlBackgroundLight}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
@@ -580,21 +584,24 @@
                         MouseLeave="DragWaveform_OnMouseLeave" x:Name="DragWaveform" />
             </Grid>
 
-            <WrapPanel Grid.Row="4" HorizontalAlignment="Center" Margin="2">
-                <WrapPanel.Resources>
+            <ItemsControl Grid.Row="4" HorizontalAlignment="Center" Margin="2" ItemsSource="{Binding Shortcuts}">
+                <ItemsControl.Resources>
                     <Style TargetType="controls:ShortcutInfo">
                         <Setter Property="VerticalAlignment" Value="Center" />
                         <Setter Property="Margin" Value="15,0" />
                     </Style>
-                </WrapPanel.Resources>
-
-                <controls:ShortcutInfo MouseButton="Left" Description="{lex:Loc TimelineDrag}" />
-                <controls:ShortcutInfo MouseButton="Right" Description="{lex:Loc TimelineItemDrag}" />
-                <controls:ShortcutInfo Key="I" Description="{lex:Loc TimelineIn}" />
-                <controls:ShortcutInfo Key="O" Description="{lex:Loc TimelineOut}" />
-                <controls:ShortcutInfo Key="Enter" Description="{lex:Loc TimelineAdd}" />
-                <controls:ShortcutInfo Key="Space" Description="{lex:Loc TimelinePlay}" />
-            </WrapPanel>
+                </ItemsControl.Resources>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type controls:ShortcutData}">
+                        <controls:ShortcutInfo Shortcuts="{Binding Shortcuts}" Description="{lex:Loc {Binding Description}}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Grid>
     </Grid>
 </Window>
