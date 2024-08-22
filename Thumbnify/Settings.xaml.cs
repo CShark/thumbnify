@@ -24,9 +24,8 @@ namespace Thumbnify {
     /// </summary>
     public partial class Settings : Window {
         public Config Config { get; set; }
-        public static RoutedUICommand DeleteParam { get; } = new();
-        public static RoutedUICommand MoveParamUp { get; } = new();
-        public static RoutedUICommand MoveParamDown { get; } = new();
+
+        public static RoutedUICommand RemoveStaticGraph { get; } = new();
 
         public Settings(Config config) {
             Config = config;
@@ -34,6 +33,10 @@ namespace Thumbnify {
         }
 
         public Settings() {
+            CommandBindings.Add(new(RemoveStaticGraph, (_, e) => {
+                Config.StaticGraphs.Remove(e.Parameter as string);
+            }));
+
             InitializeComponent();
         }
 
@@ -49,6 +52,14 @@ namespace Thumbnify {
 
             if (result != null) {
                 Config.DefaultProcessing = result.Name;
+            }
+        }
+
+        private void AddGraph_OnClick(object sender, RoutedEventArgs e) {
+            var result = LoadSaveDialog.ShowOpenDialog(this, App.Settings.Processing.Where(x => !x.RequiresMediaPart));
+
+            if (result != null) {
+                Config.StaticGraphs.Add(result.Name);
             }
         }
     }

@@ -310,4 +310,10 @@
   <data name="TimelineCreatePart" xml:space="preserve">
     <value>Create Part from Selection</value>
   </data>
+  <data name="GraphAdd" xml:space="preserve">
+    <value>Add Graph</value>
+  </data>
+  <data name="GraphStatic" xml:space="preserve">
+    <value>Static Graphs</value>
+  </data>
 </root>

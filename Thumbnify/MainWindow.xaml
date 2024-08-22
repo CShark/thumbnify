@@ -254,7 +254,8 @@
                     <ColumnDefinition Width="250" MinWidth="250"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <wpf:FlyleafHost Player="{Binding Player}" AttachedDragMove="None" KeyBindings="None" IsHitTestVisible="False"
+                <wpf:FlyleafHost Player="{Binding Player}" AttachedDragMove="None" KeyBindings="None"
+                                 IsHitTestVisible="False"
                                  ToggleFullScreenOnDoubleClick="None" OpenOnDrop="None" MouseBindings="None">
                 </wpf:FlyleafHost>
 
@@ -293,24 +294,26 @@
                                            ItemsSource="{Binding UploadQueue}"
                                            d:ItemsSource="{d:SampleData ItemCount=2}">
                         <ListBox.ItemTemplate>
-                            <DataTemplate DataType="{x:Type data:MediaPart}">
+                            <DataTemplate DataType="{x:Type data:QueueItemStatus}">
                                 <StackPanel>
-                                    <TextBlock Text="{Binding Parent.Name}"></TextBlock>
-                                    <TextBlock>
-                                        <TextBlock.Text>
-                                            <MultiBinding StringFormat="{}{0}: {1}">
-                                                <Binding Path="Name" />
-                                                <Binding Path="Metadata.Name" />
-                                            </MultiBinding>
-                                        </TextBlock.Text>
-                                    </TextBlock>
-                                    <TextBlock>Nachbearbeitung:</TextBlock>
-                                    <TextBlock Text="{Binding Metadata.ProcessingGraph.Name}"></TextBlock>
+                                    <StackPanel x:Name="MediaInfo">
+                                        <TextBlock Text="{Binding MediaPart.Parent.Name}"></TextBlock>
+                                        <TextBlock>
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0}: {1}">
+                                                    <Binding Path="Name" />
+                                                    <Binding Path="Metadata.Name" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                        <TextBlock>Nachbearbeitung:</TextBlock>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Graph.Name}"></TextBlock>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
                                                 Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}, Path=IsSelected, Converter={StaticResource BoolToVis}}">
                                         <Button Style="{StaticResource FirstButton}"
                                                 Command="{x:Static thumbnify:MainWindow.EditMediaPart}"
-                                                CommandParameter="{Binding}">
+                                                CommandParameter="{Binding MediaPart}">
                                             <mi:MaterialIcon Kind="Edit" />
                                         </Button>
                                         <Button Style="{StaticResource LastButton}"
@@ -320,24 +323,31 @@
                                         </Button>
                                     </StackPanel>
                                 </StackPanel>
+
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding MediaPart}" Value="{x:Null}">
+                                        <Setter TargetName="MediaInfo" Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </controls:ListBoxNoNav>
 
-                    <WrapPanel Grid.Row="2" Margin="4" HorizontalAlignment="Center">
-                        <WrapPanel.Resources>
-                            <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
-                                <Setter Property="Margin" Value="3,0"></Setter>
-                            </Style>
-                        </WrapPanel.Resources>
+                    <StackPanel Grid.Row="2" Margin="4" HorizontalAlignment="Center" Orientation="Horizontal">
 
-                        <Button Click="StartProcessing_OnClick">
-                            <WrapPanel>
+                        <Button Click="StartProcessing_OnClick" Style="{StaticResource FirstButton}">
+                            <WrapPanel Margin="4,0">
                                 <mi:MaterialIcon Kind="ClockStart" />
-                                <TextBlock VerticalAlignment="Center" Text="{lex:Loc QueueStart}"></TextBlock>
+                                <TextBlock VerticalAlignment="Center" Text="{lex:Loc QueueStart}"/>
                             </WrapPanel>
                         </Button>
-                    </WrapPanel>
+                        <Button Click="AddStaticGraph_OnClick" Style="{StaticResource LastButton}">
+                            <WrapPanel Margin="4,0">
+                                <mi:MaterialIcon Kind="Graph" />
+                                <TextBlock VerticalAlignment="Center" Text="{lex:Loc GraphAdd}"/>
+                            </WrapPanel>
+                        </Button>
+                    </StackPanel>
                 </Grid>
                 <GridSplitter Width="2" Grid.Column="1" HorizontalAlignment="Left"></GridSplitter>
             </Grid>
@@ -598,7 +608,8 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type controls:ShortcutData}">
-                        <controls:ShortcutInfo Shortcuts="{Binding Shortcuts}" Description="{lex:Loc {Binding Description}}"/>
+                        <controls:ShortcutInfo Shortcuts="{Binding Shortcuts}"
+                                               Description="{lex:Loc {Binding Description}}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

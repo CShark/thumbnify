@@ -19,15 +19,23 @@ namespace Thumbnify.Data {
             
             var json = JsonConvert.SerializeObject(graph);
             Graph = JsonConvert.DeserializeObject<ProcessingGraph>(json);
+
+            Name = mediaPart.Parent.Name;
         }
 
         public QueueItemStatus(ProcessingGraph graph) {
             var json = JsonConvert.SerializeObject(graph);
             Graph = JsonConvert.DeserializeObject<ProcessingGraph>(json);
+
+            Name = graph.Name;
         }
 
         public MediaPart? MediaPart { get; }
 
         public ProcessingGraph Graph { get; }
+
+        public string Name { get; }
+
+        public bool AutomaticallyCreated { get; set; }
     }
 }

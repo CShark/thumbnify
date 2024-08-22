@@ -5,6 +5,7 @@ using FlyleafLib.MediaPlayer;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
 using System.Windows.Media;
 using Config = FlyleafLib.Config;
@@ -12,6 +13,7 @@ using Path = System.IO.Path;
 using Newtonsoft.Json;
 using Thumbnify.Controls;
 using Thumbnify.Data;
+using Thumbnify.Data.Processing;
 using Thumbnify.Dialogs;
 using Thumbnify.NAudio;
 using Thumbnify.Tools;
@@ -127,11 +129,11 @@ namespace Thumbnify {
         }
 
         public static readonly DependencyProperty UploadQueueProperty = DependencyProperty.Register(
-            nameof(UploadQueue), typeof(ObservableCollection<MediaPart>), typeof(MainWindow),
-            new PropertyMetadata(default(ObservableCollection<MediaPart>)));
+            nameof(UploadQueue), typeof(ObservableCollection<QueueItemStatus>), typeof(MainWindow),
+            new PropertyMetadata(default(ObservableCollection<QueueItemStatus>)));
 
-        public ObservableCollection<MediaPart> UploadQueue {
-            get { return (ObservableCollection<MediaPart>)GetValue(UploadQueueProperty); }
+        public ObservableCollection<QueueItemStatus> UploadQueue {
+            get { return (ObservableCollection<QueueItemStatus>)GetValue(UploadQueueProperty); }
             set { SetValue(UploadQueueProperty, value); }
         }
 
@@ -260,6 +262,14 @@ namespace Thumbnify {
                     // ignored
                 }
             });
+
+            foreach (var item in App.Settings.StaticGraphs) {
+                var graph = App.Settings.Processing.FirstOrDefault(x => x.Name == item);
+
+                if (graph != null) {
+                    UploadQueue.Add(new QueueItemStatus(graph) { AutomaticallyCreated = true });
+                }
+            }
         }
 
         private void OpenSettings_OnClick(object sender, RoutedEventArgs e) {
@@ -271,6 +281,19 @@ namespace Thumbnify {
             ScanMedia();
 
             SelectedMedia = App.Settings.Media.MaxBy(x => x.Date);
+
+            var autoItems = UploadQueue.Where(x => x.AutomaticallyCreated && x.MediaPart == null).ToList();
+            foreach (var item in autoItems) {
+                UploadQueue.Remove(item);
+            }
+
+            foreach (var item in App.Settings.StaticGraphs.Reverse()) {
+                var graph = App.Settings.Processing.FirstOrDefault(x => x.Name == item);
+
+                if (graph != null) {
+                    UploadQueue.Insert(0, new QueueItemStatus(graph) { AutomaticallyCreated = true });
+                }
+            }
         }
 
         private void ScanMedia() {
@@ -499,8 +522,9 @@ namespace Thumbnify {
         private void DeleteMediaPart_OnExecuted(object sender, ExecutedRoutedEventArgs e) {
             if (e.Parameter is MediaPart part) {
                 if (MessageBox.ShowDialog(this, "deleteMediaPart", MessageBoxButton.YesNo) == true) {
+                    var queueItem = UploadQueue.FirstOrDefault(x => x.MediaPart == part);
                     part.Parent.Parts.Remove(part);
-                    UploadQueue.Remove(part);
+                    UploadQueue.Remove(queueItem);
                 }
             }
         }
@@ -523,7 +547,7 @@ namespace Thumbnify {
             dlg.StartProcessing(UploadQueue);
             dlg.ShowDialog();
 
-            var done = UploadQueue.Where(x => x.ProcessingCompleted).ToList();
+            var done = UploadQueue.Where(x => x.Graph.GraphState == ENodeStatus.Completed).ToList();
             foreach (var item in done) {
                 UploadQueue.Remove(item);
             }
@@ -534,23 +558,23 @@ namespace Thumbnify {
 
             CommandBindings.Add(new CommandBinding(AddToQueue, (_, args) => {
                 if (args.Parameter is MediaPart part) {
-                    UploadQueue.Add(part);
+                    UploadQueue.Add(new(part));
                 }
             }, (_, args) => {
                 var param = args.Parameter as MediaPart;
                 args.CanExecute = false;
 
-                if (param != null && !UploadQueue.Contains(param)) {
+                if (param != null && !UploadQueue.Any(x => x.MediaPart == param)) {
                     args.CanExecute = true;
                 }
             }));
 
             CommandBindings.Add(new(DelFromQueue, (_, args) => {
-                if (args.Parameter is MediaPart part) {
-                    UploadQueue.Remove(part);
+                if (args.Parameter is QueueItemStatus queueItem) {
+                    UploadQueue.Remove(queueItem);
                 }
             }, (_, args) => {
-                var param = args.Parameter as MediaPart;
+                var param = args.Parameter as QueueItemStatus;
                 args.CanExecute = false;
 
                 if (param != null && UploadQueue.Contains(param)) {
@@ -797,7 +821,7 @@ namespace Thumbnify {
 
                 if (dlg.ShowDialog() == true) {
                     SelectedMedia.Parts.Add(part);
-                    UploadQueue.Add(part);
+                    UploadQueue.Add(new(part));
                     App.SaveSettings();
                 }
             }
@@ -941,11 +965,13 @@ namespace Thumbnify {
 
             if (SelectionVisible) {
                 if (clearIn == null) {
-                    _timelineShortcuts.Insert(_timelineShortcuts.IndexOf(@in) + 1, new ShortcutData("TimelineClearIn", new Shortcut("Alt", "I")));
+                    _timelineShortcuts.Insert(_timelineShortcuts.IndexOf(@in) + 1,
+                        new ShortcutData("TimelineClearIn", new Shortcut("Alt", "I")));
                 }
 
                 if (clearOut == null) {
-                    _timelineShortcuts.Insert(_timelineShortcuts.IndexOf(@out)+1,new ShortcutData("TimelineClearOut", new Shortcut("Alt","O")));
+                    _timelineShortcuts.Insert(_timelineShortcuts.IndexOf(@out) + 1,
+                        new ShortcutData("TimelineClearOut", new Shortcut("Alt", "O")));
                 }
 
                 if (createPart == null) {
@@ -968,5 +994,13 @@ namespace Thumbnify {
         }
 
         #endregion
+
+        private void AddStaticGraph_OnClick(object sender, RoutedEventArgs e) {
+            var result = LoadSaveDialog.ShowOpenDialog(this, App.Settings.Processing.Where(x => !x.RequiresMediaPart));
+
+            if (result != null) {
+                UploadQueue.Add(new(result));
+            }
+        }
     }
 }

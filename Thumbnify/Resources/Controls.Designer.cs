@@ -223,6 +223,15 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Add Graph ähnelt.
+        /// </summary>
+        internal static string GraphAdd {
+            get {
+                return ResourceManager.GetString("GraphAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Graph Editor ähnelt.
         /// </summary>
         internal static string GraphEditor {
@@ -237,6 +246,15 @@ namespace Thumbnify.Resources {
         internal static string GraphParameters {
             get {
                 return ResourceManager.GetString("GraphParameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Static Graphs ähnelt.
+        /// </summary>
+        internal static string GraphStatic {
+            get {
+                return ResourceManager.GetString("GraphStatic", resourceCulture);
             }
         }
         

@@ -41,7 +41,7 @@
                         </Grid.ColumnDefinitions>
 
                         <StackPanel>
-                            <TextBlock Text="{Binding MediaPart.Parent.Name}" />
+                            <TextBlock Text="{Binding Name}" />
                             <TextBlock>
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0}: {1}">

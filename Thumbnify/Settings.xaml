@@ -9,6 +9,7 @@
         xmlns:generic="clr-namespace:System.Collections.Generic;assembly=System.Runtime"
         xmlns:lex="http://wpflocalizeextension.codeplex.com"
         xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+        xmlns:system="clr-namespace:System;assembly=System.Runtime"
         lex:LocalizeDictionary.DesignCulture="de-DE"
         lex:ResxLocalizationProvider.DefaultAssembly="Thumbnify"
         lex:ResxLocalizationProvider.DefaultDictionary="Controls"
@@ -18,10 +19,17 @@
         ResizeMode="NoResize"
         Style="{StaticResource Dark}"
         Title="{lex:Loc Settings}" Height="450" Width="300">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Window.Resources>
+
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
 
         <StackPanel Margin="10">
             <TextBlock Text="{lex:Loc ObsPath}"></TextBlock>
@@ -53,5 +61,35 @@
                 </Button>
             </Grid>
         </StackPanel>
+
+        <TextBlock Margin="10,0" Grid.Row="1" Text="{lex:Loc GraphStatic}"/>
+        <ListBox Margin="10" Grid.Row="2" ItemsSource="{Binding Config.StaticGraphs}"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" d:ItemsSource="{d:SampleData}">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type system:String}">
+                    <Grid Height="24">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="24" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="{Binding}" VerticalAlignment="Center" />
+
+                        <Button CommandParameter="{Binding}" Style="{StaticResource SingleButton}" Grid.Column="1"
+                                Command="{x:Static local:Settings.RemoveStaticGraph}"
+                                Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}, Path=IsSelected, Converter={StaticResource BoolToVis}}">
+                            <wpf:MaterialIcon Kind="Delete" Margin="3" />
+                        </Button>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Button Grid.Row="3" Margin="10" Click="AddGraph_OnClick">
+            <StackPanel Orientation="Horizontal">
+                <wpf:MaterialIcon Kind="Add" />
+                <TextBlock Text="{lex:Loc GraphAdd}" VerticalAlignment="Center" />
+            </StackPanel>
+        </Button>
     </Grid>
 </Window>
