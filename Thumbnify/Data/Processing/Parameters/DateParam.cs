@@ -17,12 +17,19 @@ namespace Thumbnify.Data.Processing.Parameters {
                 return Value;
             }
         }
-
+        
         public override ParamType Clone() {
             return new DateParam {
                 Value = Value,
                 Today = Today
             };
+        }
+
+        public DateParam() {
+        }
+
+        public DateParam(DateTime date) {
+            Value = date;
         }
 
         public override void Dispose() {

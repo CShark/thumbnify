@@ -202,4 +202,43 @@
   <data name="yt_cat_44" xml:space="preserve">
     <value>Trailers</value>
   </data>
+  <data name="date_days" xml:space="preserve">
+    <value>Days</value>
+  </data>
+  <data name="date_weeks" xml:space="preserve">
+    <value>Weeks</value>
+  </data>
+  <data name="date_months" xml:space="preserve">
+    <value>Months</value>
+  </data>
+  <data name="date_years" xml:space="preserve">
+    <value>Years</value>
+  </data>
+  <data name="date_week" xml:space="preserve">
+    <value>Start of Week (Sunday)</value>
+  </data>
+  <data name="date_month" xml:space="preserve">
+    <value>Start of Month</value>
+  </data>
+  <data name="date_year" xml:space="preserve">
+    <value>Start of Year</value>
+  </data>
+  <data name="filter_onlyLive" xml:space="preserve">
+    <value>Only Livestreams</value>
+  </data>
+  <data name="filter_onlyVideo" xml:space="preserve">
+    <value>Only Uploads</value>
+  </data>
+  <data name="filter_contain" xml:space="preserve">
+    <value>Contains</value>
+  </data>
+  <data name="filter_noContain" xml:space="preserve">
+    <value>Exclude</value>
+  </data>
+  <data name="filter_before" xml:space="preserve">
+    <value>Before</value>
+  </data>
+  <data name="filter_after" xml:space="preserve">
+    <value>After</value>
+  </data>
 </root>

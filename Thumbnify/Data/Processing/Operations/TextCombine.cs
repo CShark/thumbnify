@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,6 +32,8 @@ namespace Thumbnify.Data.Processing.Operations
             Result.Value = new() {
                 Value = Prefix.Value.Value + Suffix.Value.Value
             };
+
+            Logger.Debug($"Result: {Result.Value.Value}");
 
             return true;
         }

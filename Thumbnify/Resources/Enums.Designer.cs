@@ -61,6 +61,123 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Days ähnelt.
+        /// </summary>
+        internal static string date_days {
+            get {
+                return ResourceManager.GetString("date_days", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Start of Month ähnelt.
+        /// </summary>
+        internal static string date_month {
+            get {
+                return ResourceManager.GetString("date_month", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Months ähnelt.
+        /// </summary>
+        internal static string date_months {
+            get {
+                return ResourceManager.GetString("date_months", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Start of Week (Sunday) ähnelt.
+        /// </summary>
+        internal static string date_week {
+            get {
+                return ResourceManager.GetString("date_week", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Weeks ähnelt.
+        /// </summary>
+        internal static string date_weeks {
+            get {
+                return ResourceManager.GetString("date_weeks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Start of Year ähnelt.
+        /// </summary>
+        internal static string date_year {
+            get {
+                return ResourceManager.GetString("date_year", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Years ähnelt.
+        /// </summary>
+        internal static string date_years {
+            get {
+                return ResourceManager.GetString("date_years", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die After ähnelt.
+        /// </summary>
+        internal static string filter_after {
+            get {
+                return ResourceManager.GetString("filter_after", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Before ähnelt.
+        /// </summary>
+        internal static string filter_before {
+            get {
+                return ResourceManager.GetString("filter_before", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Contains ähnelt.
+        /// </summary>
+        internal static string filter_contain {
+            get {
+                return ResourceManager.GetString("filter_contain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Exclude ähnelt.
+        /// </summary>
+        internal static string filter_noContain {
+            get {
+                return ResourceManager.GetString("filter_noContain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Only Livestreams ähnelt.
+        /// </summary>
+        internal static string filter_onlyLive {
+            get {
+                return ResourceManager.GetString("filter_onlyLive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Only Uploads ähnelt.
+        /// </summary>
+        internal static string filter_onlyVideo {
+            get {
+                return ResourceManager.GetString("filter_onlyVideo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Film &amp; Animation ähnelt.
         /// </summary>
         internal static string yt_cat_01 {

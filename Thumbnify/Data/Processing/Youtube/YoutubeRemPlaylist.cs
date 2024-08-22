@@ -11,16 +11,16 @@ using Thumbnify.Data.Processing.Parameters;
 using Thumbnify.Postprocessing;
 
 namespace Thumbnify.Data.Processing.Youtube {
-    internal class YoutubeAddPlaylist : Node {
+    internal class YoutubeRemPlaylist : Node {
         public Parameter<YoutubeVideoParam> Video { get; } = new("video", true);
 
         public Parameter<YoutubePlaylistParam> Playlist { get; } = new("playlist", true, new());
 
         protected override ENodeType NodeType => ENodeType.Youtube;
-        public static string Id => "youtube_addplaylist";
+        public static string Id => "youtube_remplaylist";
         public override string NodeTypeId => Id;
 
-        public YoutubeAddPlaylist() {
+        public YoutubeRemPlaylist() {
             RegisterParameter(Video);
             RegisterParameter(Playlist);
         }
@@ -38,19 +38,21 @@ namespace Thumbnify.Data.Processing.Youtube {
                 ApplicationName = Assembly.GetExecutingAssembly().GetName().Name,
             });
 
-            foreach (var video in Video.Value.Videos) {
-                var item = new PlaylistItem {
-                    Snippet = new() {
-                        PlaylistId = Playlist.Value.PlaylistId,
-                        ResourceId = new() {
-                            VideoId = video.Id,
-                            Kind = "youtube#video"
-                        }
-                    }
-                };
+            var itemReq = service.PlaylistItems.List(new(["id", "contentDetails"]));
+            itemReq.PlaylistId = Playlist.Value.PlaylistId;
+            var itemIds = new List<string>();
 
-                var req = service.PlaylistItems.Insert(item, "snippet");
-                item = req.ExecuteAsync().Result;
+            do {
+                var items = itemReq.ExecuteAsync().Result;
+                itemIds.AddRange(items.Items.Where(x => Video.Value.Videos.Any(y => y.Id == x.ContentDetails.VideoId))
+                    .Select(x => x.Id));
+                itemReq.PageToken = items.NextPageToken;
+            } while (itemReq.PageToken != null);
+
+
+            foreach (var item in itemIds) {
+                var req = service.PlaylistItems.Delete(item);
+                var result = req.ExecuteAsync().Result;
             }
 
             return true;

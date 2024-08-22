@@ -61,6 +61,7 @@
                       SelectedItem="{Binding SelectedLogMessage}"
                       IsReadOnly="True" AutoGenerateColumns="False" SelectionUnit="FullRow"
                       SelectionChanged="LogMessages_OnSelectionChanged" CanUserSortColumns="False"
+                      VirtualizingPanel.ScrollUnit="Pixel"
                       CanUserReorderColumns="False">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Timestamp" FontFamily="Consolas" CanUserResize="False"

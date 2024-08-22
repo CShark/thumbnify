@@ -54,8 +54,6 @@ namespace Thumbnify.Controls {
 
         private async void YoutubeCredentialsControl_OnCredentialsChanged() {
             var id = Playlist.PlaylistId;
-            Playlist.PlaylistId = "";
-            PlaylistItems.Clear();
 
             var cred = await Playlist.Credentials.ResolveCredentials();
 
@@ -68,20 +66,27 @@ namespace Thumbnify.Controls {
                 var req = service.Playlists.List("snippet");
                 req.Mine = true;
                 PlaylistListResponse lists;
+                var items = new List<Item>();
 
                 do {
                     lists = await req.ExecuteAsync();
 
-                    foreach (var list in lists.Items) {
-                        PlaylistItems.Add(new Item(list.Id, list.Snippet.Title));
-                    }
+                    items.AddRange(lists.Items.Select(list => new Item(list.Id, list.Snippet.Title)));
 
                     req.PageToken = lists.NextPageToken;
                 } while (lists.NextPageToken != null);
 
+
+                PlaylistItems.Clear();
+                foreach (var item in items) {
+                    PlaylistItems.Add(item);
+                }
                 if (PlaylistItems.Any(x => x.Id == id)) {
                     Playlist.PlaylistId = id;
                 }
+            } else {
+                Playlist.PlaylistId = "";
+                PlaylistItems.Clear();
             }
         }
     }

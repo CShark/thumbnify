@@ -268,4 +268,37 @@
   <data name="input_credentials" xml:space="preserve">
     <value>Autorisierung</value>
   </data>
+  <data name="op_dateAdd" xml:space="preserve">
+    <value>Datum Verschieben</value>
+  </data>
+  <data name="param_timespan" xml:space="preserve">
+    <value>Zeitspanne</value>
+  </data>
+  <data name="op_dateFind" xml:space="preserve">
+    <value>Datum Finden</value>
+  </data>
+  <data name="youtube_fetchVideo" xml:space="preserve">
+    <value>Alle Videos</value>
+  </data>
+  <data name="param_videos" xml:space="preserve">
+    <value>Videos</value>
+  </data>
+  <data name="youtube_setStatus" xml:space="preserve">
+    <value>Veröffentlichungsstatus</value>
+  </data>
+  <data name="op_filterPlaylist" xml:space="preserve">
+    <value>Nach Playlist Filtern</value>
+  </data>
+  <data name="op_filterDate" xml:space="preserve">
+    <value>Nach Datum Filtern</value>
+  </data>
+  <data name="op_printVideoList" xml:space="preserve">
+    <value>Videos Auflisten</value>
+  </data>
+  <data name="op_filterPublication" xml:space="preserve">
+    <value>Nach Status Filtern</value>
+  </data>
+  <data name="youtube_remplaylist" xml:space="preserve">
+    <value>Von Playlist entfernen</value>
+  </data>
 </root>

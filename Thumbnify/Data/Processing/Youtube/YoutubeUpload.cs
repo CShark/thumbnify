@@ -138,7 +138,7 @@ namespace Thumbnify.Data.Processing.Youtube {
 
             VideoResult.Value = new YoutubeVideoParam {
                 Credentials = cred,
-                Video = videoResult
+                Videos = [new(videoResult)]
             };
 
             return true;

@@ -295,11 +295,65 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Add to Date ähnelt.
+        /// </summary>
+        internal static string op_dateAdd {
+            get {
+                return ResourceManager.GetString("op_dateAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Find relative Date ähnelt.
+        /// </summary>
+        internal static string op_dateFind {
+            get {
+                return ResourceManager.GetString("op_dateFind", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Filter by Date ähnelt.
+        /// </summary>
+        internal static string op_filterDate {
+            get {
+                return ResourceManager.GetString("op_filterDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Filter by Playlist ähnelt.
+        /// </summary>
+        internal static string op_filterPlaylist {
+            get {
+                return ResourceManager.GetString("op_filterPlaylist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Filter by Status ähnelt.
+        /// </summary>
+        internal static string op_filterPublication {
+            get {
+                return ResourceManager.GetString("op_filterPublication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Combine Path ähnelt.
         /// </summary>
         internal static string op_pathcombine {
             get {
                 return ResourceManager.GetString("op_pathcombine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Print Videolist ähnelt.
+        /// </summary>
+        internal static string op_printVideoList {
+            get {
+                return ResourceManager.GetString("op_printVideoList", resourceCulture);
             }
         }
         
@@ -511,6 +565,15 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Timespan ähnelt.
+        /// </summary>
+        internal static string param_timespan {
+            get {
+                return ResourceManager.GetString("param_timespan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Title ähnelt.
         /// </summary>
         internal static string param_title {
@@ -547,6 +610,15 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Videos ähnelt.
+        /// </summary>
+        internal static string param_videos {
+            get {
+                return ResourceManager.GetString("param_videos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Save Video ähnelt.
         /// </summary>
         internal static string video_save {
@@ -561,6 +633,33 @@ namespace Thumbnify.Resources {
         internal static string youtube_addplaylist {
             get {
                 return ResourceManager.GetString("youtube_addplaylist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Get All Videos ähnelt.
+        /// </summary>
+        internal static string youtube_fetchVideo {
+            get {
+                return ResourceManager.GetString("youtube_fetchVideo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Remove from Playlist ähnelt.
+        /// </summary>
+        internal static string youtube_remplaylist {
+            get {
+                return ResourceManager.GetString("youtube_remplaylist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Privacy Status ähnelt.
+        /// </summary>
+        internal static string youtube_setStatus {
+            get {
+                return ResourceManager.GetString("youtube_setStatus", resourceCulture);
             }
         }
         

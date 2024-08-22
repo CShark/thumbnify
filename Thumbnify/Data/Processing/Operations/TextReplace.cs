@@ -32,8 +32,12 @@ namespace Thumbnify.Data.Processing.Operations {
         }
 
         protected override bool Execute(CancellationToken cancelToken) {
+            var result = ReplaceVariables(Input.Value.Value, RequestParameters());
+
+            Logger.Debug($"Replaced Text: {result}");
+
             Output.Value = new() {
-                Value = ReplaceVariables(Input.Value.Value, RequestParameters())
+                Value = result
             };
 
             return true;

@@ -9,6 +9,7 @@ using Thumbnify.Data.Processing.Converters;
 using Thumbnify.Data.Processing.Files;
 using Thumbnify.Data.Processing.Input;
 using Thumbnify.Data.Processing.Operations;
+using Thumbnify.Data.Processing.Parameters;
 using Thumbnify.Data.Processing.Video;
 using Thumbnify.Data.Processing.Youtube;
 
@@ -40,7 +41,10 @@ namespace Thumbnify.Data.Processing {
             ]),
             new("mnu_youtube", MaterialIconKind.VideoBox, [
                 new(YoutubeUpload.Id, MaterialIconKind.CloudUpload, typeof(YoutubeUpload)),
-                new(YoutubeAddPlaylist.Id, MaterialIconKind.ViewList, typeof(YoutubeAddPlaylist))
+                new(YoutubeAddPlaylist.Id, MaterialIconKind.PlaylistPlus, typeof(YoutubeAddPlaylist)),
+                new(YoutubeRemPlaylist.Id, MaterialIconKind.PlaylistMinus, typeof(YoutubeRemPlaylist)),
+                new(YoutubeSetStatus.Id, MaterialIconKind.Incognito, typeof(YoutubeSetStatus)),
+                new(YoutubeFetchVideos.Id, MaterialIconKind.FormatListGroup, typeof(YoutubeFetchVideos)),
             ]),
             new("mnu_files", MaterialIconKind.Folder, [
                 new(WebDavUpload.Id, MaterialIconKind.CloudUpload, typeof(WebDavUpload))
@@ -53,6 +57,14 @@ namespace Thumbnify.Data.Processing {
                 new(RenderThumbnail.Id, MaterialIconKind.Image, typeof(RenderThumbnail)),
                 new(TextReplace.Id, MaterialIconKind.FormTextbox, typeof(TextReplace)),
                 new(TextCombine.Id, MaterialIconKind.CallMerge, typeof(TextCombine)),
+                null,
+                new(DateAdd.Id, MaterialIconKind.CalendarPlus, typeof(DateAdd)),
+                new(DateFind.Id, MaterialIconKind.CalendarSearch, typeof(DateFind)),
+                null,
+                new(FilterPlaylist.Id, MaterialIconKind.Filter, typeof(FilterPlaylist)),
+                new(FilterPublicationStatus.Id, MaterialIconKind.Filter, typeof(FilterPublicationStatus)),
+                new(FilterVideoDate.Id, MaterialIconKind.Filter, typeof(FilterVideoDate)),
+                new(ListVideos.Id, MaterialIconKind.Bug, typeof(ListVideos)),
             ])
         };
     }
