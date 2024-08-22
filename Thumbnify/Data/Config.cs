@@ -17,7 +17,9 @@ namespace Thumbnify.Data {
         private ObservableCollection<ProcessingGraph> _processing = new();
         private string _defaultProcessing;
         private ObservableCollection<YoutubeCredentials> _youtubeCredentials = new();
-        private ObservableCollection<string> _staticGraphs = new();
+        private ObservableCollection<StaticGraphRef> _staticGraphs = new();
+
+        public string? UILanguage { get; set; }
 
         public string VideoPath {
             get => _videoPath;
@@ -49,7 +51,7 @@ namespace Thumbnify.Data {
             set => SetField(ref _youtubeCredentials, value);
         }
 
-        public ObservableCollection<string> StaticGraphs {
+        public ObservableCollection<StaticGraphRef> StaticGraphs {
             get => _staticGraphs;
             set => SetField(ref _staticGraphs, value);
         }

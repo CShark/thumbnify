@@ -10,6 +10,7 @@
         xmlns:lex="http://wpflocalizeextension.codeplex.com"
         xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
         xmlns:system="clr-namespace:System;assembly=System.Runtime"
+        xmlns:data="clr-namespace:Thumbnify.Data"
         lex:LocalizeDictionary.DesignCulture="de-DE"
         lex:ResxLocalizationProvider.DefaultAssembly="Thumbnify"
         lex:ResxLocalizationProvider.DefaultDictionary="Controls"
@@ -66,17 +67,18 @@
         <ListBox Margin="10" Grid.Row="2" ItemsSource="{Binding Config.StaticGraphs}"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" d:ItemsSource="{d:SampleData}">
             <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type system:String}">
+                <DataTemplate DataType="{x:Type data:StaticGraphRef}">
                     <Grid Height="24">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="24" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="{Binding}" VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding GraphName}" VerticalAlignment="Center" />
 
-                        <Button CommandParameter="{Binding}" Style="{StaticResource SingleButton}" Grid.Column="1"
-                                Command="{x:Static local:Settings.RemoveStaticGraph}"
+                        <Button Command="{x:Static local:Settings.RemoveStaticGraph}" CommandParameter="{Binding}"
+                                Style="{StaticResource SingleButton}"
+                                Grid.Column="1"
                                 Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}, Path=IsSelected, Converter={StaticResource BoolToVis}}">
                             <wpf:MaterialIcon Kind="Delete" Margin="3" />
                         </Button>

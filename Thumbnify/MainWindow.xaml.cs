@@ -264,7 +264,7 @@ namespace Thumbnify {
             });
 
             foreach (var item in App.Settings.StaticGraphs) {
-                var graph = App.Settings.Processing.FirstOrDefault(x => x.Name == item);
+                var graph = App.Settings.Processing.FirstOrDefault(x => x.Name == item.GraphName);
 
                 if (graph != null) {
                     UploadQueue.Add(new QueueItemStatus(graph) { AutomaticallyCreated = true });
@@ -288,7 +288,7 @@ namespace Thumbnify {
             }
 
             foreach (var item in App.Settings.StaticGraphs.Reverse()) {
-                var graph = App.Settings.Processing.FirstOrDefault(x => x.Name == item);
+                var graph = App.Settings.Processing.FirstOrDefault(x => x.Name == item.GraphName);
 
                 if (graph != null) {
                     UploadQueue.Insert(0, new QueueItemStatus(graph) { AutomaticallyCreated = true });

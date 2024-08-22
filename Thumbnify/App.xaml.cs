@@ -41,6 +41,10 @@ namespace Thumbnify {
                 }
             }
 
+            if (Settings.UILanguage != null) {
+                Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(Settings.UILanguage);
+            }
+
             WPFLocalizeExtension.Engine.LocalizeDictionary.Instance.Culture = Thread.CurrentThread.CurrentUICulture;
 
             base.OnStartup(e);

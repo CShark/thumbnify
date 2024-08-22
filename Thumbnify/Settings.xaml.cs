@@ -29,15 +29,14 @@ namespace Thumbnify {
 
         public Settings(Config config) {
             Config = config;
+
+            CommandBindings.Add(new(RemoveStaticGraph,
+                (_, e) => { Config.StaticGraphs.Remove(e.Parameter as StaticGraphRef); }));
+            
             InitializeComponent();
         }
 
-        public Settings() {
-            CommandBindings.Add(new(RemoveStaticGraph, (_, e) => {
-                Config.StaticGraphs.Remove(e.Parameter as string);
-            }));
-
-            InitializeComponent();
+        public Settings() : this(null) {
         }
 
         private void SelectVideoPath_OnClick(object sender, RoutedEventArgs e) {
@@ -59,7 +58,7 @@ namespace Thumbnify {
             var result = LoadSaveDialog.ShowOpenDialog(this, App.Settings.Processing.Where(x => !x.RequiresMediaPart));
 
             if (result != null) {
-                Config.StaticGraphs.Add(result.Name);
+                Config.StaticGraphs.Add(new(result.Name));
             }
         }
     }
