@@ -316,4 +316,7 @@
   <data name="GraphStatic" xml:space="preserve">
     <value>Statische Graphen</value>
   </data>
+  <data name="Today" xml:space="preserve">
+    <value>Heute</value>
+  </data>
 </root>

@@ -21,6 +21,7 @@ namespace Thumbnify.Data.Processing {
                 new(PathInput.Id, MaterialIconKind.Folder, typeof(PathInput)),
                 new(TempPathInput.Id, MaterialIconKind.FolderPound, typeof(TempPathInput)),
                 new(StringInput.Id, MaterialIconKind.FormTextbox, typeof(StringInput)),
+                new(DateInput.Id, MaterialIconKind.Calendar, typeof(DateInput)),
                 new(ThumbnailInput.Id, MaterialIconKind.Image, typeof(ThumbnailInput))
             ]),
             new("mnu_video", MaterialIconKind.MovieOpen, [
