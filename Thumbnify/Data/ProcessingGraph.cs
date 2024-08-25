@@ -210,7 +210,9 @@ namespace Thumbnify.Data {
         public void CancelGraph() {
             _cancelToken.Cancel();
             _openNodes.Clear();
-            GraphState = ENodeStatus.Cancelled;
+            if (GraphState != ENodeStatus.Completed) {
+                GraphState = ENodeStatus.Cancelled;
+            }
         }
 
         public bool IsGraphRunning() {

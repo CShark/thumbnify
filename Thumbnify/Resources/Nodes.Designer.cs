@@ -187,6 +187,15 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die String ähnelt.
+        /// </summary>
+        internal static string input_text {
+            get {
+                return ResourceManager.GetString("input_text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Thumbnail ähnelt.
         /// </summary>
         internal static string input_thumbnail {

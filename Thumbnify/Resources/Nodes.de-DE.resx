@@ -301,4 +301,7 @@
   <data name="youtube_remplaylist" xml:space="preserve">
     <value>Von Playlist entfernen</value>
   </data>
+  <data name="input_text" xml:space="preserve">
+    <value>Text</value>
+  </data>
 </root>
