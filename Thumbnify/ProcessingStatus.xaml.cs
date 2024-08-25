@@ -96,8 +96,10 @@ namespace Thumbnify {
                     }
                 }
 
-                var tempDir = item.Graph.TempPath;
-                Directory.Delete(tempDir, true);
+                try {
+                    var tempDir = item.Graph.TempPath;
+                    Directory.Delete(tempDir, true);
+                } catch (Exception ex) { }
             }
         }
 

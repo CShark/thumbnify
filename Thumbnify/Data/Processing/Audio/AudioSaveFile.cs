@@ -34,6 +34,11 @@ namespace Thumbnify.Data.Processing.Audio {
                 filename += ".mp3";
             }
 
+            var dir = Path.GetDirectoryName(filename);
+            if (!Directory.Exists(dir)) {
+                Directory.CreateDirectory(dir);
+            }
+
             if (File.Exists(filename)) {
                 File.Delete(filename);
             }

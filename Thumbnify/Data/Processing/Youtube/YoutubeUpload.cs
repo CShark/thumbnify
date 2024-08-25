@@ -118,8 +118,10 @@ namespace Thumbnify.Data.Processing.Youtube {
                 req.ProgressChanged += progress => { ReportProgress(progress.BytesSent, file.Length); };
                 req.ResponseReceived += vid => { videoResult = vid; };
 
-                Task.WaitAll(req.UploadAsync(cancelToken));
+                req.UploadAsync(cancelToken).Wait(cancelToken);
             }
+
+            if (cancelToken.IsCancellationRequested) return false;
 
             var paramList = RequestParameters();
             App.Current.Dispatcher.Invoke(() => {
@@ -132,9 +134,11 @@ namespace Thumbnify.Data.Processing.Youtube {
                     encoder.Save(stream);
                     stream.Seek(0, SeekOrigin.Begin);
                     var req = service.Thumbnails.Set(videoResult.Id, stream, "image/jpeg");
-                    Task.WaitAll(req.UploadAsync(cancelToken));
+                    req.UploadAsync(cancelToken).Wait(cancelToken);
                 }
             });
+
+            if (cancelToken.IsCancellationRequested) return false;
 
             VideoResult.Value = new YoutubeVideoParam {
                 Credentials = cred,
