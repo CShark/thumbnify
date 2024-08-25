@@ -265,9 +265,6 @@
   <data name="TimelinePlay" xml:space="preserve">
     <value>Wiedergabe</value>
   </data>
-  <data name="TimelineAdd" xml:space="preserve">
-    <value>Ausschnitt aus Auswahl</value>
-  </data>
   <data name="TimelineMute" xml:space="preserve">
     <value>Stummschalten</value>
   </data>

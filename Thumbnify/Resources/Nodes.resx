@@ -104,7 +104,7 @@
     <value>Save Audio</value>
   </data>
   <data name="input_part" xml:space="preserve">
-    <value>Mediapart</value>
+    <value>Mediaclip</value>
   </data>
   <data name="input_path" xml:space="preserve">
     <value>Path</value>

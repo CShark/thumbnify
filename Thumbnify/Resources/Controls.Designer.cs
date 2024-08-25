@@ -187,7 +187,7 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Remove Media Part ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Remove Media Clip ähnelt.
         /// </summary>
         internal static string DeleteMediaPart {
             get {
@@ -214,7 +214,7 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Edit Media Part ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Edit Media Clip ähnelt.
         /// </summary>
         internal static string EditMediaPart {
             get {
@@ -529,15 +529,6 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Media Part from Selection ähnelt.
-        /// </summary>
-        internal static string TimelineAdd {
-            get {
-                return ResourceManager.GetString("TimelineAdd", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Backward ähnelt.
         /// </summary>
         internal static string TimelineBackward {
@@ -565,7 +556,7 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Create Part from Selection ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Create Clip from Selection ähnelt.
         /// </summary>
         internal static string TimelineCreatePart {
             get {
@@ -610,7 +601,7 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Move Part Backward ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Move Clip Backward ähnelt.
         /// </summary>
         internal static string TimelineMoveBackward {
             get {
@@ -619,7 +610,7 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Move Part Forward ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Move Clip Forward ähnelt.
         /// </summary>
         internal static string TimelineMoveForward {
             get {
@@ -655,7 +646,7 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Next Media Part ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Next Media Clip ähnelt.
         /// </summary>
         internal static string TimelineNextPart {
             get {
@@ -700,7 +691,7 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Previous Media Part ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Previous Media Clip ähnelt.
         /// </summary>
         internal static string TimelinePrevPart {
             get {

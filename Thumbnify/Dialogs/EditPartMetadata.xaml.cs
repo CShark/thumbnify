@@ -75,7 +75,15 @@ namespace Thumbnify.Dialogs {
             var graph = App.Settings.Processing.FirstOrDefault(x =>
                 x.Name.ToLower() == PartMetadata.ProcessingGraph.Name.ToLower()) ?? PartMetadata.ProcessingGraph;
 
-            dlg.Graph = graph ?? new();
+
+            if (graph != null) {
+                var json = JsonConvert.SerializeObject(graph);
+                graph = JsonConvert.DeserializeObject<ProcessingGraph>(json);
+            } else {
+                graph = new();
+            }
+
+            dlg.Graph = graph;
 
             dlg.ShowDialog();
 

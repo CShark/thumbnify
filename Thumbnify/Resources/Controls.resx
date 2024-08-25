@@ -119,7 +119,7 @@
     <value>Create Parameter</value>
   </data>
   <data name="EditMediaPart" xml:space="preserve">
-    <value>Edit Media Part</value>
+    <value>Edit Media Clip</value>
   </data>
   <data name="Preview" xml:space="preserve">
     <value>Preview</value>
@@ -194,7 +194,7 @@
     <value>Add to Queue</value>
   </data>
   <data name="DeleteMediaPart" xml:space="preserve">
-    <value>Remove Media Part</value>
+    <value>Remove Media Clip</value>
   </data>
   <data name="DeleteMedia" xml:space="preserve">
     <value>Delete Media File</value>
@@ -265,9 +265,6 @@
   <data name="TimelinePlay" xml:space="preserve">
     <value>Play/Pause</value>
   </data>
-  <data name="TimelineAdd" xml:space="preserve">
-    <value>Media Part from Selection</value>
-  </data>
   <data name="TimelineMute" xml:space="preserve">
     <value>Mute</value>
   </data>
@@ -284,22 +281,22 @@
     <value>Previous Frame</value>
   </data>
   <data name="TimelineNextPart" xml:space="preserve">
-    <value>Next Media Part</value>
+    <value>Next Media Clip</value>
   </data>
   <data name="TimelineNextMedia" xml:space="preserve">
     <value>Next Media File</value>
   </data>
   <data name="TimelinePrevPart" xml:space="preserve">
-    <value>Previous Media Part</value>
+    <value>Previous Media Clip</value>
   </data>
   <data name="TimelinePrevMedia" xml:space="preserve">
     <value>Previous Media File</value>
   </data>
   <data name="TimelineMoveForward" xml:space="preserve">
-    <value>Move Part Forward</value>
+    <value>Move Clip Forward</value>
   </data>
   <data name="TimelineMoveBackward" xml:space="preserve">
-    <value>Move Part Backward</value>
+    <value>Move Clip Backward</value>
   </data>
   <data name="TimelineClearIn" xml:space="preserve">
     <value>Clear In</value>
@@ -308,7 +305,7 @@
     <value>Clear Out</value>
   </data>
   <data name="TimelineCreatePart" xml:space="preserve">
-    <value>Create Part from Selection</value>
+    <value>Create Clip from Selection</value>
   </data>
   <data name="GraphAdd" xml:space="preserve">
     <value>Add Graph</value>

@@ -160,7 +160,7 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Mediapart ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Mediaclip ähnelt.
         /// </summary>
         internal static string input_part {
             get {

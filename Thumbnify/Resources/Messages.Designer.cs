@@ -61,7 +61,7 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Some media parts have not yet finished processing. Do you want to cancel them? ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Some media clips have not yet finished processing. Do you want to cancel them? ähnelt.
         /// </summary>
         internal static string msg_cancelGraphs {
             get {
@@ -106,7 +106,7 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Delete the selected media part? ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Delete the selected media clip? ähnelt.
         /// </summary>
         internal static string msg_deleteMediaPart {
             get {
@@ -196,7 +196,7 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Delete Media Part ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Delete Media Clip ähnelt.
         /// </summary>
         internal static string title_deleteMediaPart {
             get {

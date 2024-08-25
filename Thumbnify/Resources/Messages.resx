@@ -104,10 +104,10 @@
     <value>Delete Actions</value>
   </data>
   <data name="msg_deleteMediaPart" xml:space="preserve">
-    <value>Delete the selected media part?</value>
+    <value>Delete the selected media clip?</value>
   </data>
   <data name="title_deleteMediaPart" xml:space="preserve">
-    <value>Delete Media Part</value>
+    <value>Delete Media Clip</value>
   </data>
   <data name="msg_deletePreset" xml:space="preserve">
     <value>Delete the selected preset?</value>
@@ -137,7 +137,7 @@
     <value>Cancel Processing</value>
   </data>
   <data name="msg_cancelGraphs" xml:space="preserve">
-    <value>Some media parts have not yet finished processing. Do you want to cancel them?</value>
+    <value>Some media clips have not yet finished processing. Do you want to cancel them?</value>
   </data>
   <data name="title_ytNoChannels" xml:space="preserve">
     <value>No Channels found</value>

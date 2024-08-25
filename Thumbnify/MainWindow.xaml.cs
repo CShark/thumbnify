@@ -737,6 +737,16 @@ namespace Thumbnify {
                 }
             }, (_, e) => { e.CanExecute = e.Parameter is MediaSource; }));
 
+            PreviewKeyDown += (sender, args) => {
+                if (args.Key == Key.Enter) {
+                    args.Handled = true;
+
+                    if (args.IsDown) {
+                        CreateMediaPart.Execute(null, this);
+                    }
+                }
+            };
+
             IEnumerable<(long Position, MediaPart Part)> GetPartPositions() =>
                 SelectedMedia?.Parts.Select(x => (x.Start, x))?.Concat(SelectedMedia.Parts.Select(x => (x.End, x))) ??
                 Array.Empty<(long, MediaPart)>();
