@@ -178,38 +178,11 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Prefix ähnelt.
-        /// </summary>
-        internal static string input_prefix {
-            get {
-                return ResourceManager.GetString("input_prefix", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Suffix ähnelt.
-        /// </summary>
-        internal static string input_suffix {
-            get {
-                return ResourceManager.GetString("input_suffix", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Temporary Path ähnelt.
         /// </summary>
         internal static string input_temppath {
             get {
                 return ResourceManager.GetString("input_temppath", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die String ähnelt.
-        /// </summary>
-        internal static string input_text {
-            get {
-                return ResourceManager.GetString("input_text", resourceCulture);
             }
         }
         
@@ -538,6 +511,15 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Prefix ähnelt.
+        /// </summary>
+        internal static string param_prefix {
+            get {
+                return ResourceManager.GetString("param_prefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Samples ähnelt.
         /// </summary>
         internal static string param_samples {
@@ -547,11 +529,29 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Suffix ähnelt.
+        /// </summary>
+        internal static string param_suffix {
+            get {
+                return ResourceManager.GetString("param_suffix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Target Loudness (LUFS) ähnelt.
         /// </summary>
         internal static string param_target_lu {
             get {
                 return ResourceManager.GetString("param_target_lu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die String ähnelt.
+        /// </summary>
+        internal static string param_text {
+            get {
+                return ResourceManager.GetString("param_text", resourceCulture);
             }
         }
         

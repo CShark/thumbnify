@@ -115,7 +115,12 @@ namespace Thumbnify.Data.Processing.Youtube {
             YoutubeVideo? videoResult = null;
             using (var file = new FileStream(Video.Value.VideoFileName, FileMode.Open)) {
                 var req = service.Videos.Insert(video, "snippet,status", file, "video/*");
-                req.ProgressChanged += progress => { ReportProgress(progress.BytesSent, file.Length); };
+                req.ProgressChanged += progress => {
+                    try {
+                        ReportProgress(progress.BytesSent, file.Length);
+                    } catch (Exception ex) {
+                    }
+                };
                 req.ResponseReceived += vid => { videoResult = vid; };
 
                 req.UploadAsync(cancelToken).Wait(cancelToken);

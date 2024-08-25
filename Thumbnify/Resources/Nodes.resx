@@ -109,7 +109,7 @@
   <data name="input_path" xml:space="preserve">
     <value>Path</value>
   </data>
-  <data name="input_text" xml:space="preserve">
+  <data name="param_text" xml:space="preserve">
     <value>String</value>
   </data>
   <data name="op_pathcombine" xml:space="preserve">
@@ -250,10 +250,10 @@
   <data name="op_stringCombine" xml:space="preserve">
     <value>Combine Text</value>
   </data>
-  <data name="input_prefix" xml:space="preserve">
+  <data name="param_prefix" xml:space="preserve">
     <value>Prefix</value>
   </data>
-  <data name="input_suffix" xml:space="preserve">
+  <data name="param_suffix" xml:space="preserve">
     <value>Suffix</value>
   </data>
   <data name="file_webdav" xml:space="preserve">
