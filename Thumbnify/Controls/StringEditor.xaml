@@ -16,7 +16,7 @@
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <TextBox Text="{Binding StringParam.Value}" Height="20">
+        <TextBox Text="{Binding StringParam.Value, UpdateSourceTrigger=PropertyChanged}" Height="20">
         </TextBox>
         <Button Grid.Column="1" Width="24" Margin="4,0" Style="{StaticResource SquareButton}"
                 Visibility="{Binding StringParam.ExtendedEditor, Converter={StaticResource BoolToVis}}"

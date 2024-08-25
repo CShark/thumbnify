@@ -721,17 +721,7 @@ namespace Thumbnify {
             CommandBindings.Add(new(DeleteMedia, (_, e) => {
                 if (e.Parameter is MediaSource media) {
                     if (MessageBox.ShowDialog(this, "deleteMedia", MessageBoxButton.YesNo) == true) {
-                        try {
-                            File.Delete(media.FileName);
-                            File.Delete(media.FileName + ".peaks");
-                        } catch (Exception ex) {
-                            // ignored
-                        }
-
-                        if (!File.Exists(media.FileName) && !File.Exists(media.FileName + ".peaks")) {
-                            App.Settings.Media.Remove(media);
-                        }
-
+                        DeleteMediaFile(media);
                         App.SaveSettings();
                     }
                 }
@@ -886,19 +876,27 @@ namespace Thumbnify {
                 var files = App.Settings.Media.Where(x => x.SlatedForCleanup).ToList();
 
                 foreach (var file in files) {
-                    try {
-                        File.Delete(file.FileName);
-                        File.Delete(file.FileName + ".peaks");
-                    } catch (Exception ex) {
-                        // ignored
-                    }
-
-                    if (!File.Exists(file.FileName) && !File.Exists(file.FileName + ".peaks")) {
-                        App.Settings.Media.Remove(file);
-                    }
+                    DeleteMediaFile(file);
                 }
 
                 App.SaveSettings();
+            }
+        }
+
+        private void DeleteMediaFile(MediaSource media) {
+            try {
+                media.UiData.AudioEngine?.Dispose();
+                media.UiData.FileStream?.Dispose();
+                media.UiData.FileStreamIn?.Dispose();
+                media.UiData.FileStreamOut?.Dispose();
+                File.Delete(media.FileName);
+                File.Delete(media.FileName + ".peaks");
+            } catch (Exception ex) {
+                // ignored
+            }
+
+            if (!File.Exists(media.FileName) && !File.Exists(media.FileName + ".peaks")) {
+                App.Settings.Media.Remove(media);
             }
         }
 
