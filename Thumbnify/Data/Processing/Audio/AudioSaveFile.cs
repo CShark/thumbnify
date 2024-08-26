@@ -2,8 +2,10 @@
 using NAudio.Lame;
 using NAudio.Wave;
 using Newtonsoft.Json;
+using TagLib;
 using Thumbnify.Data.Processing.Parameters;
 using Thumbnify.Postprocessing;
+using File = System.IO.File;
 
 namespace Thumbnify.Data.Processing.Audio {
     internal sealed class AudioSaveFile : Node {
@@ -65,6 +67,7 @@ namespace Thumbnify.Data.Processing.Audio {
                     tagFile.Tag.Composers = new[] { AudioStream.Value.Interpret };
                 }
 
+                tagFile.RemoveTags(TagTypes.Id3v1);
                 tagFile.Save();
 
                 AudioResult.Value = new FilePath(filename);
