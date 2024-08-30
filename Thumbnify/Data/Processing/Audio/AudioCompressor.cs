@@ -44,7 +44,7 @@ namespace Thumbnify.Data.Processing.Audio {
             var source = AudioParameter.Value.GetWaveStream();
             var sourceReader = source.ToSampleProvider();
             var destFile = Path.Combine(TempPath, Path.GetRandomFileName() + ".wav");
-            var output = new WaveFileWriter(destFile, source.WaveFormat);
+            var output = new WaveFileWriter(destFile, source.WaveFormat.ToIEEE());
             var state = InitializeState(source.WaveFormat.SampleRate);
 
             var channels = source.WaveFormat.Channels;

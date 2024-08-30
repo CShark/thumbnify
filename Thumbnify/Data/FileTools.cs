@@ -38,5 +38,9 @@ namespace Thumbnify.Data {
 
             dst.Flush();
         }
+
+        public static WaveFormat ToIEEE(this WaveFormat format) {
+            return WaveFormat.CreateIeeeFloatWaveFormat(format.SampleRate, format.Channels);
+        }
     }
 }

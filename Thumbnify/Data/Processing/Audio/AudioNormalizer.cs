@@ -39,7 +39,7 @@ namespace Thumbnify.Data.Processing.Audio {
 
             using (var src = AudioInput.Value.GetWaveStream()) {
                 using (var dst = new FileStream(destFile, FileMode.Create)) {
-                    var writer = new WaveFileWriter(dst, src.WaveFormat);
+                    var writer = new WaveFileWriter(dst, src.WaveFormat.ToIEEE());
 
                     var sampleReader = src.ToSampleProvider();
                     var lufsMeter = new R128LufsMeter();

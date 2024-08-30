@@ -34,21 +34,18 @@ namespace Thumbnify.Data.Processing.Audio {
                 return false;
             }
 
-            if (!AudioFile.Value.FileName.ToLower().EndsWith(".wav")) {
-                var file = Path.Combine(TempPath, Path.GetRandomFileName() + ".wav");
+            var file = Path.Combine(TempPath, Path.GetRandomFileName() + ".wav");
 
-                using (var src = new AudioFileReader(AudioFile.Value.FileName)) {
-                    WaveFileWriter.CreateWaveFile(file, src);
+            using (var src = new AudioFileReader(AudioFile.Value.FileName)) {
+                using (var dst = new WaveFileWriter(file, src.WaveFormat.ToIEEE())) {
+                    FileTools.CopySamples(src, dst,
+                        () => ReportProgress(src.Position, src.Length), CancelToken);
                 }
-
-                AudioStream.Value = new AudioStream {
-                    AudioFile = file
-                };
-            } else {
-                AudioStream.Value = new AudioStream {
-                    AudioFile = AudioFile.Value.FileName
-                };
             }
+
+            AudioStream.Value = new AudioStream {
+                AudioFile = file
+            };
 
             return true;
         }

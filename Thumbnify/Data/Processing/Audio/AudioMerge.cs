@@ -52,7 +52,7 @@ namespace Thumbnify.Data.Processing.Audio {
 
                 var path = Path.Combine(TempPath, Path.GetRandomFileName() + ".wav");
 
-                using (var dst = new WaveFileWriter(path, src1.WaveFormat)) {
+                using (var dst = new WaveFileWriter(path, src1.WaveFormat.ToIEEE())) {
                     FileTools.CopySamples(concatProvider, dst,
                         () => ReportProgress(src1.Position + src2.Position, src1.Length + src2.Length), CancelToken);
                 }

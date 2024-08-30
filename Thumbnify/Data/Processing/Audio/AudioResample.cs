@@ -25,13 +25,6 @@ namespace Thumbnify.Data.Processing.Audio {
                 { "96.000", "96000" }
             }));
 
-        public Parameter<EnumParameter> BitDepth { get; } = new("bitdepth", false, new("16",
-            new Dictionary<string, string> {
-                { "16bit", "16" },
-                { "24bit", "24" },
-                { "32bit", "32" }
-            }));
-
         protected override ENodeType NodeType => ENodeType.Audio;
         public static string Id => "audio_resample";
         public override string NodeTypeId => Id;
@@ -39,7 +32,6 @@ namespace Thumbnify.Data.Processing.Audio {
         public AudioResample() {
             RegisterParameter(AudioParam);
             RegisterParameter(Samples);
-            RegisterParameter(BitDepth);
 
             RegisterResult(AudioResult);
         }
@@ -48,11 +40,6 @@ namespace Thumbnify.Data.Processing.Audio {
         protected override bool Execute(CancellationToken cancelToken) {
             if (!int.TryParse(Samples.Value.Value, out var sampleRate)) {
                 Logger.Error($"Could not parse sample rate {Samples.Value.Value}");
-                return false;
-            }
-
-            if (!int.TryParse(BitDepth.Value.Value, out var bitdepth)) {
-                Logger.Error($"Could not parse bit depth {BitDepth.Value.Value}");
                 return false;
             }
 
@@ -68,11 +55,7 @@ namespace Thumbnify.Data.Processing.Audio {
                 var resampler = new WdlResamplingSampleProvider(src.ToSampleProvider(), sampleRate);
                 var path = Path.Combine(TempPath, Path.GetRandomFileName() + ".wav");
 
-                var targetFormat = new WaveFormat(sampleRate, bitdepth, src.WaveFormat.Channels);
-
-                if (bitdepth == 32) {
-                    targetFormat = WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, src.WaveFormat.Channels);
-                }
+                var targetFormat = WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, src.WaveFormat.Channels);
 
                 using (var writer =
                        new WaveFileWriter(path, targetFormat)) {
