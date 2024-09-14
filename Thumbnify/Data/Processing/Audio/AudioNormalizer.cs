@@ -38,8 +38,10 @@ namespace Thumbnify.Data.Processing.Audio {
             var destFile = Path.Combine(TempPath, Path.GetRandomFileName() + ".wav");
 
             using (var src = AudioInput.Value.GetWaveStream()) {
-                using (var dst = new FileStream(destFile, FileMode.Create)) {
+                using (var dst = new FileStream(destFile, FileMode.Create))
+                using (var mem = new MemoryStream()) {
                     var writer = new WaveFileWriter(dst, src.WaveFormat.ToIEEE());
+                    var memory = new WaveFileWriter(mem, src.WaveFormat.ToIEEE());
 
                     var sampleReader = src.ToSampleProvider();
                     var lufsMeter = new R128LufsMeter();
@@ -47,7 +49,8 @@ namespace Thumbnify.Data.Processing.Audio {
 
                     // calculate loudness
                     lufsMeter.StartIntegrated();
-                    lufsMeter.ProcessBuffer(sampleReader, (position) => ReportProgress(src.Position, src.Length * 3), CancelToken);
+                    lufsMeter.ProcessBuffer(sampleReader, (position) => ReportProgress(src.Position, src.Length * 4),
+                        CancelToken);
                     lufsMeter.StopIntegrated();
 
                     if (CancelToken.IsCancellationRequested) return false;
@@ -69,10 +72,17 @@ namespace Thumbnify.Data.Processing.Audio {
                             buffer[i] *= gainLin;
                         }
 
-                        writer.WriteSamples(buffer, 0, read);
-                        ReportProgress(src.Position + src.Length, src.Length * 3);
+                        memory.WriteSamples(buffer, 0, read);
+                        ReportProgress(src.Position + src.Length, src.Length * 4);
                     }
 
+                    memory.Flush();
+                    memory.Seek(0, SeekOrigin.Begin);
+
+                    // limit true peak
+                    var memReader = new WaveFileReader(mem);
+                    TruePeakLimiter.ProcessBuffer(memReader.ToSampleProvider(), writer, -1, src.WaveFormat.SampleRate,
+                        .01, .3, 2, 2, x => { ReportProgress(memReader.Position + 2 * src.Length, src.Length * 4); });
                     writer.Flush();
                     dst.Seek(0, SeekOrigin.Begin);
 
@@ -80,7 +90,8 @@ namespace Thumbnify.Data.Processing.Audio {
                     var dstReader = new WaveFileReader(dst);
                     lufsMeter.StartIntegrated();
                     lufsMeter.ProcessBuffer(dstReader.ToSampleProvider(),
-                        (pos) => ReportProgress(dstReader.Position + 2 * dstReader.Length, dstReader.Length * 3), CancelToken);
+                        (pos) => ReportProgress(dstReader.Position + 3 * src.Length, src.Length * 4),
+                        CancelToken);
                     lufsMeter.StopIntegrated();
 
                     if (CancelToken.IsCancellationRequested) return false;

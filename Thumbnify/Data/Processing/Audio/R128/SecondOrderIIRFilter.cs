@@ -16,7 +16,7 @@
  *    along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  *    Email : shanboxuan@me.com
- *    Github : https://github.com/xuan525
+ *    Github : https://github.com/xuan25/R128Normalization
  */
 
 namespace Thumbnify.Data.Processing.Audio.R128 {
