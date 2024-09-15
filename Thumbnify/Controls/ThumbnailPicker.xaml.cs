@@ -38,25 +38,18 @@ namespace Thumbnify.Controls {
 
         private void OpenThumbnail_OnClick(object sender, RoutedEventArgs e) {
             var thumb = LoadSaveDialog.ShowOpenDialog(Window.GetWindow(this), App.Settings.Thumbnails);
-            Thumbnail.Thumbnail = thumb;
-            Thumbnail.Edited = false;
+            Thumbnail.ThumbnailPreset = thumb.PresetName;
+            Thumbnail.LocalThumbnail = null;
         }
 
         private void ResetThumbnail_OnClick(object sender, RoutedEventArgs e) {
-            var orig = App.Settings.Thumbnails.FirstOrDefault(x =>
-                x.Name.ToLower() == Thumbnail.Thumbnail.Name.ToLower());
-
-            if (orig != null) {
-                var json = JsonConvert.SerializeObject(orig);
-                Thumbnail.Thumbnail = JsonConvert.DeserializeObject<ThumbnailData>(json);
-                Thumbnail.Edited = false;
-            }
+            Thumbnail.LocalThumbnail = null;
         }
 
         private void EditThumbnail_OnClick(object sender, RoutedEventArgs e) {
             var editor = new ThumbnailPresetEditor();
             editor.Owner = Window.GetWindow(this);
-            editor.Thumbnail = Thumbnail.Thumbnail;
+            editor.Thumbnail = Thumbnail.GetThumbnail();
 
             var args = new ResolveParamArgs();
             args.RoutedEvent = ThumbnailPreview.ResolveParamsEvent;
@@ -67,8 +60,7 @@ namespace Thumbnify.Controls {
 
             editor.ShowDialog();
 
-            Thumbnail.Thumbnail = editor.Thumbnail;
-            Thumbnail.Edited = true;
+            Thumbnail.LocalThumbnail = editor.Thumbnail;
         }
     }
 }

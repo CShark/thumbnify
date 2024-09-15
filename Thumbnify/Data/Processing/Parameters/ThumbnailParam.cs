@@ -15,23 +15,45 @@ using Thumbnify.Data.ParamStore;
 
 namespace Thumbnify.Data.Processing.Parameters {
     public class ThumbnailParam : ParamType, INotifyPropertyChanged {
-        private ThumbnailData _thumbnail;
         private bool _edited;
+        private string? _thumbnailPreset;
+        private ThumbnailData? _thumbnail;
 
-        public ThumbnailData Thumbnail {
+        public ThumbnailData? GetThumbnail() {
+            var orig =  _thumbnail ?? App.Settings.Thumbnails.FirstOrDefault(x => x.PresetName == _thumbnailPreset);
+            var json = JsonConvert.SerializeObject(orig);
+            return JsonConvert.DeserializeObject<ThumbnailData>(json);
+        }
+
+        public bool Edited => _thumbnail != null;
+
+        public string? ThumbnailPreset {
+            get => _thumbnailPreset;
+            set {
+                if (value == _thumbnailPreset) return;
+                _thumbnailPreset = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(Thumbnail));
+            }
+        }
+
+        public ThumbnailData? LocalThumbnail {
             get => _thumbnail;
-            set => SetField(ref _thumbnail, value);
+            set {
+                if (Equals(value, _thumbnail)) return;
+                _thumbnail = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(Thumbnail));
+            }
         }
 
-        public bool Edited {
-            get => _edited;
-            set => SetField(ref _edited, value);
-        }
+        [JsonIgnore]
+        public ThumbnailData Thumbnail => GetThumbnail();
 
         public override ParamType Clone() {
             return new ThumbnailParam {
-                Thumbnail = Thumbnail,
-                Edited = Edited
+                _thumbnail = _thumbnail,
+                _thumbnailPreset = _thumbnailPreset
             };
         }
 
@@ -42,8 +64,7 @@ namespace Thumbnify.Data.Processing.Parameters {
             RenderTargetBitmap render = null;
 
             App.Current.Dispatcher.Invoke(() => {
-                var json = JsonConvert.SerializeObject(Thumbnail);
-                var copy = JsonConvert.DeserializeObject<ThumbnailData>(json);
+                var copy = GetThumbnail();
 
                 var preview = new ThumbnailPreview();
                 preview.Thumbnail = copy;

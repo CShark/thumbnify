@@ -228,10 +228,11 @@ namespace Thumbnify {
             UploadQueue = new();
             Shortcuts = _defaultShortcuts;
 
+            ScanMedia();
+
             InitializeCommandBindings();
             InitializeComponent();
-
-            ScanMedia();
+            
             Media.MoveCurrentToFirst();
             MediaList_OnSelectionChanged(null, null);
 
@@ -1008,6 +1009,16 @@ namespace Thumbnify {
 
             if (result != null) {
                 UploadQueue.Add(new(result));
+            }
+        }
+
+        private void MainWindow_OnPreviewKeyDown(object sender, KeyEventArgs e) {
+            if (e.Key == Key.Enter) {
+                e.Handled = true;
+                CreateMediaPart.Execute(null,this);
+            }else if (e.Key == Key.Space) {
+                e.Handled = true;
+                Player.Commands.TogglePlayPause.Execute(null);
             }
         }
     }
