@@ -77,7 +77,7 @@ namespace Thumbnify.Data.Processing.Audio {
                     }
 
                     memory.Flush();
-                    memory.Seek(0, SeekOrigin.Begin);
+                    mem.Seek(0, SeekOrigin.Begin);
 
                     // limit true peak
                     var memReader = new WaveFileReader(mem);

@@ -34,6 +34,7 @@ namespace Thumbnify.Data.Processing.Parameters {
                 _thumbnailPreset = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(Thumbnail));
+                OnPropertyChanged(nameof(Edited));
             }
         }
 
@@ -44,6 +45,7 @@ namespace Thumbnify.Data.Processing.Parameters {
                 _thumbnail = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(Thumbnail));
+                OnPropertyChanged(nameof(Edited));
             }
         }
 
