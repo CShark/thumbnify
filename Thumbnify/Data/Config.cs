@@ -18,6 +18,7 @@ namespace Thumbnify.Data {
         private string _defaultProcessing;
         private ObservableCollection<YoutubeCredentials> _youtubeCredentials = new();
         private ObservableCollection<StaticGraphRef> _staticGraphs = new();
+        private bool _alwaysSaveLog = true;
 
         public string? UILanguage { get; set; }
 
@@ -54,6 +55,11 @@ namespace Thumbnify.Data {
         public ObservableCollection<StaticGraphRef> StaticGraphs {
             get => _staticGraphs;
             set => SetField(ref _staticGraphs, value);
+        }
+
+        public bool AlwaysSaveLog {
+            get => _alwaysSaveLog;
+            set => SetField(ref _alwaysSaveLog, value);
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

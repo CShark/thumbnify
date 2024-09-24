@@ -79,6 +79,15 @@ namespace Thumbnify.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Always save Logfiles ähnelt.
+        /// </summary>
+        internal static string AutoSaveLog {
+            get {
+                return ResourceManager.GetString("AutoSaveLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Cancel ähnelt.
         /// </summary>
         internal static string Cancel {

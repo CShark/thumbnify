@@ -316,4 +316,7 @@
   <data name="Today" xml:space="preserve">
     <value>Today</value>
   </data>
+  <data name="AutoSaveLog" xml:space="preserve">
+    <value>Always save Logfiles</value>
+  </data>
 </root>

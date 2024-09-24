@@ -48,6 +48,9 @@
             </Grid>
 
             <Rectangle Height="10"></Rectangle>
+            <CheckBox Content="{lex:Loc AutoSaveLog}" IsChecked="{Binding Config.AlwaysSaveLog}"/>
+            
+            <Rectangle Height="10"></Rectangle>
             <TextBlock Text="{lex:Loc DefaultGraph}"></TextBlock>
             <Grid>
                 <Grid.ColumnDefinitions>
