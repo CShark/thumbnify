@@ -30,11 +30,11 @@ namespace Thumbnify.Data {
             Name = graph.Name;
         }
 
-        public MediaPart? MediaPart { get; }
+        public MediaPart? MediaPart { get; set; }
 
-        public ProcessingGraph Graph { get; }
+        public ProcessingGraph Graph { get; set; }
 
-        public string Name { get; }
+        public string Name { get; set; }
 
         public bool AutomaticallyCreated { get; set; }
     }

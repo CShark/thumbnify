@@ -42,5 +42,23 @@ namespace Thumbnify.Data {
         public static WaveFormat ToIEEE(this WaveFormat format) {
             return WaveFormat.CreateIeeeFloatWaveFormat(format.SampleRate, format.Channels);
         }
+
+        public static string SanitizeFilename(string filename) {
+            var parts = filename.Split('\\');
+
+            foreach (var chr in Path.GetInvalidFileNameChars()) {
+                for (var i = 1; i < parts.Length; i++) {
+                    parts[i] = parts[i].Replace(chr.ToString(), "");
+                }
+            }
+
+            foreach (var chr in Path.GetInvalidPathChars()) {
+                for (var i = 1; i < parts.Length; i++) {
+                    parts[i] = parts[i].Replace(chr.ToString(), "");
+                }
+            }
+
+            return string.Join('\\', parts);
+        }
     }
 }

@@ -39,6 +39,8 @@ namespace Thumbnify.Data.Processing.Video {
                 filename += ".mp4";
             }
 
+            filename = FileTools.SanitizeFilename(filename);
+
             if (File.Exists(filename)) {
                 File.Delete(filename);
             }

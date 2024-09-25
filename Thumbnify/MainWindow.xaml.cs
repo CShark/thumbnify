@@ -543,6 +543,13 @@ namespace Thumbnify {
         }
 
         private void StartProcessing_OnClick(object sender, RoutedEventArgs e) {
+            // Update queue items with graphs from media part
+            foreach (var item in UploadQueue) {
+                if (item.MediaPart != null) {
+                    item.Graph = item.MediaPart.Metadata.ProcessingGraph;
+                }
+            }
+            
             var dlg = new ProcessingStatus();
             dlg.Owner = this;
             dlg.StartProcessing(UploadQueue);
