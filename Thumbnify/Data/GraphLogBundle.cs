@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Thumbnify.Data.Processing;
 using Thumbnify.Tools;
 
@@ -51,6 +53,16 @@ namespace Thumbnify.Data {
                     }
                 }
             }
+        }
+
+        public void Save(string fileName) {
+            fileName = FileTools.SanitizeFilename(fileName);
+            var settings = new JsonSerializerSettings {
+                PreserveReferencesHandling = PreserveReferencesHandling.Objects
+            };
+
+            var json = JsonConvert.SerializeObject(this, settings);
+            File.WriteAllText(fileName, json);
         }
 
         public class NodeState {

@@ -110,7 +110,7 @@ namespace Thumbnify {
                     }
 
                     var log = new GraphLogBundle(item.Graph);
-                    File.WriteAllText(FileTools.SanitizeFilename($"logs\\{DateTime.Now:yyyy-MM-dd} - {item.Name} .json"), JsonConvert.SerializeObject(log));
+                    log.Save($"logs\\{DateTime.Now:yyyy-MM-dd} - {item.Name} .json");
                 }
             }
         }

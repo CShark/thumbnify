@@ -200,9 +200,7 @@ namespace Thumbnify {
                 }
 
                 var logBundle = new GraphLogBundle(Graph);
-                var json = JsonConvert.SerializeObject(logBundle);
-
-                File.WriteAllText(dlg.FileName, json);
+                logBundle.Save(dlg.FileName);
             }
         }
 
