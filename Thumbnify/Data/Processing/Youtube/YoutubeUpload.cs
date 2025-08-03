@@ -123,7 +123,7 @@ namespace Thumbnify.Data.Processing.Youtube {
                 };
                 req.ResponseReceived += vid => { videoResult = vid; };
 
-                req.UploadAsync(cancelToken).Wait(cancelToken);
+                req.UploadAsync(CancellationToken.None).Wait();
             }
 
             if (cancelToken.IsCancellationRequested) return false;

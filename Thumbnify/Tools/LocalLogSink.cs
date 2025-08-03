@@ -8,7 +8,7 @@ namespace Thumbnify.Tools {
     public class LogMessage {
         public string Message { get; set; }
 
-        public Exception? Exception { get; set; }
+        public string? Exception { get; set; }
 
         public DateTimeOffset Timestamp { get; set; }
 
@@ -26,7 +26,7 @@ namespace Thumbnify.Tools {
             Message = logEvent.RenderMessage();
             Timestamp = logEvent.Timestamp;
             Level = logEvent.Level;
-            Exception = logEvent.Exception;
+            Exception = logEvent.Exception?.ToString();
 
             if (logEvent.Properties.ContainsKey("node-uid")) {
                 NodeUid = JsonConvert.DeserializeObject<string?>(logEvent.Properties["node-uid"].ToString());

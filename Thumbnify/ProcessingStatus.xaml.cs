@@ -102,15 +102,21 @@ namespace Thumbnify {
                 try {
                     var tempDir = item.Graph.TempPath;
                     Directory.Delete(tempDir, true);
-                } catch (Exception ex) { }
+                } catch (Exception ex) {
+                    File.AppendAllText("err.log",$"Could not delete temp dir {item.Graph.TempPath}: {ex}\n");
+                }
 
                 if (App.Settings.AlwaysSaveLog) {
                     if (!Directory.Exists("logs")) {
                         Directory.CreateDirectory("logs");
                     }
 
-                    var log = new GraphLogBundle(item.Graph);
-                    log.Save($"logs\\{DateTime.Now:yyyy-MM-dd} - {item.Name} .json");
+                    try {
+                        var log = new GraphLogBundle(item.Graph);
+                        log.Save($"logs\\{DateTime.Now:yyyy-MM-dd} - {item.Name} .json");
+                    } catch (Exception ex) {
+                        File.AppendAllText("err.log", $"Could not save log file for graph {item.Graph.Name}\n");
+                    }
                 }
             }
         }

@@ -58,7 +58,8 @@ namespace Thumbnify.Data {
         public void Save(string fileName) {
             fileName = FileTools.SanitizeFilename(fileName);
             var settings = new JsonSerializerSettings {
-                PreserveReferencesHandling = PreserveReferencesHandling.Objects
+                PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             };
 
             var json = JsonConvert.SerializeObject(this, settings);
