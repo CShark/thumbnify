@@ -41,11 +41,28 @@
                         </Grid>
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type thumbnail:TextBoxPart}">
-                        <Grid Background="#01000000" MouseLeftButtonDown="Ctrl_OnMouseLeftButtonDown">
+                        <Grid Width="{Binding Width}" Height="{Binding Height}"
+                              Background="#01000000" MouseLeftButtonDown="Ctrl_OnMouseLeftButtonDown">
                             <TextBlock FontSize="{Binding FontSize}"
                                        TextWrapping="Wrap"
-                                       Width="{Binding Width}" Height="{Binding Height}"
+                                       TextAlignment="{Binding TextAlignment}"
+                                       VerticalAlignment="{Binding VerticalAlignment}"
+                                       Width="{Binding Width}"
                                        FontFamily="{Binding FontFace}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="FontWeight" Value="Normal" />
+                                        <Setter Property="FontStyle" Value="Normal" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsBold}" Value="True">
+                                                <Setter Property="FontWeight" Value="Bold" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsItalic}" Value="True">
+                                                <Setter Property="FontStyle" Value="Italic" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
                                 <TextBlock.Text>
                                     <MultiBinding Converter="{StaticResource TextPreview}">
                                         <Binding Path="PreviewText" />

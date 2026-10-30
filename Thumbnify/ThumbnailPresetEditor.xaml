@@ -219,6 +219,21 @@
                                         </ComboBox.ItemTemplateSelector>
                                     </ComboBox>
 
+                                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                                        <CheckBox Content="Bold" FontWeight="Bold" Margin="0,0,12,0"
+                                                  IsChecked="{Binding IsBold, Mode=TwoWay}" />
+                                        <CheckBox Content="Italic" FontStyle="Italic"
+                                                  IsChecked="{Binding IsItalic, Mode=TwoWay}" />
+                                    </StackPanel>
+
+                                    <TextBlock Margin="0,5,0,0">Alignment</TextBlock>
+                                    <ComboBox ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:ThumbnailPresetEditor}, Path=TextAlignments}"
+                                              SelectedItem="{Binding TextAlignment, Mode=TwoWay}" />
+
+                                    <TextBlock Margin="0,5,0,0">Vertical alignment</TextBlock>
+                                    <ComboBox ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:ThumbnailPresetEditor}, Path=VerticalAlignments}"
+                                              SelectedItem="{Binding VerticalAlignment, Mode=TwoWay}" />
+
                                     <Grid Margin="0,5">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -247,6 +262,9 @@
                                     <TextBox AcceptsReturn="True" AcceptsTab="True"
                                              Text="{Binding Placeholder, UpdateSourceTrigger=PropertyChanged}"
                                              Height="150" />
+                                    <TextBlock Text="{}{date}: current date (dd.MM.yyyy)"
+                                               TextWrapping="Wrap" Margin="0,3,0,0"
+                                               ToolTip="{}{date|yyyy-MM-dd}: custom date format" />
 
                                     <StackPanel Margin="0,5">
                                         <TextBlock>Shadow</TextBlock>

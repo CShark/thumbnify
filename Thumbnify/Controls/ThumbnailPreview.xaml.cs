@@ -174,11 +174,7 @@ namespace Thumbnify.Controls {
 
         public void SetParameters(ObservableCollection<ParamDefinition>? paramList) {
             foreach (var part in Thumbnail.Controls.OfType<TextBoxPart>()) {
-                if (paramList == null) {
-                    part.PreviewText = null;
-                } else {
-                    part.PreviewText = TextReplace.ReplaceVariables(part.Placeholder, paramList);
-                }
+                part.PreviewText = TextReplace.ReplaceVariables(part.Placeholder, paramList);
             }
         }
     }

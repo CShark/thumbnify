@@ -103,12 +103,22 @@ namespace Thumbnify {
 
         public List<int> FontSizes { get; }
 
+        public List<System.Windows.TextAlignment> TextAlignments { get; }
+
+        public List<System.Windows.VerticalAlignment> VerticalAlignments { get; }
+
         public ObservableCollection<ParamDefinition>? PreviewParameters { get; set; }
 
         public ThumbnailPresetEditor() {
             Thumbnail = new();
             FontFamilies = Fonts.SystemFontFamilies.OrderBy(f => f.Source).ToList();
             FontSizes = new[] { 10, 12, 16, 18, 20, 24, 28, 32, 48, 64, 72, 94, 128 }.ToList();
+            TextAlignments = Enum.GetValues<System.Windows.TextAlignment>().ToList();
+            VerticalAlignments = new() {
+                System.Windows.VerticalAlignment.Top,
+                System.Windows.VerticalAlignment.Center,
+                System.Windows.VerticalAlignment.Bottom
+            };
 
             InitializeComponent();
         }

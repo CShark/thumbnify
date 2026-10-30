@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using Newtonsoft.Json;
 
@@ -12,6 +13,10 @@ namespace Thumbnify.Data.Thumbnail {
         private Color _foreground = Colors.Black;
         private int _fontSize = 20;
         private string _fontFamily = "Arial";
+        private bool _isBold;
+        private bool _isItalic;
+        private TextAlignment _textAlignment = TextAlignment.Left;
+        private VerticalAlignment _verticalAlignment = VerticalAlignment.Top;
         private double _shadowOpacity = 0;
         private Color _shadowColor = Colors.Black;
         private double _shadowRadius = 10d;
@@ -47,6 +52,26 @@ namespace Thumbnify.Data.Thumbnail {
                 SetField(ref _fontFamily, value);
                 OnPropertyChanged(nameof(FontFace));
             }
+        }
+
+        public TextAlignment TextAlignment {
+            get => _textAlignment;
+            set => SetField(ref _textAlignment, value);
+        }
+
+        public bool IsBold {
+            get => _isBold;
+            set => SetField(ref _isBold, value);
+        }
+
+        public bool IsItalic {
+            get => _isItalic;
+            set => SetField(ref _isItalic, value);
+        }
+
+        public VerticalAlignment VerticalAlignment {
+            get => _verticalAlignment;
+            set => SetField(ref _verticalAlignment, value);
         }
 
         public double ShadowOpacity {

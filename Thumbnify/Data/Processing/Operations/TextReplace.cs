@@ -44,32 +44,33 @@ namespace Thumbnify.Data.Processing.Operations {
         }
 
         public static string ReplaceVariables(string source, IList<ParamDefinition>? variables) {
-            if (variables == null) {
-                return source;
-            } else {
-                return _previewRegex.Replace(source, match => {
-                    var value = match.Groups[1].Value;
-                    var parts = value.Split('|');
+            var currentDate = DateTime.Today;
+            return _previewRegex.Replace(source, match => {
+                var value = match.Groups[1].Value;
+                var parts = value.Split('|');
 
-                    var param = variables.FirstOrDefault(x =>
-                        string.Equals(x.Name, parts[0], StringComparison.CurrentCultureIgnoreCase));
+                var param = variables?.FirstOrDefault(x =>
+                    string.Equals(x.Name, parts[0], StringComparison.CurrentCultureIgnoreCase));
 
-                    if (param != null) {
-                        switch (param.Value) {
-                            case StringParam s:
-                                return s.Value;
-                            case DateParam d:
-                                if (parts.Length == 2) {
-                                    return d.ResolveDate().ToString(parts[1]);
-                                } else {
-                                    return d.ResolveDate().ToString();
-                                }
-                        }
+                if (param != null) {
+                    switch (param.Value) {
+                        case StringParam s:
+                            return s.Value;
+                        case DateParam d:
+                            if (parts.Length == 2) {
+                                return d.ResolveDate().ToString(parts[1]);
+                            } else {
+                                return d.ResolveDate().ToString();
+                            }
                     }
+                }
 
-                    return "";
-                });
-            }
+                if (string.Equals(parts[0], "date", StringComparison.OrdinalIgnoreCase)) {
+                    return currentDate.ToString(parts.Length == 2 ? parts[1] : "dd.MM.yyyy");
+                }
+
+                return variables == null ? match.Value : "";
+            });
         }
     }
 }
